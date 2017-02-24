@@ -1,0 +1,25 @@
+--- munin-node.orig	2017-02-15 11:24:58.302337435 +0000
++++ munin-node	2017-02-15 11:28:33.163991899 +0000
+@@ -18,6 +18,10 @@
+ env.MUNIN_MKTEMP /bin/mktemp -p /tmp/ $1
+ env.amavislog /var/log/mail.info
+ 
++[apache_*]
++env.url   https://myhost.mydomain.tld:%d/server-status?auto
++env.ports 443
++
+ [apt]
+ user root
+ 
+@@ -122,3 +126,11 @@
+ 
+ [fail2ban]
+ user root
++
++[proc]
++user root
++env.procname redis-server
++env.procaspect cpu|memory|ctxt_switches|threads|processes
++
++[http_loadtime]
++env.target "https://myhost.mydomain.tld/"

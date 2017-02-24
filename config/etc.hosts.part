@@ -1,0 +1,3 @@
+# Additional private entries for /etc/hosts
+10.0.1.1        myhost1-priv
+10.0.1.2        myhost2-priv

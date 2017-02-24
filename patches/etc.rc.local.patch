@@ -1,0 +1,9 @@
+--- rc.local.orig	2017-02-10 16:14:33.960416298 +0000
++++ rc.local	2017-02-10 16:14:15.440299586 +0000
+@@ -11,4 +11,6 @@
+ #
+ # By default this script does nothing.
+ 
++echo never > /sys/kernel/mm/transparent_hugepage/enabled
++
+ exit 0

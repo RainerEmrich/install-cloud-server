@@ -1,0 +1,13 @@
+--- apache2-doc.conf.orig	2017-02-13 12:04:34.208543465 +0000
++++ apache2-doc.conf	2017-02-13 12:05:31.525000002 +0000
+@@ -3,7 +3,9 @@
+ <Directory "/usr/share/doc/apache2-doc/manual/">
+     Options Indexes FollowSymlinks
+     AllowOverride None
+-    Require all granted
++    Require local
++    #Require all granted
++    Include /etc/apache2/misc/my-current-admin-host.conf
+     AddDefaultCharset off
+ </Directory>
+ 

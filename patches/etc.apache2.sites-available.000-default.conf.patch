@@ -1,0 +1,11 @@
+--- 000-default.conf.orig	2017-02-13 12:24:45.877729113 +0000
++++ 000-default.conf	2017-02-13 12:31:16.592608918 +0000
+@@ -26,6 +26,8 @@
+ 	# following line enables the CGI configuration for this host only
+ 	# after it has been globally disabled with "a2disconf".
+ 	#Include conf-available/serve-cgi-bin.conf
++RewriteEngine on
++RewriteRule ^ https://%{SERVER_NAME}%{REQUEST_URI} [END,QSA,R=permanent]
+ </VirtualHost>
+ 
+ # vim: syntax=apache ts=4 sw=4 sts=4 sr noet

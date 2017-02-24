@@ -1,0 +1,10 @@
+--- config.inc.php.orig	2017-02-20 20:19:08.108148516 +0000
++++ config.inc.php	2017-02-20 20:18:00.799894862 +0000
+@@ -97,6 +97,7 @@
+     $cfg['Servers'][$i]['central_columns'] = 'pma__central_columns';
+     $cfg['Servers'][$i]['designer_settings'] = 'pma__designer_settings';
+     $cfg['Servers'][$i]['export_templates'] = 'pma__export_templates';
++    $cfg['Servers'][$i]['AllowRoot'] = FALSE;
+ 
+     /* Uncomment the following to enable logging in to passwordless accounts,
+      * after taking note of the associated security risks. */

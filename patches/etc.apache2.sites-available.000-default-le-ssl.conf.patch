@@ -1,0 +1,47 @@
+--- 000-default-le-ssl.conf.orig	2017-02-13 12:45:03.682687149 +0000
++++ 000-default-le-ssl.conf	2017-02-13 12:49:07.352474601 +0000
+@@ -12,6 +12,23 @@
+ 	ServerAdmin webmaster@localhost
+ 	DocumentRoot /var/www/html
+ 
++	<Directory "/var/www/html">
++		Options None
++		AllowOverride None
++		DirectoryIndex index.html
++		Require all granted
++
++		FallbackResource "/index.html"
++	</Directory>
++
++	Alias /icons/ "/var/www/html/icons/"
++
++	<Directory "/var/www/html/icons">
++		Options None
++		AllowOverride None
++		Require all granted
++	</Directory>
++
+ 	# Available loglevels: trace8, ..., trace1, debug, info, notice, warn,
+ 	# error, crit, alert, emerg.
+ 	# It is also possible to configure the loglevel for particular
+@@ -27,12 +44,20 @@
+ 	# following line enables the CGI configuration for this host only
+ 	# after it has been globally disabled with "a2disconf".
+ 	#Include conf-available/serve-cgi-bin.conf
++
++	# OCSP Stapling, only in httpd 2.3.3 and later. Stapling options configured in ssl.conf
++	SSLUseStapling on
++
+ SSLCertificateFile /etc/letsencrypt/live/public3.emrich-ebersheim.de/fullchain.pem
+ SSLCertificateKeyFile /etc/letsencrypt/live/public3.emrich-ebersheim.de/privkey.pem
+ Include /etc/letsencrypt/options-ssl-apache.conf
+ ServerName public3.emrich-ebersheim.de
+ Header always set Strict-Transport-Security "max-age=31536000"
++Header always set X-XSS-Protection "1; mode=block"
++Header set X-Content-Type-Options: "nosniff"
++Header set X-Frame-Options: "sameorigin"
+ Header always set Content-Security-Policy upgrade-insecure-requests
++Header always set Content-Security-Policy "default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'"
+ </VirtualHost>
+ 
+ # vim: syntax=apache ts=4 sw=4 sts=4 sr noet

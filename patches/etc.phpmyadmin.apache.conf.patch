@@ -1,0 +1,20 @@
+--- apache.conf.orig	2017-02-15 12:27:41.702136487 +0000
++++ apache.conf	2017-02-15 12:28:01.334302263 +0000
+@@ -6,6 +6,8 @@
+     Options SymLinksIfOwnerMatch
+     DirectoryIndex index.php
+ 
++    Include /etc/apache2/misc/my-current-admin-host.conf
++
+     <IfModule mod_php5.c>
+         <IfModule mod_mime.c>
+             AddType application/x-httpd-php .php
+@@ -37,6 +39,8 @@
+ 
+ # Authorize for setup
+ <Directory /usr/share/phpmyadmin/setup>
++    Include /etc/apache2/misc/my-current-admin-host.conf
++
+     <IfModule mod_authz_core.c>
+         <IfModule mod_authn_file.c>
+             AuthType Basic

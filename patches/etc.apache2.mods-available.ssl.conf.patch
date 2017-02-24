@@ -1,0 +1,12 @@
+--- ssl.conf.orig	2017-02-13 12:16:10.757901684 +0000
++++ ssl.conf	2017-02-13 12:16:27.942030425 +0000
+@@ -80,6 +80,9 @@
+ 	#   Default: Off
+ 	#SSLStrictSNIVHostCheck On
+ 
++	# Configure OCSP Stabling
++	Include /etc/apache2/misc/options-OCSPStabling-apache.conf
++
+ </IfModule>
+ 
+ # vim: syntax=apache ts=4 sw=4 sts=4 sr noet

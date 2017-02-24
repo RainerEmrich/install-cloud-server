@@ -1,0 +1,16 @@
+--- status.conf.orig	2017-02-13 12:18:08.922785092 +0000
++++ status.conf	2017-02-13 12:18:25.490908632 +0000
+@@ -7,10 +7,12 @@
+ 		SetHandler server-status
+ 		Require local
+ 		#Require ip 192.0.2.0/24
++
++		Include /etc/apache2/misc/my-current-admin-host.conf
+ 	</Location>
+ 
+ 	# Keep track of extended status information for each request
+-	ExtendedStatus On
++	#ExtendedStatus On
+ 
+ 	# Determine if mod_status displays the first 63 characters of a request or
+ 	# the last 63, assuming the request itself is greater than 63 chars.

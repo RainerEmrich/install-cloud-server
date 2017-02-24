@@ -1,0 +1,11 @@
+--- info.conf.orig	2017-02-13 12:12:33.580264655 +0000
++++ info.conf	2017-02-13 12:12:59.052457755 +0000
+@@ -8,6 +8,8 @@
+ 		SetHandler server-info
+ 		Require local
+ 		#Require ip 192.0.2.0/24
++
++		Include /etc/apache2/misc/my-current-admin-host.conf
+ 	</Location>
+ 
+ </IfModule>

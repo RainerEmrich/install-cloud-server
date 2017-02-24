@@ -1,0 +1,43 @@
+--- main.cf.orig	2017-02-14 18:38:02.795607495 +0000
++++ main.cf	2017-02-15 09:01:48.866645230 +0000
+@@ -18,10 +18,29 @@
+ readme_directory = no
+ 
+ # TLS parameters
+-smtpd_tls_cert_file=/etc/ssl/certs/ssl-cert-snakeoil.pem
+-smtpd_tls_key_file=/etc/ssl/private/ssl-cert-snakeoil.key
++smtpd_tls_received_header = yes
++smtpd_tls_loglevel = 1
++smtpd_tls_CAfile=/etc/letsencrypt/live/myhost.mydomain.tld/chain.pem
++smtpd_tls_CApath=/etc/ssl/certs
++smtpd_tls_cert_file=/etc/letsencrypt/live/myhost.mydomain.tld/cert.pem
++smtpd_tls_key_file=/etc/letsencrypt/live/myhost.mydomain.tld/privkey.pem
+ smtpd_use_tls=yes
++smtpd_tls_security_level=may
++smtpd_tls_mandatory_ciphers = high
++smtpd_tls_mandatory_exclude_ciphers = aNULL:, NULL, EXPORT, DES, RC4, MD5, PSK, aECDH, EDH-DSS-DES-CBC3-SHA, EDH-RSA-DES-CBC3-SHA, KRB5-DES-CBC3-SHA
++smtpd_tls_mandatory_protocols = !TLSv1 !SSLv2, !SSLv3
+ smtpd_tls_session_cache_database = btree:${data_directory}/smtpd_scache
++
++smtp_tls_loglevel = 1
++smtp_tls_CAfile=/etc/letsencrypt/live/myhost.mydomain.tld/chain.pem
++smtp_tls_CApath=/etc/ssl/certs
++smtp_tls_cert_file=/etc/letsencrypt/live/myhost.mydomain.tld/cert.pem
++smtp_tls_key_file=/etc/letsencrypt/live/myhost.mydomain.tld/privkey.pem
++smtp_use_tls=yes
++smtp_tls_security_level=may
++smtp_tls_mandatory_ciphers = high
++smtp_tls_mandatory_exclude_ciphers = aNULL:, NULL, EXPORT, DES, RC4, MD5, PSK, aECDH, EDH-DSS-DES-CBC3-SHA, EDH-RSA-DES-CBC3-SHA, KRB5-DES-CBC3-SHA
++smtp_tls_mandatory_protocols = !TLSv1 !SSLv2, !SSLv3
+ smtp_tls_session_cache_database = btree:${data_directory}/smtp_scache
+ 
+ # See /usr/share/doc/postfix/TLS_README.gz in the postfix-doc package for
+@@ -39,4 +58,7 @@
+ mailbox_size_limit = 0
+ recipient_delimiter = +
+ inet_interfaces = all
+-inet_protocols = all
++inet_protocols = ipv4
++smtp_sasl_auth_enable = yes
++smtp_sasl_password_maps = hash:/etc/postfix/sasl_passwd
++smtp_sasl_security_options = noanonymous

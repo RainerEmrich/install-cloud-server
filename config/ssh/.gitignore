@@ -1,0 +1,3 @@
+# Directory to place the authorized_keys file and pregenerated key pair.
+*
+!.gitignore

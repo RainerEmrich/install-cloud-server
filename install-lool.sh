@@ -244,7 +244,7 @@ elif [ "${LOOL_VERSION}" != "${LOOL_LAST}" ] ; then
 	chown lool:lool ${LOOL_PREFIX}/var/cache/loolwsd
 
 	/bin/rm -f ${LOOL_PREFIX}/etc/loolwsd/*
-	/bin/cp -af ${LOOL_PREFIX}.tmp/etc/loolwsd/* ${LOOL_PREFIX}/etc/loolwsd/*
+	/bin/cp -af ${LOOL_PREFIX}.tmp/etc/loolwsd/* ${LOOL_PREFIX}/etc/loolwsd/
 
 	chown root:lool ${LOOL_PREFIX}/etc/loolwsd/*
 	chmod o-r ${LOOL_PREFIX}/etc/loolwsd/*

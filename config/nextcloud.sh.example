@@ -25,6 +25,11 @@ MY_NEXTCLOUD_DATA_DIR="/var/ncdata/mynextcloud/data"
 MY_NEXTCLOUD_SA="webmaster@mydomain.tld"
 
 #
+# Define the index number for apache2 site configuration file.
+
+MY_NEXTCLOUD_APACHE_SITE_INDEX="101"
+
+#
 # Define a name for database and database user and a password
 
 MY_DATABASE_NAME='nc_mycloud'
@@ -54,7 +59,7 @@ MY_NEXTCLOUD_APPS="admin_audit files_accesscontrol files_automatedtagging files_
 #
 
 _MY_NEXTCLOUD_DOMAIN_="$(echo "${MY_NEXTCLOUD_DOMAIN}" | sed 's/\./-/g' -)"
-MY_NEXTCLOUD_SITE_CONFIG="101-${_MY_NEXTCLOUD_DOMAIN_}-le-ssl"
+MY_NEXTCLOUD_SITE_CONFIG="${MY_NEXTCLOUD_APACHE_SITE_INDEX}-${_MY_NEXTCLOUD_DOMAIN_}-le-ssl"
 
 export MY_NEXTCLOUD_DOMAIN MY_NEXTCLOUD_DR MY_NEXTCLOUD_DATA_DIR MY_NEXTCLOUD_SA \
 	MY_DATABASE_NAME MY_DATABASE_PASSWD MY_NC_ADMIN_NAME MY_NC_ADMIN_PASSWD \

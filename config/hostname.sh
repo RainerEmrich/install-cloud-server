@@ -7,6 +7,11 @@ MY_HOSTNAME="myhost"
 MY_DOMAIN="mydomain.tld"
 
 #
+# The global network interface, defaults to "ens192" for 1&1 cloud server.
+
+MY_GLOBAL_INTERFACE="ens192"
+
+#
 # Don't edit below!
 #
 

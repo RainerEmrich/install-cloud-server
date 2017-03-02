@@ -26,10 +26,11 @@ get_config () {
 	. ${CONFIG_DIR}/letsencrypt.sh
 	. ${CONFIG_DIR}/postfix.sh
 	. ${CONFIG_DIR}/nextcloud.sh
+	. ${CONFIG_DIR}/lool.sh
 
 	export CURRENT_HOSTNAME="$(hostname -s)"
 	export CURRENT_FQDN="$(hostname)"
-	export MY_GLOBAL_IP="$(ip addr show up scope global | grep inet | cut -d " " -f 6 | cut -d "/" -f 1)"
+	export MY_GLOBAL_IP="$(ip addr show up scope global | grep inet | grep ${MY_GLOBAL_INTERFACE} | cut -d " " -f 6 | cut -d "/" -f 1)"
 	export AVAILABLE_NETWORK_DEVICE="$(ip link show | grep DOWN | cut -d " " -f 2 | cut -d ":" -f 1)"
 
 	export MARIADB_INSTALLED=$(test ! -z "$(dpkg -l | grep "mariadb-server")" && echo "1")
@@ -54,5 +55,7 @@ get_config () {
 	export PHP_FPM_INSTALLED=$(test -f "${STAMP_DIR}/php_fpm_installed" && echo "1")
 	export NEXTCLOUD_PREREQUISITES_INSTALLED=$(test -f "${STAMP_DIR}/nextcloud_prerequisites_installed" && echo "1")
 	export NEXTCLOUD_INSTALLED=$(test -f "${STAMP_DIR}/nextcloud_installed" && echo "1")
+	export LOOL_INSTALLED=$(test -f "${STAMP_DIR}/lool_installed" && echo "1")
+	if [ "${LOOL_INSTALLED}" == "1" ] ; then export LOOL_LAST="$(cat ${STAMP_DIR}/lool_installed)" ; fi
 
 }

@@ -35,6 +35,7 @@ export SCRIPT_DIR="${BASE_DIR}/scripts"
 export STAMP_DIR="${BASE_DIR}/stamps"
 
 if [ ! -d ${STAMP_DIR} ] ; then mkdir -p ${STAMP_DIR}; fi
+if [ ! -d ${PKG_DIR} ] ; then mkdir -p ${PKG_DIR}; fi
 
 . ${SCRIPT_DIR}/setup.functions.sh
 

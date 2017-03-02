@@ -1,0 +1,49 @@
+#!/bin/bash
+#
+# Define the required data for nextcloud.
+#
+# Define the domain for libreoffice online. The domain must be already
+# assigned to your host. The domain has to be different from the hostname
+# and the nextcloud domain.
+
+LOOL_DOMAIN="myoffice.mydomain.tld"
+
+#
+# Define the ServerAdmin for libreoffice online.
+
+LOOL_SA="webmaster@mydomain.tld"
+
+#
+# Define the index number for apache2 site configuration file.
+
+LOOL_APACHE_SITE_INDEX="101"
+
+#
+# Define username and password of the admin console. Must be set.
+
+LOOL_ADMIN_NAME='looladminuser'
+LOOL_ADMIN_PASSWD='looladminuserpassword'
+
+#
+# Define maximum documents size in bytes, defaults to "0" for unlimited.
+
+LO_DOC_SIZE="0"
+
+#
+# Define the name of the lool package.
+LOOL_VERSION="lool-poco-1.7.7-core-cp-5.1-17-online-2.0.2-3"
+
+#
+# Define the installation prefix for libreoffice online.
+# Should be "/opt/lool".
+
+LOOL_PREFIX="/opt/lool"
+
+#
+# Don't edit below!
+#
+
+_LOOL_DOMAIN_="$(echo "${LOOL_DOMAIN}" | sed 's/\./-/g' -)"
+LOOL_SITE_CONFIG="${LOOL_APACHE_SITE_INDEX}-${_LOOL_DOMAIN_}-le-ssl"
+
+export LOOL_DOMAIN LOOL_SA LOOL_ADMIN_NAME LOOL_ADMIN_PASSWD LO_DOC_SIZE LOOL_VERSION LOOL_PREFIX _LOOL_DOMAIN_ LOOL_SITE_CONFIG

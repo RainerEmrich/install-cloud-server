@@ -21,6 +21,31 @@
 
 get_config () {
 
+	MY_CONFIG_SCRIPTS="hostname.sh network.sh letsencrypt.sh postfix.sh nextcloud.sh lool.sh"
+	MISSING_SCRIPTS="#"
+	for SCRIPT in ${MY_CONFIG_SCRIPTS} ; do
+		if [ ! -f ${CONFIG_DIR}/${SCRIPT} ] ; then
+			MISSING_SCRIPTS="${MISSING_SCRIPTS}\n#\t${CONFIG_DIR}/${SCRIPT}"
+		fi
+	done
+
+	if [ "${MISSING_SCRIPTS}" != "#" ] ; then
+		echo
+		echo "#######################################################################################"
+		echo "#"
+		echo "# ERROR: The following configuration scripts are missing:"
+		echo -e "${MISSING_SCRIPTS}"
+		echo "#"
+		echo "#        Please copy from the Example File(s) in the configuration directory"
+		echo "#        ${CONFIG_DIR}"
+		echo "#        and adjust to your needs."
+		echo "#"
+		echo "#######################################################################################"
+		echo
+
+		exit
+	fi
+
 	. ${CONFIG_DIR}/hostname.sh
 	. ${CONFIG_DIR}/network.sh
 	. ${CONFIG_DIR}/letsencrypt.sh

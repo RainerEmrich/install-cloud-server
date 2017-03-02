@@ -19,6 +19,8 @@
 # <http://www.gnu.org/licenses/>.
 #
 
+. ${SCRIPT_DIR}/get.os.release.sh
+. ${SCRIPT_DIR}/test.os.release.sh
 . ${SCRIPT_DIR}/get.config.sh
 . ${SCRIPT_DIR}/show.info.sh
 . ${SCRIPT_DIR}/ask.to.continue.sh

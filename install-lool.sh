@@ -50,6 +50,8 @@ echo "#"
 echo "# This script installs and configures libreoffice online according to the"
 echo "# configuration given in ${CONFIG_DIR}/lool.sh"
 echo "#"
+echo "# Installing ${LOOL_VERSION}.tar.xz"
+echo "#"
 echo "#######################################################################################"
 echo
 
@@ -216,6 +218,10 @@ elif [ "${LOOL_VERSION}" != "${LOOL_LAST}" ] ; then
 	echo "#"
 	echo "# INFO: Updating the libreoffice online installation."
 	echo "#"
+	echo "#       The directory ${LOOL_PREFIX} containing the libreoffice online version"
+	echo "#       ${LOOL_LAST}"
+	echo "#       is moved to ${LOOL_PREFIX}.backup."
+	echo "#"
 	echo "#######################################################################################"
 	echo
 
@@ -223,7 +229,7 @@ elif [ "${LOOL_VERSION}" != "${LOOL_LAST}" ] ; then
 	systemctl reload apache2
 	systemctl stop loolwsd
 
-	/bin/mv -f ${LOOL_PREFIX} ${LOOL_PREFIX}.tmp
+	/bin/mv -f ${LOOL_PREFIX} ${LOOL_PREFIX}.backup
 
 	mkdir -p ${LOOL_PREFIX}
 	tar -C ${LOOL_PREFIX} -xf ${PKG_DIR}/${LOOL_VERSION}.tar.*
@@ -243,8 +249,9 @@ elif [ "${LOOL_VERSION}" != "${LOOL_LAST}" ] ; then
 	chown lool:lool ${LOOL_PREFIX}/var/jails
 	chown lool:lool ${LOOL_PREFIX}/var/cache/loolwsd
 
-	/bin/rm -f ${LOOL_PREFIX}/etc/loolwsd/*
-	/bin/cp -af ${LOOL_PREFIX}.tmp/etc/loolwsd/* ${LOOL_PREFIX}/etc/loolwsd/
+	/bin/rm -f ${LOOL_PREFIX}/etc/loolwsd/*.pem
+	/bin/mv ${LOOL_PREFIX}/etc/loolwsd/loolwsd.xml ${LOOL_PREFIX}/etc/loolwsd/loolwsd.xml.dist
+	/bin/cp -af ${LOOL_PREFIX}.backup/etc/loolwsd/* ${LOOL_PREFIX}/etc/loolwsd/
 
 	chown root:lool ${LOOL_PREFIX}/etc/loolwsd/*
 	chmod o-r ${LOOL_PREFIX}/etc/loolwsd/*

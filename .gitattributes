@@ -1,4 +1,4 @@
-# Auto detect text files and perform LF normalization
+# Enforce LF line endings
 * text eol=lf
 
 # Custom for Visual Studio

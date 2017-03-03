@@ -43,7 +43,7 @@ test_os_release () {
 	echo "# Your Operating System is: ${DIST_ID} ${DIST_RELEASE} ${DIST_CODENAME}"
 	echo "#"
 
-	if [ "${}" == "1" ] ; then
+	if [ "${SUPPORTED}" == "1" ] ; then
 		echo "#######################################################################################"
 		echo
 	else

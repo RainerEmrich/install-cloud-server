@@ -213,6 +213,8 @@ if [ "${LOOL_INSTALLED}" != "1" ] ; then
 
 elif [ "${LOOL_VERSION}" != "${LOOL_LAST}" ] ; then
 
+	BACKUP_DATE="$(date +%F-%H-%M-%S)"
+
 	echo
 	echo "#######################################################################################"
 	echo "#"
@@ -220,7 +222,7 @@ elif [ "${LOOL_VERSION}" != "${LOOL_LAST}" ] ; then
 	echo "#"
 	echo "#       The directory ${LOOL_PREFIX} containing the libreoffice online version"
 	echo "#       ${LOOL_LAST}"
-	echo "#       is moved to ${LOOL_PREFIX}.backup."
+	echo "#       is moved to ${LOOL_PREFIX}.backup.${BACKUP_DATE}."
 	echo "#"
 	echo "#######################################################################################"
 	echo
@@ -229,7 +231,7 @@ elif [ "${LOOL_VERSION}" != "${LOOL_LAST}" ] ; then
 	systemctl reload apache2
 	systemctl stop loolwsd
 
-	/bin/mv -f ${LOOL_PREFIX} ${LOOL_PREFIX}.backup
+	/bin/mv -f ${LOOL_PREFIX} ${LOOL_PREFIX}.backup.${BACKUP_DATE}
 
 	mkdir -p ${LOOL_PREFIX}
 	tar -C ${LOOL_PREFIX} -xf ${PKG_DIR}/${LOOL_VERSION}.tar.*
@@ -251,7 +253,7 @@ elif [ "${LOOL_VERSION}" != "${LOOL_LAST}" ] ; then
 
 	/bin/rm -f ${LOOL_PREFIX}/etc/loolwsd/*.pem
 	/bin/mv ${LOOL_PREFIX}/etc/loolwsd/loolwsd.xml ${LOOL_PREFIX}/etc/loolwsd/loolwsd.xml.dist
-	/bin/cp -af ${LOOL_PREFIX}.backup/etc/loolwsd/* ${LOOL_PREFIX}/etc/loolwsd/
+	/bin/cp -af ${LOOL_PREFIX}.backup.${BACKUP_DATE}/etc/loolwsd/* ${LOOL_PREFIX}/etc/loolwsd/
 
 	chown root:lool ${LOOL_PREFIX}/etc/loolwsd/*
 	chmod o-r ${LOOL_PREFIX}/etc/loolwsd/*

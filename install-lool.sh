@@ -111,42 +111,43 @@ if [ "${LOOL_INSTALLED}" != "1" ] ; then
 	/sbin/setcap cap_fowner,cap_mknod,cap_sys_chroot=ep ${LOOL_PREFIX}/bin/loolforkit
 	/sbin/setcap cap_sys_admin=ep ${LOOL_PREFIX}/bin/loolmount
 
+	LOOL_DISTRO="$(ls -1 ${LOOL_PREFIX}/etc)"
 	OFFICE_PATH="$(find ${LOOL_PREFIX}/lib -maxdepth 1 -type d -name "*office*")"
 	${LOOL_PREFIX}/bin/loolwsd-systemplate-setup ${LOOL_PREFIX}/var/systemplate ${OFFICE_PATH}
 
 	mkdir -p ${LOOL_PREFIX}/var/tmp
 	mkdir -p ${LOOL_PREFIX}/var/log/loolwsd
 	mkdir -p ${LOOL_PREFIX}/var/jails
-	mkdir -p ${LOOL_PREFIX}/var/cache/loolwsd
+	mkdir -p ${LOOL_PREFIX}/var/cache/${LOOL_DISTRO}
 
 	chown lool:lool ${LOOL_PREFIX}/var/tmp
 	chown lool:lool ${LOOL_PREFIX}/var/log/loolwsd
 	chown lool:lool ${LOOL_PREFIX}/var/jails
-	chown lool:lool ${LOOL_PREFIX}/var/cache/loolwsd
+	chown lool:lool ${LOOL_PREFIX}/var/cache/${LOOL_DISTRO}
 
-	chown root:lool ${LOOL_PREFIX}/etc/loolwsd/*
-	chmod o-r ${LOOL_PREFIX}/etc/loolwsd/*
+	chown root:lool ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/*
+	chmod o-r ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/*
 
-	patch ${LOOL_PREFIX}/etc/loolwsd/loolwsd.xml ${PATCH_DIR}/opt.lool.etc.loolwsd.loowsd.xml.patch
+	patch ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/loolwsd.xml ${PATCH_DIR}/opt.lool.etc.loolwsd.loowsd.xml.patch
 
-	sed --in-place "s#\"systemplate\"></sys_template_path>#\"systemplate\">../var/systemplate</sys_template_path>#" ${LOOL_PREFIX}/etc/loolwsd/loolwsd.xml
-	sed --in-place "s#\"/opt/collaboraoffice5.1\"></lo_template_path>#\"/opt/collaboraoffice5.1\">${OFFICE_PATH}</lo_template_path>#" ${LOOL_PREFIX}/etc/loolwsd/loolwsd.xml
-	sed --in-place "s#\"jails\"></child_root_path>#\"jails\">../var/jails</child_root_path>#" ${LOOL_PREFIX}/etc/loolwsd/loolwsd.xml
-	sed --in-place "s#default=\"loleaflet/../\"></file_server_root_path>#default=\"loleaflet/../\">../var/www/loleaflet/../</file_server_root_path>#" ${LOOL_PREFIX}/etc/loolwsd/loolwsd.xml
-	sed --in-place "s#<file enable=\"false\">#<file enable=\"true\">#" ${LOOL_PREFIX}/etc/loolwsd/loolwsd.xml
-	sed --in-place "s#\"true\">/tmp/looltrace.gz</path>#\"true\">${LOOL_PREFIX}/var/tmp/looltrace.gz</path>#" ${LOOL_PREFIX}/etc/loolwsd/loolwsd.xml
-	sed --in-place "s#/etc/loolwsd/cert.pem#${LOOL_PREFIX}/etc/loolwsd/cert.pem#" ${LOOL_PREFIX}/etc/loolwsd/loolwsd.xml
-	sed --in-place "s#/etc/loolwsd/key.pem#${LOOL_PREFIX}/etc/loolwsd/key.pem#" ${LOOL_PREFIX}/etc/loolwsd/loolwsd.xml
-	sed --in-place "s#/etc/loolwsd/ca-chain.cert.pem#${LOOL_PREFIX}/etc/loolwsd/ca-chain.cert.pem#" ${LOOL_PREFIX}/etc/loolwsd/loolwsd.xml
-	sed --in-place "s#>0</max_file_size>#>${LO_DOC_SIZE}</max_file_size>#" ${LOOL_PREFIX}/etc/loolwsd/loolwsd.xml
-	sed --in-place "s#></username>#>${LOOL_ADMIN_NAME}</username>#" ${LOOL_PREFIX}/etc/loolwsd/loolwsd.xml
-	sed --in-place "s#></password>#>${LOOL_ADMIN_PASSWD}</password>#" ${LOOL_PREFIX}/etc/loolwsd/loolwsd.xml
+	sed --in-place "s#\"systemplate\"></sys_template_path>#\"systemplate\">../var/systemplate</sys_template_path>#" ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/loolwsd.xml
+	sed --in-place "s#\"/opt/collaboraoffice5.1\"></lo_template_path>#\"/opt/collaboraoffice5.1\">${OFFICE_PATH}</lo_template_path>#" ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/loolwsd.xml
+	sed --in-place "s#\"jails\"></child_root_path>#\"jails\">../var/jails</child_root_path>#" ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/loolwsd.xml
+	sed --in-place "s#default=\"loleaflet/../\"></file_server_root_path>#default=\"loleaflet/../\">../var/www/loleaflet/../</file_server_root_path>#" ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/loolwsd.xml
+	sed --in-place "s#<file enable=\"false\">#<file enable=\"true\">#" ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/loolwsd.xml
+	sed --in-place "s#\"true\">/tmp/looltrace.gz</path>#\"true\">${LOOL_PREFIX}/var/tmp/looltrace.gz</path>#" ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/loolwsd.xml
+	sed --in-place "s#/etc/loolwsd/cert.pem#${LOOL_PREFIX}/etc/${LOOL_DISTRO}/cert.pem#" ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/loolwsd.xml
+	sed --in-place "s#/etc/loolwsd/key.pem#${LOOL_PREFIX}/etc/${LOOL_DISTRO}/key.pem#" ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/loolwsd.xml
+	sed --in-place "s#/etc/loolwsd/ca-chain.cert.pem#${LOOL_PREFIX}/etc/${LOOL_DISTRO}/ca-chain.cert.pem#" ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/loolwsd.xml
+	sed --in-place "s#>0</max_file_size>#>${LO_DOC_SIZE}</max_file_size>#" ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/loolwsd.xml
+	sed --in-place "s#></username>#>${LOOL_ADMIN_NAME}</username>#" ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/loolwsd.xml
+	sed --in-place "s#></password>#>${LOOL_ADMIN_PASSWD}</password>#" ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/loolwsd.xml
 
 	MY_NEXTCLOUD_DOMAIN_QUOTED="$(echo ${MY_NEXTCLOUD_DOMAIN} | sed 's/\./\\\\\\\./g')"
 	MY_GLOBAL_IP_QUOTED="$(dig +short ${MY_NEXTCLOUD_DOMAIN} | sed 's/\./\\\\\\\./g')"
 
-	sed --in-place "s#mycloud\\\.mydomain\\\.tld#${MY_NEXTCLOUD_DOMAIN_QUOTED}#" ${LOOL_PREFIX}/etc/loolwsd/loolwsd.xml
-	sed --in-place "s#my_global_ipv4#${MY_GLOBAL_IP_QUOTED}#" ${LOOL_PREFIX}/etc/loolwsd/loolwsd.xml
+	sed --in-place "s#mycloud\\\.mydomain\\\.tld#${MY_NEXTCLOUD_DOMAIN_QUOTED}#" ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/loolwsd.xml
+	sed --in-place "s#my_global_ipv4#${MY_GLOBAL_IP_QUOTED}#" ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/loolwsd.xml
 
 	echo
 	echo "#######################################################################################"
@@ -214,6 +215,7 @@ if [ "${LOOL_INSTALLED}" != "1" ] ; then
 elif [ "${LOOL_VERSION}" != "${LOOL_LAST}" ] ; then
 
 	BACKUP_DATE="$(date +%F-%H-%M-%S)"
+	BACKUP_PATH="${LOOL_PREFIX}.backup.${BACKUP_DATE}"
 
 	echo
 	echo "#######################################################################################"
@@ -222,7 +224,7 @@ elif [ "${LOOL_VERSION}" != "${LOOL_LAST}" ] ; then
 	echo "#"
 	echo "#       The directory ${LOOL_PREFIX} containing the libreoffice online version"
 	echo "#       ${LOOL_LAST}"
-	echo "#       is moved to ${LOOL_PREFIX}.backup.${BACKUP_DATE}."
+	echo "#       is moved to ${BACKUP_PATH}."
 	echo "#"
 	echo "#######################################################################################"
 	echo
@@ -231,32 +233,41 @@ elif [ "${LOOL_VERSION}" != "${LOOL_LAST}" ] ; then
 	systemctl reload apache2
 	systemctl stop loolwsd
 
-	/bin/mv -f ${LOOL_PREFIX} ${LOOL_PREFIX}.backup.${BACKUP_DATE}
+	/bin/mv -f ${LOOL_PREFIX} ${BACKUP_PATH}
 
 	mkdir -p ${LOOL_PREFIX}
 	tar -C ${LOOL_PREFIX} -xf ${PKG_DIR}/${LOOL_VERSION}.tar.*
 	/sbin/setcap cap_fowner,cap_mknod,cap_sys_chroot=ep ${LOOL_PREFIX}/bin/loolforkit
 	/sbin/setcap cap_sys_admin=ep ${LOOL_PREFIX}/bin/loolmount
 
+	LOOL_DISTRO="$(ls -1 ${LOOL_PREFIX}/etc)"
+	BACKUP_LOOL_DISTRO="$(ls -1 ${BACKUP_PATH}/etc)"
 	OFFICE_PATH="$(find ${LOOL_PREFIX}/lib -maxdepth 1 -type d -name "*office*")"
+	BACKUP_OFFICE_PATH="${LOOL_PREFIX}/lib/$(basename $(find ${BACKUP_PATH}/lib -maxdepth 1 -type d -name "*office*"))"
 	${LOOL_PREFIX}/bin/loolwsd-systemplate-setup ${LOOL_PREFIX}/var/systemplate ${OFFICE_PATH}
 
 	mkdir -p ${LOOL_PREFIX}/var/tmp
 	mkdir -p ${LOOL_PREFIX}/var/log/loolwsd
 	mkdir -p ${LOOL_PREFIX}/var/jails
-	mkdir -p ${LOOL_PREFIX}/var/cache/loolwsd
+	mkdir -p ${LOOL_PREFIX}/var/cache/${LOOL_DISTRO}
 
 	chown lool:lool ${LOOL_PREFIX}/var/tmp
 	chown lool:lool ${LOOL_PREFIX}/var/log/loolwsd
 	chown lool:lool ${LOOL_PREFIX}/var/jails
-	chown lool:lool ${LOOL_PREFIX}/var/cache/loolwsd
+	chown lool:lool ${LOOL_PREFIX}/var/cache/${LOOL_DISTRO}
 
-	/bin/rm -f ${LOOL_PREFIX}/etc/loolwsd/*.pem
-	/bin/mv ${LOOL_PREFIX}/etc/loolwsd/loolwsd.xml ${LOOL_PREFIX}/etc/loolwsd/loolwsd.xml.dist
-	/bin/cp -af ${LOOL_PREFIX}.backup.${BACKUP_DATE}/etc/loolwsd/* ${LOOL_PREFIX}/etc/loolwsd/
+	/bin/rm -f ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/*.pem
+	/bin/mv ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/loolwsd.xml ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/loolwsd.xml.dist
+	/bin/cp -af ${BACKUP_PATH}/etc/${BACKUP_LOOL_DISTRO}/* ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/
 
-	chown root:lool ${LOOL_PREFIX}/etc/loolwsd/*
-	chmod o-r ${LOOL_PREFIX}/etc/loolwsd/*
+	chown root:lool ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/*
+	chmod o-r ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/*
+
+	sed --in-place "s#${LOOL_PREFIX}/var/cache/${BACKUP_LOOL_DISTRO}#${LOOL_PREFIX}/var/cache/${LOOL_DISTRO}#" ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/loolwsd.xml
+	sed --in-place "s#\"/opt/collaboraoffice5.1\">${BACKUP_OFFICE_PATH}</lo_template_path>#\"/opt/collaboraoffice5.1\">${OFFICE_PATH}</lo_template_path>#" ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/loolwsd.xml
+	sed --in-place "s#${LOOL_PREFIX}/etc/${BACKUP_LOOL_DISTRO}/cert.pem#${LOOL_PREFIX}/etc/${LOOL_DISTRO}/cert.pem#" ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/loolwsd.xml
+	sed --in-place "s#${LOOL_PREFIX}/etc/${BACKUP_LOOL_DISTRO}/key.pem#${LOOL_PREFIX}/etc/${LOOL_DISTRO}/key.pem#" ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/loolwsd.xml
+	sed --in-place "s#${LOOL_PREFIX}/etc/${BACKUP_LOOL_DISTRO}/ca-chain.cert.pem#${LOOL_PREFIX}/etc/${LOOL_DISTRO}/ca-chain.cert.pem#" ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/loolwsd.xml
 
 	systemctl start loolwsd
 	a2ensite ${LOOL_SITE_CONFIG}

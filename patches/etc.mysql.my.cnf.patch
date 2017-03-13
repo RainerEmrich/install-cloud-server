@@ -5,7 +5,7 @@
  #wsrep_provider=
  #wsrep_cluster_address=
 -#binlog_format=row
-+binlog_format=row
++binlog_format=mixed
  #default_storage_engine=InnoDB
  #innodb_autoinc_lock_mode=2
  #

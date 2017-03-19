@@ -131,7 +131,7 @@ if [ "${LOOL_INSTALLED}" != "1" ] ; then
 	patch ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/loolwsd.xml ${PATCH_DIR}/opt.lool.etc.loolwsd.loowsd.xml.patch
 
 	sed --in-place "s#\"systemplate\"></sys_template_path>#\"systemplate\">../var/systemplate</sys_template_path>#" ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/loolwsd.xml
-	sed --in-place "s#\"/opt/collaboraoffice5.1\"></lo_template_path>#\"/opt/collaboraoffice5.1\">${OFFICE_PATH}</lo_template_path>#" ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/loolwsd.xml
+	sed --in-place "s#\"></lo_template_path>#\">${OFFICE_PATH}</lo_template_path>#" ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/loolwsd.xml
 	sed --in-place "s#\"jails\"></child_root_path>#\"jails\">../var/jails</child_root_path>#" ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/loolwsd.xml
 	sed --in-place "s#default=\"loleaflet/../\"></file_server_root_path>#default=\"loleaflet/../\">../var/www/loleaflet/../</file_server_root_path>#" ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/loolwsd.xml
 	sed --in-place "s#<file enable=\"false\">#<file enable=\"true\">#" ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/loolwsd.xml
@@ -264,7 +264,7 @@ elif [ "${LOOL_VERSION}" != "${LOOL_LAST}" ] ; then
 	chmod o-r ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/*
 
 	sed --in-place "s#${LOOL_PREFIX}/var/cache/${BACKUP_LOOL_DISTRO}#${LOOL_PREFIX}/var/cache/${LOOL_DISTRO}#" ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/loolwsd.xml
-	sed --in-place "s#\"/opt/collaboraoffice5.1\">${BACKUP_OFFICE_PATH}</lo_template_path>#\"/opt/collaboraoffice5.1\">${OFFICE_PATH}</lo_template_path>#" ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/loolwsd.xml
+	sed --in-place "s#\">${BACKUP_OFFICE_PATH}</lo_template_path>#\">${OFFICE_PATH}</lo_template_path>#" ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/loolwsd.xml
 	sed --in-place "s#${LOOL_PREFIX}/etc/${BACKUP_LOOL_DISTRO}/cert.pem#${LOOL_PREFIX}/etc/${LOOL_DISTRO}/cert.pem#" ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/loolwsd.xml
 	sed --in-place "s#${LOOL_PREFIX}/etc/${BACKUP_LOOL_DISTRO}/key.pem#${LOOL_PREFIX}/etc/${LOOL_DISTRO}/key.pem#" ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/loolwsd.xml
 	sed --in-place "s#${LOOL_PREFIX}/etc/${BACKUP_LOOL_DISTRO}/ca-chain.cert.pem#${LOOL_PREFIX}/etc/${LOOL_DISTRO}/ca-chain.cert.pem#" ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/loolwsd.xml

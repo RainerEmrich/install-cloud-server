@@ -18,6 +18,30 @@ The scripts collection is tested for an 1&amp;1 cloud server, ubuntu 16.04,
 It's recommended to use subdomains of the same domain for online office and nextcloud, for example:
 office.mydomain.tld and cloud.mydomain.tld. 
 
+## Functions
+
+* Update the system
+* Set system hostname and domain
+* Setup a privat netwerk interface [optional]
+* Append host entries to /etc/hosts [optional]
+* Configure sshd for publickey authentication
+* Copy authorized_keys to ~/.ssh/
+* Copy pregenerated ssh host keys to ~/.ssh/
+* Setup 1&amp;1 Backup Manager [optional]
+* Install some basic software packages
+* Setup redis
+* Replace MySQL with MariaDB 10.1
+* Setup apache2
+* Setup letsencrypt
+* Setup postfix using tls
+* Setup docker
+* Setup munin
+* Setup phpmyadmin
+* Setup php7.0-fpm
+* Install nextcloud prerequisites (php 7.0)
+* Install nextcloud
+* Install libreoffice online [optional, seperate script]
+
 ## Configuration
 
 Before you start, you have to customize the configuration.

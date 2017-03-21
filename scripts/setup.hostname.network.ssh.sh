@@ -206,46 +206,67 @@ setup_hostname_network_ssh () {
 
 	if [ "${SSH_SET}" != "1" ] ; then
 
-		echo
-		echo "#######################################################################################"
-		echo "#"
-		echo "# Important: SSH will be setup to allow publickey authentication only!!!"
-		echo "#"
-		echo "# Put your public key(s) in the file ${CONFIG_DIR}/ssh/authorized_keys"
-		echo "# Pregenerated key(s) for the host put in the directory ${CONFIG_DIR}/ssh/"
-		echo "# The content of the directory will be copied to your .ssh directory."
-		echo "# Current content of ${CONFIG_DIR}/ssh/authorized_keys:"
-		echo "#"
-		cat ${CONFIG_DIR}/ssh/authorized_keys
-		echo "#"
-		echo "# Please check carefully."
-		echo "#"
-		echo "#######################################################################################"
-		echo
+		if [ ! -f "${CONFIG_DIR}/ssh/authorized_keys" ] ; then
 
-		ask_to_continue
+			echo
+			echo "#######################################################################################"
+			echo "#"
+			echo "# ERROR: ${CONFIG_DIR}/ssh/authorized_keys not found!"
+			echo "#"
+			echo "#        If we would continue now, you wouldn't be able to logon to the system again."
+			echo "#"
+			echo "# Put your public ed25519 ssh key(s) in the file ${CONFIG_DIR}/ssh/authorized_keys"
+			echo "# Pregenerated ssh key(s) for the host put in the directory ${CONFIG_DIR}/ssh/"
+			echo "# The content of the directory will be copied to your .ssh directory."
+			echo "#"
+			echo "#######################################################################################"
+			echo
 
-		mkdir -p ~/.ssh
-		chmod 700 ~/.ssh
-		/bin/cp ${CONFIG_DIR}/ssh/* ~/.ssh/
-		chmod 600 ~/.ssh/*
-		test -f ~/.ssh/*.pub && chmod 644 ~/.ssh/*.pub
+			exit
 
-		patch /etc/ssh/sshd_config ${PATCH_DIR}/etc.ssh.sshd_config.patch
+		else
 
-		touch ${STAMP_DIR}/ssh_set
+			echo
+			echo "#######################################################################################"
+			echo "#"
+			echo "# Important: SSH will be setup to allow publickey authentication only!!!"
+			echo "#"
+			echo "# Put your public ed25519 ssh key(s) in the file ${CONFIG_DIR}/ssh/authorized_keys"
+			echo "# Pregenerated ssh key(s) for the host put in the directory ${CONFIG_DIR}/ssh/"
+			echo "# The content of the directory will be copied to your .ssh directory."
+			echo "# Current content of ${CONFIG_DIR}/ssh/authorized_keys:"
+			echo "#"
+			cat ${CONFIG_DIR}/ssh/authorized_keys
+			echo "#"
+			echo "# Please check carefully."
+			echo "#"
+			echo "#######################################################################################"
+			echo
 
-		echo
-		echo "#######################################################################################"
-		echo "#"
-		echo "# Now we reboot the system forcing all changes to take effect."
-		echo "#"
-		echo "#######################################################################################"
-		echo
+			ask_to_continue
 
-		ask_to_continue
+			mkdir -p ~/.ssh
+			chmod 700 ~/.ssh
+			/bin/cp ${CONFIG_DIR}/ssh/* ~/.ssh/
+			chmod 600 ~/.ssh/*
+			test -f ~/.ssh/*.pub && chmod 644 ~/.ssh/*.pub
 
-		reboot
+			patch /etc/ssh/sshd_config ${PATCH_DIR}/etc.ssh.sshd_config.patch
+
+			touch ${STAMP_DIR}/ssh_set
+
+			echo
+			echo "#######################################################################################"
+			echo "#"
+			echo "# Now we reboot the system forcing all changes to take effect."
+			echo "#"
+			echo "#######################################################################################"
+			echo
+
+			ask_to_continue
+
+			reboot
+		fi
 	else
 		echo
 		echo "#######################################################################################"

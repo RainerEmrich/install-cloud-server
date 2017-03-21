@@ -79,7 +79,7 @@ setup_nextcloud_prerequisites () {
 		echo
 		echo "#######################################################################################"
 		echo "#"
-		echo "# A system reboot s required to finish thec software installation, rebooting..."
+		echo "# A system reboot is required to finish the software installation, rebooting..."
 		echo "#"
 		echo "#######################################################################################"
 		echo

@@ -84,7 +84,9 @@ setup_backupmanager () {
 			echo "#"
 			echo "#          We've searched for ${BM_DIR}/1and1-backup-manager*linux-x86_64.run"
 			echo "#"
-			echo "# If you don't want to install the 1&1 Backup Manager later, please continue now!"
+			echo "# If you don't want to install the 1&1 Backup Manager, please continue now!"
+			echo "# Otherwise stop now, copy the 1&1 Backup Manager installer into the directory"
+			echo "# ${BM_DIR} and restart the script."
 			echo "#"
 			echo "#######################################################################################"
 			echo

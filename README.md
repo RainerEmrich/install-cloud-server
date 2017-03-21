@@ -38,10 +38,34 @@ office.mydomain.tld and cloud.mydomain.tld.
 * Setup munin
 * Setup phpmyadmin
 * Setup php7.0-fpm
-* Install nextcloud prerequisites (php 7.0)
+* Install nextcloud prerequisites (including the necessary php 7.0 modules)
 * Install nextcloud
 * Install libreoffice online [optional, seperate script]
 
 ## Configuration
 
-Before you start, you have to customize the configuration.
+Before you start, you have to customize the configuration!
+
+### Most Important:
+
+Please copy a file authorized_keys containing your ed25519 public key(s) into
+the directory config/ssh.
+If you want to use pregenerated ssh keys for your host, please copy the keys
+into the directory config/ssh too.
+
+### Hostname
+
+Please copy the file config/hostname.sh.example to config/hostname.sh and adjust
+the variables MY_HOSTNAME and MY_DOMAIN to the actual values.
+
+### Private network
+
+Please copy the file config/network.sh.example to config/network.sh and adjust
+to your needs. If you don't use a private network, set the variable SETUP_PRIVATE_NETWORK
+to "0", that's sufficient.
+
+### /etc/hosts
+
+Please copy the file config/etc.hosts.part.example to config/etc.hosts.part and
+replace the conent with your host entries. This is especially usefull if you have
+a private network. 

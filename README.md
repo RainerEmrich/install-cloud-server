@@ -50,8 +50,8 @@ Before you start, you have to customize the configuration!
 
 Please copy a file authorized_keys containing your ed25519 public key(s) into
 the directory config/ssh.
-If you want to use pregenerated ssh keys for your host, please copy the keys
-into the directory config/ssh too.
+If you want to use pregenerated ssh keys for the account at your new host, please
+copy the keys into the directory config/ssh too.
 
 ### Hostname
 

@@ -69,3 +69,29 @@ to "0", that's sufficient.
 Please copy the file config/etc.hosts.part.example to config/etc.hosts.part and
 replace the conent with your host entries. This is especially usefull if you have
 a private network. 
+
+### apache and letsencrypt
+
+Please copy the file config/letsencrypt.sh.example to config/letsencrypt.sh and adjust
+to your needs. The variable ADMINHOST defines the FQDN or an IPv4 address of an administration
+host. The access to the Apache webserver server-status, server-info, apache2-doc, phpinfo
+and phpmyadmin pages will be restrictet to local and the administration host.
+
+### postfix
+
+Please copy the file config/postfix.sh.example to config/postfix.sh and adjust to your
+needs.
+
+### nextcloud
+
+Please copy the file config/nextcloud.sh.example to nextcloud.sh and adjust to your needs.
+
+### libreoffice online (optional), seperate script install-lool.sh
+
+Please copy the file config/lool.sh.example to config/lool.sh and adjust to your needs.
+If you want to use this functionality, you have to build a libreoffice online package,
+see https://github.com/RainerEmrich/build-lool.
+The built package has to be copied to the packages directory.
+
+
+## Execution

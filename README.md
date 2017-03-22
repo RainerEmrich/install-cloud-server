@@ -109,6 +109,10 @@ directory or to another suitable location.
 
 Before you start the script, you should have some additional info at hand:
 
+* Backup account name, password and an encrytion key, if you want to install the 1&amp;1 Backup Manager. You have to configure a backup account in the 1&amp;1 cloud panel beforehand.
+* Password for the MariaDB "root" user.
+
+
 Start the script install-server.sh.
 
 1. The first action the script executes, is to check wether we are on an ubuntu 16.04
@@ -145,4 +149,5 @@ page completely and to enable or disbale root login for phpmyadmin.
 21. Install and configure php7.0-fpm.
 22. Install the remaining prerequisites for nextcloud.
 23. Install nextcloud.
-24. Optionally install libreoffice online using the install-lool.sh script, has to be started manually.
+24. We remove the startup line from ~/.bashrc.
+25. Optionally install libreoffice online using the install-lool.sh script, has to be started manually.

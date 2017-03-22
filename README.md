@@ -153,6 +153,7 @@ page completely and to enable or disbale root login for phpmyadmin.
 25. Optionally install libreoffice online using the install-lool.sh script, has to be started manually.
 
 Running install-server.sh takes about 12 minutes. Last tested on 22nd of March 2017.
+
 Running install-lool.sh takes additional 2 minutes. Most of the time is used to unpack the libreoffice online package.
 
 
@@ -175,18 +176,18 @@ your configuration, this should be something like "https://myoffice.mydomain.tld
 Given your domain is "mydomain.tld", your host is "myhost", your nextcloud is "mycloud"
 and your online office is "myoffice", you find the following webpages running:
 
-http://myhost.mydomain.de/ redirected to https://myhost.mydomain.de/
-https://myhost.mydomain.de/
-https://myhost.mydomain.de/server-info/ only accessible from the administration host or local
-https://myhost.mydomain.de/server-status/ only accessible from the administration host or local
-https://myhost.mydomain.de/manual/ only accessible from the administration host or local
-https://myhost.mydomain.de/phpinfo/ only accessible from the administration host or local
-https://myhost.mydomain.de/munin/ only accessible from the administration host or local
-https://myhost.mydomain.de/phpmyadmin/ only accessible from the administration host or local
-https://myhost.mydomain.de/fpm-status?html&full only accessible from the administration host or local
-https://myhost.mydomain.de/fpm-ping only accessible from the administration host or local
-https://mycloud.mydomain.de/
-https://myoffice.mydomain.de/loleaflet/dist/admin/admin.html for configured admin user.
+* http://myhost.mydomain.de/ redirected to https://myhost.mydomain.de/
+* https://myhost.mydomain.de/
+* https://myhost.mydomain.de/server-info/ only accessible from the administration host or local
+* https://myhost.mydomain.de/server-status/ only accessible from the administration host or local
+* https://myhost.mydomain.de/manual/ only accessible from the administration host or local
+* https://myhost.mydomain.de/phpinfo/ only accessible from the administration host or local
+* https://myhost.mydomain.de/munin/ only accessible from the administration host or local
+* https://myhost.mydomain.de/phpmyadmin/ only accessible from the administration host or local
+* https://myhost.mydomain.de/fpm-status?html&full only accessible from the administration host or local
+* https://myhost.mydomain.de/fpm-ping only accessible from the administration host or local
+* https://mycloud.mydomain.de/
+* https://myoffice.mydomain.de/loleaflet/dist/admin/admin.html for configured admin user.
 
 The phpmyadmin page is disabled by default. You may enable the page by using ~/bin/phpmyadmin.on.sh.
 The script ~/bin/phpmyadmin-off.sh disables the page again.

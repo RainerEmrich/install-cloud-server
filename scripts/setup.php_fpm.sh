@@ -54,7 +54,7 @@ setup_php_fpm () {
 
 		systemctl restart apache2
 
-		touch ${STAMP_DIR}/php-fpm_installed
+		touch ${STAMP_DIR}/php_fpm_installed
 	else
 		echo
 		echo "#######################################################################################"

@@ -97,8 +97,8 @@ Please copy the file config/nextcloud.sh.example to nextcloud.sh and adjust to y
 ### libreoffice online (optional), seperate script install-lool.sh
 
 Please copy the file config/lool.sh.example to config/lool.sh and adjust to your needs.
-If you want to use this functionality, you have to build a libreoffice online package,
-see https://github.com/RainerEmrich/build-lool.
+If you want to use this functionality, you have to build a libreoffice online package
+beforehand, see https://github.com/RainerEmrich/build-lool.
 The built package has to be copied to the packages directory.
 
 
@@ -151,3 +151,43 @@ page completely and to enable or disbale root login for phpmyadmin.
 23. Install nextcloud.
 24. We remove the startup line from ~/.bashrc.
 25. Optionally install libreoffice online using the install-lool.sh script, has to be started manually.
+
+Running install-server.sh takes about 12 minutes. Last tested on 22nd of March 2017.
+Running install-lool.sh takes additional 2 minutes. Most of the time is used to unpack the libreoffice online package.
+
+
+## Result
+
+You get a 1&amp;1 Cloud Server running nextcloud in less than 15 minutes.
+
+If you have installed the 1&amp;1 Backup Manager, you may enable the preinstalled cronjob
+in the root users crontab for daily backups. You may add directories to backup by using
+backup.add /foo/bar for example. The backup cronjob calls the mysql-backup.sh script in
+the ~/bin directory before starting the backup. This script backups all non-system databases to
+the directory /root/database-backup keeping the last 30 backups at most. If you want to
+include this directory in the backup add it to the Backup Manager using "backup.add /root/database-backup".
+
+If you have installed the libreoffice online package and want to use it in nextcloud,
+you have to enable the "Collabora Online" app in nextcloud. When you have the app enabled,
+you have to set the "Collabora Online Server" on the nextcloud admin page. Depending on
+your configuration, this should be something like "https://myoffice.mydomain.tld".
+
+Given your domain is "mydomain.tld", your host is "myhost", your nextcloud is "mycloud"
+and your online office is "myoffice", you find the following webpages running:
+
+http://myhost.mydomain.de/ redirected to https://myhost.mydomain.de/
+https://myhost.mydomain.de/
+https://myhost.mydomain.de/server-info/ only accessible from the administration host or local
+https://myhost.mydomain.de/server-status/ only accessible from the administration host or local
+https://myhost.mydomain.de/manual/ only accessible from the administration host or local
+https://myhost.mydomain.de/phpinfo/ only accessible from the administration host or local
+https://myhost.mydomain.de/munin/ only accessible from the administration host or local
+https://myhost.mydomain.de/phpmyadmin/ only accessible from the administration host or local
+https://myhost.mydomain.de/fpm-status?html&full only accessible from the administration host or local
+https://myhost.mydomain.de/fpm-ping only accessible from the administration host or local
+https://mycloud.mydomain.de/
+https://myoffice.mydomain.de/loleaflet/dist/admin/admin.html for configured admin user.
+
+I'm sure there is alot of room for improvements. Don't hesitate to contact me.
+
+The script collection is based on my two article series about 1&amp;1 cloud server on https://blog.emrich-ebersheim.de

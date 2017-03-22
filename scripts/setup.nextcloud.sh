@@ -197,6 +197,38 @@ setup_nextcloud () {
 
 		cd ${START_DIR}
 
+		echo
+		echo "#######################################################################################"
+		echo "#"
+		echo "# INFO: Install nextcloud cronjob, please change to cron in the nextcloud admin page."
+		echo "#"
+		echo "#######################################################################################"
+		echo
+
+		( echo "# Edit this file to introduce tasks to be run by cron." ; \
+		  echo "#" ; \
+		  echo "# Each task to run has to be defined through a single line" ; \
+		  echo "# indicating with different fields when the task will be run" ; \
+		  echo "# and what command to run for the task" ; \
+		  echo "#" ; \
+		  echo "# To define the time you can provide concrete values for" ; \
+		  echo "# minute (m), hour (h), day of month (dom), month (mon)," ; \
+		  echo "# and day of week (dow) or use '*' in these fields (for 'any').#" ; \
+		  echo "# Notice that tasks will be started based on the cron's system" ; \
+		  echo "# daemon's notion of time and timezones." ; \
+		  echo "#" ; \
+		  echo "# Output of the crontab jobs (including errors) is sent through" ; \
+		  echo "# email to the user the crontab file belongs to (unless redirected)." ; \
+		  echo "#" ; \
+		  echo "# For example, you can run a backup of all your user accounts" ; \
+		  echo "# at 5 a.m every week with:" ; \
+		  echo "# 0 5 * * 1 tar -zcf /var/backups/home.tgz /home/" ; \
+		  echo "#" ; \
+		  echo "# For more information see the manual pages of crontab(5) and cron(8)" ; \
+		  echo "#" ; \
+		  echo "# m h  dom mon dow   command" ; \
+		  echo "0,15,30,45  *  *  *  * php7.0 -f ${MY_NEXTCLOUD_DR}/cron.php >/dev/null 2>&1") | crontab -u www-data -
+
 		touch ${STAMP_DIR}/nextcloud_installed
 
 		echo

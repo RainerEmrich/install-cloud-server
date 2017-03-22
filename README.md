@@ -110,7 +110,7 @@ directory or to another suitable location.
 Before you start the script, you should have some additional info at hand:
 
 * Backup account name, password and an encrytion key, if you want to install the 1&amp;1 Backup Manager. You have to configure a backup account in the 1&amp;1 cloud panel beforehand.
-* Password for the MariaDB "root" user.
+* A new password for the MariaDB "root" user.
 
 
 Start the script install-server.sh.
@@ -188,6 +188,9 @@ https://myhost.mydomain.de/fpm-ping only accessible from the administration host
 https://mycloud.mydomain.de/
 https://myoffice.mydomain.de/loleaflet/dist/admin/admin.html for configured admin user.
 
-I'm sure there is alot of room for improvements. Don't hesitate to contact me.
+The phpmyadmin page is disabled by default. You may enable the page by using ~/bin/phpmyadmin.on.sh.
+The script ~/bin/phpmyadmin-off.sh disables the page again.
+
+I'm sure there is a lot of room for improvements. Don't hesitate to contact me.
 
 The script collection is based on my two article series about 1&amp;1 cloud server on https://blog.emrich-ebersheim.de

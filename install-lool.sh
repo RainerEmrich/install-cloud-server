@@ -236,7 +236,7 @@ elif [ "${LOOL_VERSION}" != "${LOOL_LAST}" ] ; then
 	/bin/mv -f ${LOOL_PREFIX} ${BACKUP_PATH}
 
 	mkdir -p ${LOOL_PREFIX}
-	tar -C ${LOOL_PREFIX} -xf ${PKG_DIR}/${LOOL_VERSION}.tar.*
+	tar -C ${LOOL_PREFIX} -xf ${PKG_DIR}/${LOOL_VERSION}.tar.xz
 	/sbin/setcap cap_fowner,cap_mknod,cap_sys_chroot=ep ${LOOL_PREFIX}/bin/loolforkit
 	/sbin/setcap cap_sys_admin=ep ${LOOL_PREFIX}/bin/loolmount
 

@@ -263,7 +263,7 @@ elif [ "${LOOL_VERSION}" != "${LOOL_LAST}" ] ; then
 	chown root:lool ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/*
 	chmod o-r ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/*
 
-	sed --in-place "s#${LOOL_PREFIX}/var/cache/${BACKUP_LOOL_DISTRO}#${LOOL_PREFIX}/var/cache/${LOOL_DISTRO}#" ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/loolwsd.xml
+	sed --in-place "s#${LOOL_PREFIX}/var/cache/${BACKUP_LOOL_DISTRO}#${LOOL_PREFIX}/var/cache/${LOOL_DISTRO}#g" ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/loolwsd.xml
 	sed --in-place "s#\">${BACKUP_OFFICE_PATH}</lo_template_path>#\">${OFFICE_PATH}</lo_template_path>#" ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/loolwsd.xml
 	sed --in-place "s#${LOOL_PREFIX}/etc/${BACKUP_LOOL_DISTRO}/cert.pem#${LOOL_PREFIX}/etc/${LOOL_DISTRO}/cert.pem#" ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/loolwsd.xml
 	sed --in-place "s#${LOOL_PREFIX}/etc/${BACKUP_LOOL_DISTRO}/key.pem#${LOOL_PREFIX}/etc/${LOOL_DISTRO}/key.pem#" ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/loolwsd.xml

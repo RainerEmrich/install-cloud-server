@@ -23,7 +23,7 @@ export START_DIR="$(pwd)"
 export MYSELF="$(readlink -f "$0")"
 export MYSELF_QUOTED="$(echo "${MYSELF}" | sed 's/\//\\\//g' -)"
 export BASE_DIR="$(dirname "${MYSELF}")"
-export ARCHIVES_DIR="${BASE_DIR}/Narchives"
+export ARCHIVES_DIR="${BASE_DIR}/archives"
 export BM_DIR="${BASE_DIR}/backupmanager"
 export CONFIG_DIR="${BASE_DIR}/config"
 export DATA_DIR="${BASE_DIR}/data"
@@ -96,7 +96,7 @@ if [ "${LOOL_INSTALLED}" != "1" ] ; then
 	echo
 
 	groupadd -f lool
-	useradd --gid lool --groups sudo --home-dir /opt/lool --no-create-home --shell /bin/false lool
+	useradd --gid lool --groups sudo --home-dir /opt/lool --no-create-home --shell /usr/sbin/nologin lool
 
 	echo
 	echo "#######################################################################################"

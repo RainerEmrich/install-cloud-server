@@ -1,0 +1,36 @@
+--- www.conf.orig	2017-02-15 14:07:24.799812085 +0000
++++ www.conf	2017-02-15 14:10:47.829295509 +0000
+@@ -229,7 +229,7 @@
+ ;       anything, but it may not be a good idea to use the .php extension or it
+ ;       may conflict with a real PHP file.
+ ; Default Value: not set
+-;pm.status_path = /status
++pm.status_path = /fpm-status
+ 
+ ; The ping URI to call the monitoring page of FPM. If this value is not set, no
+ ; URI will be recognized as a ping page. This could be used to test from outside
+@@ -241,7 +241,7 @@
+ ;       anything, but it may not be a good idea to use the .php extension or it
+ ;       may conflict with a real PHP file.
+ ; Default Value: not set
+-;ping.path = /ping
++ping.path = /fpm-ping
+ 
+ ; This directive may be used to customize the response of a ping request. The
+ ; response is formatted as text/plain with a 200 response code.
+@@ -383,9 +383,12 @@
+ ; Default Value: clean env
+ ;env[HOSTNAME] = $HOSTNAME
+ ;env[PATH] = /usr/local/bin:/usr/bin:/bin
+-;env[TMP] = /tmp
+-;env[TMPDIR] = /tmp
+-;env[TEMP] = /tmp
++env[PATH] = /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
++env[TMP] = /tmp
++env[TMPDIR] = /tmp
++env[TEMP] = /tmp
++env[HOME] = $HOME
++env[HTTP_HOME] = $HTTP_HOME
+ 
+ ; Additional php.ini defines, specific to this pool of workers. These settings
+ ; overwrite the values previously defined in the php.ini. The directives are the

@@ -45,10 +45,12 @@ setup_nextcloud_prerequisites () {
 		echo "#######################################################################################"
 
 		apt-get install php7.0-gmp php7.0-imap php7.0-intl php7.0-ldap php7.0-pgsql php7.0-sqlite3 \
+				php7.1-gmp php7.1-imap php7.1-intl php7.1-ldap php7.1-pgsql php7.1-sqlite3 \
 				php-apcu php-apcu-bc php-igbinary php-imagick php-memcached php-msgpack \
 				php-redis php-smbclient -y
 
 		systemctl restart php7.0-fpm
+		systemctl restart php7.1-fpm
 
 		echo "#######################################################################################"
 		echo "#"

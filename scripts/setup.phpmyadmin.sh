@@ -52,7 +52,7 @@ setup_phpmyadmin () {
 
 		PACKAGES=""
 		for PACKAGE in $(dpkg -l | grep php7.0 | awk '{print $2}') ; do PACKAGES="${PACKAGES} ${PACKAGE}"; done
-		apt-get install ${PACKAGES}
+		apt-get install ${PACKAGES} -y
 
 		apt-get dist-upgrade -y
 

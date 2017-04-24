@@ -26,7 +26,7 @@ setup_php_fpm () {
 		echo
 		echo "#######################################################################################"
 		echo "#"
-		echo "# Install and enable php7.0-fpm."
+		echo "# Install and enable php7.0-fpm and php7.1-fpm."
 		echo "#"
 		echo "# The php-fpm status and ping pages are available for the admin host or local at:"
 		echo "# https://${MY_FQDN}/fpm-status?html&full"
@@ -58,7 +58,7 @@ setup_php_fpm () {
 		patch /etc/apache2/conf-available/php7.0-fpm.conf ${PATCH_DIR}/etc.apache2.conf-available.php7.0-fpm.conf.patch
 		patch /etc/apache2/conf-available/php7.1-fpm.conf ${PATCH_DIR}/etc.apache2.conf-available.php7.1-fpm.conf.patch
 
-		sed --in-place 's/#Include \/etc\/apache2\/conf-available\/php7.0-fpm/Include \/etc\/apache2\/conf-available\/php7.1-fpm/' /etc/apache2/sites-available/${MY_SITE_CONFIG}.conf
+		sed --in-place 's/#Include \/etc\/apache2\/conf-available\/php7.1-fpm/Include \/etc\/apache2\/conf-available\/php7.1-fpm/' /etc/apache2/sites-available/${MY_SITE_CONFIG}.conf
 
 		systemctl restart apache2
 

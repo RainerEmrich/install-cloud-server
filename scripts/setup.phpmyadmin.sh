@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Set up php7.0 base and phpmyadmin using the ppas from Ondřej Surý and Michal Čihař (nijel).
+# Set up php7.0 and php7.1 base and phpmyadmin using the ppas from Ondřej Surý and Michal Čihař (nijel).
 #
 # Copyright 2017 Rainer Emrich, <rainer@emrich-ebersheim.de>
 #
@@ -27,7 +27,7 @@ setup_phpmyadmin () {
 		echo "#######################################################################################"
 		echo "#"
 		echo "# Install phpmyadmin using the ppa from Michal Čihař (nijel)."
-		echo "# Requires the php7.0 base from the ppa of Ondřej Surý."
+		echo "# Requires the php7.0 and php7.1 base from the ppa of Ondřej Surý."
 		echo "#"
 		echo "# Two scripts phpmyadmin-on.sh and phpmyadmin-off.sh for activating or deactivating"
 		echo "# the phpmyadmin page are installed in ~/bin/."
@@ -50,15 +50,17 @@ setup_phpmyadmin () {
 		apt-add-repository ppa:ondrej/php
 		apt-get update
 
-		PACKAGES=""
-		for PACKAGE in $(dpkg -l | grep php7.0 | awk '{print $2}') ; do PACKAGES="${PACKAGES} ${PACKAGE}"; done
-		apt-get install ${PACKAGES} -y
+		PACKAGES70=""
+		for PACKAGE in $(dpkg -l | grep php7.0 | awk '{print $2}') ; do PACKAGES70="${PACKAGES70} ${PACKAGE}"; done
+		PACKAGES71=$(echo ${PACKAGES70} | sed 's/7.0/7.1/g')
+		apt-get install ${PACKAGES70} ${PACKAGES71} -y
 
 		apt-get dist-upgrade -y
 
 		apt-add-repository ppa:nijel/phpmyadmin
 		apt-get update
-		apt-get install phpmyadmin php7.0 php7.0-bz2 php7.0-curl php7.0-gd php7.0-mbstring php7.0-mcrypt php7.0-xml php7.0-zip -y
+		apt-get install phpmyadmin php7.0 php7.0-bz2 php7.0-curl php7.0-gd php7.0-mbstring php7.0-mcrypt php7.0-xml php7.0-zip \
+				php7.1 php7.1-bz2 php7.1-curl php7.1-gd php7.1-mbstring php7.1-mcrypt php7.1-xml php7.1-zip -y
 
 		a2disconf phpmyadmin
 		systemctl restart apache2

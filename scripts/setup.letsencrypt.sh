@@ -83,12 +83,13 @@ setup_letsencrypt () {
 		patch /etc/apache2/mods-available/status.conf ${PATCH_DIR}/etc.apache2.mods-available.status.conf.patch
 		patch /etc/apache2/sites-available/000-default.conf ${PATCH_DIR}/etc.apache2.sites-available.000-default.conf.patch
 		sed --in-place "s/ServerAdmin webmaster@localhost/ServerAdmin ${WEBMASTER_EMAIL}/" /etc/apache2/sites-available/000-default.conf
-		patch /etc/apache2/sites-available/000-default-le-ssl.conf ${PATCH_DIR}/etc.apache2.sites-available.000-default-le-ssl.conf.patch
+		/bin/cp -af ${DATA_DIR}/etc/apache2/sites-available/000-default-le-ssl.conf /etc/apache2/sites-available/
 		sed --in-place "s/ServerAdmin webmaster@localhost/ServerAdmin ${WEBMASTER_EMAIL}/" /etc/apache2/sites-available/000-default-le-ssl.conf
+		sed --in-place "s/myhost.mydomain.tld/${MY_FQDN}/g" /etc/apache2/sites-available/000-default-le-ssl.conf
 
 		sleep 3
 
-		a2enmod info rewrite
+		a2enmod info rewrite http2
 		/bin/rm -f /etc/apache2/mods-enabled/info.conf
 
 		/bin/rm -rf /var/www/html

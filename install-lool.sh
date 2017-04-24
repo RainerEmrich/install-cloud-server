@@ -150,12 +150,12 @@ if [ "${LOOL_INSTALLED}" != "1" ] ; then
 	sed --in-place "s#my_global_ipv4#${MY_GLOBAL_IP_QUOTED}#" ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/loolwsd.xml
 
 	openssl genrsa -out ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/key.pem 4096
-	chown root:root ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/key.pem
-	chmod 600 ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/key.pem
+	chown root:lool ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/key.pem
+	chmod 640 ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/key.pem
 
-	openssl req -out ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/cert.csr -key key.pem -new -sha256 -nodes -subj "/C=DE/OU=${LOOL_DOMAIN}/CN=${LOOL_DOMAIN}/emailAddress=${LOOL_SA}"
-	openssl x509 -req -days 3650 -in ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/cert.csr -signkey key.pem -out ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/cert.pem
-	openssl x509 -req -days 3650 -in ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/cert.csr -signkey key.pem -out ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/ca-chain.cert.pem
+	openssl req -out ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/cert.csr -key ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/key.pem -new -sha256 -nodes -subj "/C=DE/OU=${LOOL_DOMAIN}/CN=${LOOL_DOMAIN}/emailAddress=${LOOL_SA}"
+	openssl x509 -req -days 3650 -in ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/cert.csr -signkey ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/key.pem -out ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/cert.pem
+	openssl x509 -req -days 3650 -in ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/cert.csr -signkey ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/key.pem -out ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/ca-chain.cert.pem
 
 	chown root:lool ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/cert.csr
 	chown root:lool ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/cert.pem

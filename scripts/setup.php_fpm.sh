@@ -55,6 +55,8 @@ setup_php_fpm () {
 		a2dismod php7.0 php7.1 mpm_prefork
 		a2enmod proxy_fcgi setenvif mpm_event
 
+		if [ -f /etc/apache2/mods-enabled/proxy_fcgi.conf ] ; then /bin/rm /etc/apache2/mods-enabled/proxy_fcgi.conf; fi
+
 		patch /etc/apache2/conf-available/php7.0-fpm.conf ${PATCH_DIR}/etc.apache2.conf-available.php7.0-fpm.conf.patch
 		patch /etc/apache2/conf-available/php7.1-fpm.conf ${PATCH_DIR}/etc.apache2.conf-available.php7.1-fpm.conf.patch
 

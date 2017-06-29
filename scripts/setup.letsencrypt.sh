@@ -26,7 +26,8 @@ setup_letsencrypt () {
 		echo
 		echo "#######################################################################################"
 		echo "#"
-		echo "# Install letsencrypt and get a first certificate, configure apache2"
+		echo "# Install letsencrypt using the ppa certbot/certbot and get a first certificate,"
+		echo "# configure apache2"
 		echo "#"
 		echo "# Configuration paramter are set in file"
 		echo "# ${CONFIG_DIR}/letsencrypt.sh"
@@ -41,7 +42,11 @@ setup_letsencrypt () {
 
 		ask_to_continue
 
-		apt-get install letsencrypt python-letsencrypt-apache python-letsencrypt-doc -y
+		apt-add-repository -y ppa:certbot/certbot
+
+		apt-get update
+		apt-get install certbot python-certbot-apache python-certbot-doc python-acme-doc python-cryptography-vectors python-certbot-apache-doc python-openssl-doc -y
+		apt-get upgrade -y
 
 		mkdir -p ~/Dokumentation/letsencrypt/
 		echo "letsencrypt --apache --non-interactive --agree-tos --hsts --uir --email ${MY_EMAIL} --rsa-key-size ${MY_KEY_SIZE} -d ${MY_FQDN}" >~/Dokumentation/letsencrypt/${MY_FQDN}.txt

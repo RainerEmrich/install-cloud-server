@@ -32,14 +32,14 @@ office.mydomain.tld and cloud.mydomain.tld.
 * Setup redis
 * Replace MySQL with MariaDB 10.1
 * Setup apache2
-* Setup letsencrypt
+* Setup letsencrypt using the certbot client from ppa:certbot/certbot
 * Setup postfix using tls
 * Setup docker
 * Setup munin
 * Setup phpmyadmin
 * Setup php7.0-fpm and php7.1-fpm
 * Install nextcloud prerequisites (including the necessary php 7.0 and php 7.1 modules)
-* Install nextcloud using php 7.0
+* Install nextcloud using php 7.1
 * Install libreoffice online [optional, seperate script]
 
 ## Configuration
@@ -139,7 +139,7 @@ apt-show-versions, dnsutils, git, man-db, manpages, vim, vim-doc, vim-scripts an
 13. We replace the default MySQL database server with MariaDB 10.1.
 14. We reboot the system a second time.
 15. At login we resume execution by installing the apache2 webserver from the ppa of Ondřej Surý.
-16. Install letsencrypt, get a first certificate and configure apache2.
+16. Install certbot letsencrypt client, get a first certificate and configure apache2.
 17. Setup postfix using tls.
 18. Setup docker.
 19. Setup munin for server monitoring, only accessible from the administration host.

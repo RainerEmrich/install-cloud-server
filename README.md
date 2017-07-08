@@ -30,7 +30,7 @@ office.mydomain.tld and cloud.mydomain.tld.
 * Setup 1&amp;1 Backup Manager [optional]
 * Install some basic software packages
 * Setup redis
-* Replace MySQL with MariaDB 10.1
+* Replace MySQL with MariaDB 10.2
 * Setup apache2
 * Setup letsencrypt using the certbot client from ppa:certbot/certbot
 * Setup postfix using tls
@@ -136,7 +136,7 @@ correspondent aliases are added to ~/.bash_aliases.
 11. We install some commonly used software: software-properties-common, update-notifier-common,
 apt-show-versions, dnsutils, git, man-db, manpages, vim, vim-doc, vim-scripts and haveged.
 12. We install and setup redis for use with nextcloud.
-13. We replace the default MySQL database server with MariaDB 10.1.
+13. We replace the default MySQL database server with MariaDB 10.2.
 14. We reboot the system a second time.
 15. At login we resume execution by installing the apache2 webserver from the ppa of Ondřej Surý.
 16. Install certbot letsencrypt client, get a first certificate and configure apache2.

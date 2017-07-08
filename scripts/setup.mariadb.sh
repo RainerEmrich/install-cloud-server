@@ -26,7 +26,7 @@ setup_mariadb () {
 		echo
 		echo "#######################################################################################"
 		echo "#"
-		echo "# Replace Mysql Server with MariaDB Server 10.1."
+		echo "# Replace Mysql Server with MariaDB Server 10.2."
 		echo "#"
 		echo "# Important notice: All mysql databases will be deleted!"
 		echo "#"
@@ -40,7 +40,7 @@ setup_mariadb () {
 
 		ask_to_continue
 
-		export MARIADB_SOURCE="$(grep -R "http://mirror.netcologne.de/mariadb/repo/10.1/ubuntu xenial main" /etc/apt/ -l)"
+		export MARIADB_SOURCE="$(grep -R "http://mirror.netcologne.de/mariadb/repo/10.2/ubuntu xenial main" /etc/apt/ -l)"
 
 		if [ "${MARIADB_SOURCE}" == "" ] ; then
 			echo
@@ -52,7 +52,7 @@ setup_mariadb () {
 			echo
 
 			apt-key adv --recv-keys --keyserver hkp://keyserver.ubuntu.com:80 0xF1656F24C74CD1D8
-			add-apt-repository 'deb [arch=amd64,i386,ppc64el] http://mirror.netcologne.de/mariadb/repo/10.1/ubuntu xenial main'
+			add-apt-repository 'deb [arch=amd64,i386,ppc64el] http://mirror.netcologne.de/mariadb/repo/10.2/ubuntu xenial main'
 
 			apt-get update
 		fi
@@ -87,7 +87,7 @@ setup_mariadb () {
 
 		apt-get autoremove --purge -y
 
-		# Set BINLOG FORMAT = ROW
+		# Set BINLOG FORMAT = MIXED
 		patch /etc/mysql/my.cnf ${PATCH_DIR}/etc.mysql.my.cnf.patch
 		# Set default character  set to utf8
 		patch /etc/mysql/conf.d/mariadb.cnf ${PATCH_DIR}/etc.mysql.conf.d.mariadb.conf.patch

@@ -49,7 +49,7 @@ setup_nextcloud () {
 		echo "#######################################################################################"
 		echo
 
-		mysql --defaults-extra-file=/etc/mysql/debian.cnf -Bse "create database ${MY_DATABASE_NAME};"
+		mysql --defaults-extra-file=/etc/mysql/debian.cnf -Bse "create database ${MY_DATABASE_NAME} CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;"
 		mysql --defaults-extra-file=/etc/mysql/debian.cnf -Bse "create user '${MY_DATABASE_NAME}'@'localhost' identified by '${MY_DATABASE_PASSWD}';"
 		mysql --defaults-extra-file=/etc/mysql/debian.cnf -Bse "grant all privileges on ${MY_DATABASE_NAME}.* to '${MY_DATABASE_NAME}'@'localhost';"
 		mysql --defaults-extra-file=/etc/mysql/debian.cnf -Bse "flush privileges;"

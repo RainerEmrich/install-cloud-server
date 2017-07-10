@@ -44,20 +44,6 @@ setup_nextcloud () {
 		echo
 		echo "#######################################################################################"
 		echo "#"
-		echo "# INFO: Setting transaction isolation to READ COMMITTED for MariaDB."
-		echo "#"
-		echo "#######################################################################################"
-		echo
-
-		echo "MYSQLD_OPTS=--transaction-isolation=READ-COMMITTED" >/etc/mysql/env.cnf
-		echo "[Service]" >/etc/systemd/system/mariadb.service.d/environment.conf
-		echo "EnvironmentFile=/etc/mysql/env.cnf" >>/etc/systemd/system/mariadb.service.d/environment.conf
-		systemctl daemon-reload
-		systemctl restart mysql
-
-		echo
-		echo "#######################################################################################"
-		echo "#"
 		echo "# INFO: Creating database, and database user for nextcloud."
 		echo "#"
 		echo "#######################################################################################"

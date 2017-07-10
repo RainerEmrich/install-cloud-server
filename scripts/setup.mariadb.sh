@@ -92,6 +92,12 @@ setup_mariadb () {
 		# Set default character  set to utf8
 		patch /etc/mysql/conf.d/mariadb.cnf ${PATCH_DIR}/etc.mysql.conf.d.mariadb.conf.patch
 
+		# Set  transaction isolation to READ COMMITTED
+		echo "MYSQLD_OPTS=--transaction-isolation=READ-COMMITTED" >/etc/mysql/env.cnf
+		echo "[Service]" >/etc/systemd/system/mariadb.service.d/environment.conf
+		echo "EnvironmentFile=/etc/mysql/env.cnf" >>/etc/systemd/system/mariadb.service.d/environment.conf
+		systemctl daemon-reload
+
 		systemctl restart mysql
 
 		sleep 5

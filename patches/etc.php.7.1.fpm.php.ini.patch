@@ -1,5 +1,5 @@
---- php.ini.orig	2017-03-31 13:51:38.633600365 +0000
-+++ php.ini	2017-03-31 13:52:28.857614387 +0000
+--- php.ini.orig	2017-07-10 12:14:03.325610248 +0000
++++ php.ini	2017-07-10 12:15:43.297960439 +0000
 @@ -380,7 +380,7 @@
  ; Maximum execution time of each script, in seconds
  ; http://php.net/max-execution-time
@@ -36,3 +36,46 @@
  
  ; Maximum number of files that can be uploaded via a single request
  max_file_uploads = 20
+@@ -1779,20 +1779,20 @@
+ 
+ [opcache]
+ ; Determines if Zend OPCache is enabled
+-;opcache.enable=1
++opcache.enable=1
+ 
+ ; Determines if Zend OPCache is enabled for the CLI version of PHP
+-;opcache.enable_cli=0
++opcache.enable_cli=1
+ 
+ ; The OPcache shared memory storage size.
+-;opcache.memory_consumption=128
++opcache.memory_consumption=128
+ 
+ ; The amount of memory for interned strings in Mbytes.
+-;opcache.interned_strings_buffer=8
++opcache.interned_strings_buffer=8
+ 
+ ; The maximum number of keys (scripts) in the OPcache hash table.
+ ; Only numbers between 200 and 1000000 are allowed.
+-;opcache.max_accelerated_files=10000
++opcache.max_accelerated_files=10000
+ 
+ ; The maximum percentage of "wasted" memory until a restart is scheduled.
+ ;opcache.max_wasted_percentage=5
+@@ -1810,14 +1810,14 @@
+ ; How often (in seconds) to check file timestamps for changes to the shared
+ ; memory storage allocation. ("1" means validate once per second, but only
+ ; once per request. "0" means always validate)
+-;opcache.revalidate_freq=2
++opcache.revalidate_freq=1
+ 
+ ; Enables or disables file search in include_path optimization
+ ;opcache.revalidate_path=0
+ 
+ ; If disabled, all PHPDoc comments are dropped from the code to reduce the
+ ; size of the optimized code.
+-;opcache.save_comments=1
++opcache.save_comments=1
+ 
+ ; If enabled, a fast shutdown sequence is used for the accelerated code
+ ; Depending on the used Memory Manager this may cause some incompatibilities.

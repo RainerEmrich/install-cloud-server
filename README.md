@@ -5,6 +5,7 @@ Installs and sets up all required packages for nextcloud.
 Finally installs nextcloud.
 
 Optionally installs libreoffice online.
+Optionally installs additional nextcloud apps.
 
 ## Requirements
 
@@ -41,6 +42,7 @@ office.mydomain.tld and cloud.mydomain.tld.
 * Install nextcloud prerequisites (including the necessary php 7.0 and php 7.1 modules)
 * Install nextcloud using php 7.1
 * Install libreoffice online [optional, seperate script]
+* Install additional nextcloud apps [optional, seperate script]
 
 ## Configuration
 
@@ -151,6 +153,7 @@ page completely and to enable or disbale root login for phpmyadmin.
 23. Install nextcloud.
 24. We remove the startup line from ~/.bashrc.
 25. Optionally install libreoffice online using the install-lool.sh script, has to be started manually.
+26. Optionally install additional nextcloud apps using the install-apps.sh script, has to be started manually.
 
 Running install-server.sh takes about 12 minutes. Last tested on 22nd of March 2017.
 

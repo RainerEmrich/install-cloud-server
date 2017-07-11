@@ -82,5 +82,6 @@ get_config () {
 	export NEXTCLOUD_INSTALLED=$(test -f "${STAMP_DIR}/nextcloud_installed" && echo "1")
 	export LOOL_INSTALLED=$(test -f "${STAMP_DIR}/lool_installed" && echo "1")
 	if [ "${LOOL_INSTALLED}" == "1" ] ; then export LOOL_LAST="$(cat ${STAMP_DIR}/lool_installed)" ; fi
+	export NEXTCLOUD_APPS_INSTALLED=$(test -f "${STAMP_DIR}/nextcloud_apps_installed" && echo "1")
 
 }

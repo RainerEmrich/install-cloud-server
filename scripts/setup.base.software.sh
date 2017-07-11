@@ -39,6 +39,7 @@ setup_base_software () {
 		echo "# vim-doc"
 		echo "# vim-scripts"
 		echo "# haveged"
+		echo "# jq"
 		echo "#"
 		echo "#######################################################################################"
 		echo
@@ -58,6 +59,8 @@ setup_base_software () {
 		apt-get install vim vim-doc vim-scripts -y
 
 		apt-get install haveged -y
+
+		apt-get install jq -y
 
 		touch ${STAMP_DIR}/base_installed
 

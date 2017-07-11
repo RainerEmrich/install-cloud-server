@@ -174,10 +174,6 @@ setup_nextcloud () {
 		chmod 640 ${MY_NEXTCLOUD_DR}/config/config.php.tmp
 		/bin/mv -f ${MY_NEXTCLOUD_DR}/config/config.php.tmp ${MY_NEXTCLOUD_DR}/config/config.php
 
-		for APP in ${MY_NEXTCLOUD_APPS} ; do
-			sudo -u www-data php7.1 occ app:enable ${APP}
-		done
-
 		sed --in-place 's/# Require all granted/Require all granted/' /etc/apache2/sites-available/${MY_NEXTCLOUD_SITE_CONFIG}.conf
 		systemctl reload apache2
 

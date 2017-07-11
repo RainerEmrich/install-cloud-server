@@ -52,7 +52,7 @@ MY_NEXTCLOUD_VERSION="12.0.0"
 
 #
 # Define nextcloud apps to enable
-MY_NEXTCLOUD_APPS="admin_audit files_accesscontrol files_automatedtagging files_retention templateeditor"
+MY_NEXTCLOUD_APPS="announcementcenter apporder audioplayer bruteforcesettings circles contacts calendar deck files_accesscontrol files_automatedtagging files_downloadactivity files_markdown files_retention gpxpod gpxedit groupfolders keeweb mail notes previewgenerator quota_warning richdocuments spreed tasks"
 
 #
 # Don't edit below!

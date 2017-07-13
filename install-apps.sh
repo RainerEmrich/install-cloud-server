@@ -76,7 +76,7 @@ if [ "${NEXTCLOUD_APPS_INSTALLED}" != "1" ] ; then
 			if [ "${APP}" == "apporder" ] ; then
 				echo "Cloning ${APP} from https://github.com/juliushaertl/apporder.git."
 				git clone https://github.com/juliushaertl/apporder.git
-			elif [ "${APP}" == "contacts" ] ; then
+			elif [[ "${APP}" == "contacts" && -f "${PKG_DIR}/nextcloud_contacts_nightly.tar.gz" ]] ; then
 				echo "Using ${PKG_DIR}/nextcloud_contacts_nightly.tar.gz."
 				tar xvf ${PKG_DIR}/nextcloud_contacts_nightly.tar.gz
 			else
@@ -118,8 +118,8 @@ if [ "${NEXTCLOUD_APPS_INSTALLED}" != "1" ] ; then
 	cd ${MY_NEXTCLOUD_DR}/
 
 
-	/bin/cp ${PKG_DIR}/mimetypealiases.json ${MY_NEXTCLOUD_DR}/config/
-	/bin/cp ${PKG_DIR}/mimetypemapping.json ${MY_NEXTCLOUD_DR}/config/
+	if [ -f "${PKG_DIR}/mimetypealiases.json" ] ; then /bin/cp ${PKG_DIR}/mimetypealiases.json ${MY_NEXTCLOUD_DR}/config/; fi
+	if [ -f "${PKG_DIR}/mimetypemapping.json" ] ; then /bin/cp ${PKG_DIR}/mimetypemapping.json ${MY_NEXTCLOUD_DR}/config/; fi
 
 	~/bin/${_MY_NEXTCLOUD_DOMAIN_}-upgrade.sh
 

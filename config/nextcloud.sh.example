@@ -48,7 +48,7 @@ MY_REDIS_DB_NUMBER="0"
 
 #
 # Define nextcloud version
-MY_NEXTCLOUD_VERSION="12.0.0"
+MY_NEXTCLOUD_VERSION="12.0.1"
 
 #
 # Define nextcloud apps to enable

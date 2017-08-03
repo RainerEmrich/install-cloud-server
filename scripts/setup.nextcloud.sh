@@ -71,12 +71,22 @@ setup_nextcloud () {
 		echo "#######################################################################################"
 		echo "#"
 		echo "# INFO: Fetching nextcloud ${MY_NEXTCLOUD_VERSION}"
-		echo "#       from https://download.nextcloud.com/server/releases/."
+		echo "#       from https://download.nextcloud.com/server/releases/ for releases"
+		echo "#       or"
+		echo "#       from https://download.nextcloud.com/server/prereleases/ for release candidates."
 		echo "#"
 		echo "#######################################################################################"
 		echo
 
-		wget https://download.nextcloud.com/server/releases/nextcloud-${MY_NEXTCLOUD_VERSION}.tar.bz2
+		case ${MY_NEXTCLOUD_VERSION} in
+		*RC*)
+			wget https://download.nextcloud.com/server/prereleases/nextcloud-${MY_NEXTCLOUD_VERSION}.tar.bz2
+			;;
+		*)
+			wget https://download.nextcloud.com/server/releases/nextcloud-${MY_NEXTCLOUD_VERSION}.tar.bz2
+			;;
+		esac
+
 		tar -C $(dirname ${MY_NEXTCLOUD_DR}) -xf nextcloud-${MY_NEXTCLOUD_VERSION}.tar.bz2
 		/bin/rm -f nextcloud-${MY_NEXTCLOUD_VERSION}.tar.bz2
 		chown -R www-data:www-data ${MY_NEXTCLOUD_DR}

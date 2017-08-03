@@ -74,8 +74,9 @@ if [ "${NEXTCLOUD_APPS_INSTALLED}" != "1" ] ; then
 			echo "${APP} app already installed."
 		else
 			if [ "${APP}" == "apporder" ] ; then
-				echo "Cloning ${APP} from https://github.com/juliushaertl/apporder.git."
-				git clone https://github.com/juliushaertl/apporder.git
+				echo "Using ${PKG_DIR}/apporder-master.zip."
+				unzip ${PKG_DIR}/apporder-master.zip
+				/bin/mv apporder-master apporder
 			elif [[ "${APP}" == "contacts" && -f "${PKG_DIR}/nextcloud_contacts_nightly.tar.gz" ]] ; then
 				echo "Using ${PKG_DIR}/nextcloud_contacts_nightly.tar.gz."
 				tar xvf ${PKG_DIR}/nextcloud_contacts_nightly.tar.gz
@@ -118,8 +119,8 @@ if [ "${NEXTCLOUD_APPS_INSTALLED}" != "1" ] ; then
 	cd ${MY_NEXTCLOUD_DR}/
 
 
-	if [ -f "${PKG_DIR}/mimetypealiases.json" ] ; then /bin/cp ${PKG_DIR}/mimetypealiases.json ${MY_NEXTCLOUD_DR}/config/; fi
-	if [ -f "${PKG_DIR}/mimetypemapping.json" ] ; then /bin/cp ${PKG_DIR}/mimetypemapping.json ${MY_NEXTCLOUD_DR}/config/; fi
+	if [ -f "${CONFIG_DIR}/mimetypealiases.json" ] ; then /bin/cp ${CONFIG_DIR}/mimetypealiases.json ${MY_NEXTCLOUD_DR}/config/; fi
+	if [ -f "${CONFIG_DIR}/mimetypemapping.json" ] ; then /bin/cp ${CONFIG_DIR}/mimetypemapping.json ${MY_NEXTCLOUD_DR}/config/; fi
 
 	~/bin/${_MY_NEXTCLOUD_DOMAIN_}-upgrade.sh
 

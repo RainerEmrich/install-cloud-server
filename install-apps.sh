@@ -73,7 +73,7 @@ if [ "${NEXTCLOUD_APPS_INSTALLED}" != "1" ] ; then
 		if [ -d "${APP}" ] ; then
 			echo "${APP} app already installed."
 		else
-			if [ "${APP}" == "apporder" ] ; then
+			if [[ "${APP}" == "apporder" && -f "${PKG_DIR}/apporder-master.zip" ]] ; then
 				echo "Using ${PKG_DIR}/apporder-master.zip."
 				unzip ${PKG_DIR}/apporder-master.zip
 				/bin/mv apporder-master apporder

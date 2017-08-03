@@ -66,7 +66,9 @@ if [ "${NEXTCLOUD_APPS_INSTALLED}" != "1" ] ; then
 	echo
 
 	cd ${MY_NEXTCLOUD_DR}/apps/
-	curl https://apps.nextcloud.com/api/v1/platform/${MY_NEXTCLOUD_VERSION}/apps.json | jq -r . >apps.store
+
+	MY_NEXTCLOUD_RELEASE_VERSION="$(echo ${MY_NEXTCLOUD_VERSION} | sed 's/RC[0-9]*//')"
+	curl https://apps.nextcloud.com/api/v1/platform/${MY_NEXTCLOUD_RELEASE_VERSION}/apps.json | jq -r . >apps.store
 
 	for APP in ${MY_NEXTCLOUD_APPS} ; do
 		cd ${MY_NEXTCLOUD_DR}/apps/

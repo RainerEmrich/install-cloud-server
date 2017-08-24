@@ -79,6 +79,9 @@ setup_nextcloud () {
 		echo
 
 		case ${MY_NEXTCLOUD_VERSION} in
+		*daily*)
+			wget https://download.nextcloud.com/server/daily/nextcloud-${MY_NEXTCLOUD_VERSION}.tar.bz2
+			;;
 		*RC*)
 			wget https://download.nextcloud.com/server/prereleases/nextcloud-${MY_NEXTCLOUD_VERSION}.tar.bz2
 			;;

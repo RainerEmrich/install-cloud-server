@@ -88,7 +88,8 @@ if [ "${NEXTCLOUD_APPS_INSTALLED}" != "1" ] ; then
 					apt-get install python-pip -y
 					pip install gpxpy requests SRTM.py
 				fi
-				APP_DOWNLOAD="$(cat apps.store | jq '.[] | select(.id == "'${APP}'")' | jq '.releases' | jq .[] | jq '.download' | head -1 | cut --delimiter=\" -f2)"
+				APP_VERSION="$(cat apps.store | jq '.[] | select(.id == "'${APP}'")' | jq '.releases' | jq .[] | jq '.version' | sort -Vr | head -1 | cut --delimiter=\" -f2)"
+				APP_DOWNLOAD="$(cat apps.store | jq '.[] | select(.id == "'${APP}'")' | jq '.releases' | jq '.[] | select(.version == "'${APP_VERSION}'")' | jq '.download' | cut --delimiter=\" -f2)"
 				FILE_NAME="$(basename ${APP_DOWNLOAD})"
 				echo "Downloading ${APP} from ${APP_DOWNLOAD}."
 				wget ${APP_DOWNLOAD}

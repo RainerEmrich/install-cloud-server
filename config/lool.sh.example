@@ -40,6 +40,12 @@ LOOL_VERSION="lool-poco-1.7.9-core-cp-5.3-28-online-2.1.4-3"
 LOOL_PREFIX="/opt/lool"
 
 #
+# Set additional nextcloud instances which are connecting to this online office.
+# FQDNs seperated by blanks.
+
+LOOL_CLIENTS="mysecondcloud.mydomain.tld mythirdcloud.mydomain.tld"
+
+#
 # Don't edit below!
 #
 

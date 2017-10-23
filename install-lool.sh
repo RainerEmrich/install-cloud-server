@@ -125,10 +125,26 @@ if [ "${LOOL_INSTALLED}" != "1" ] ; then
 	chown lool:lool ${LOOL_PREFIX}/var/jails
 	chown lool:lool ${LOOL_PREFIX}/var/cache/${LOOL_DISTRO}
 
+	/bin/cp ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/loolwsd.xml ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/loolwsd.xml.dist
+
+	csplit ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/loolwsd.xml '/            <host desc="Regex pattern of hostname to allow or deny." allow="true">10/'
+
+	MY_NEXTCLOUD_DOMAIN_QUOTED="$(echo ${MY_NEXTCLOUD_DOMAIN} | sed 's/\./\\\./g')"
+	MY_GLOBAL_IP_QUOTED="$(dig +short ${MY_NEXTCLOUD_DOMAIN} | sed 's/\./\\\./g')"
+
+	echo '            <host desc="Regex pattern of hostname to allow or deny." allow="true">'$MY_NEXTCLOUD_DOMAIN_QUOTED'</host>' >>xx00
+	echo '            <host desc="Regex pattern of hostname to allow or deny." allow="true">'$MY_GLOBAL_IP_QUOTED'</host>' >>xx00
+
+	for lool_client in $LOOL_CLIENTS; do
+		my_lool_client_domain_quoted="$(echo ${lool_client} | sed 's/\./\\\./g')"
+		echo '            <host desc="Regex pattern of hostname to allow or deny." allow="true">'$my_lool_client_domain_quoted'</host>' >>xx00
+	done
+
+	cat xx00 xx01 >${LOOL_PREFIX}/etc/${LOOL_DISTRO}/loolwsd.xml
+	/bin/rm xx00 xx01
+
 	chown root:lool ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/*
 	chmod o-r ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/*
-
-	patch ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/loolwsd.xml ${PATCH_DIR}/opt.lool.etc.loolwsd.loowsd.xml.patch
 
 	sed --in-place "s#\"systemplate\"></sys_template_path>#\"systemplate\">../var/systemplate</sys_template_path>#" ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/loolwsd.xml
 	sed --in-place "s#\"></lo_template_path>#\">${OFFICE_PATH}</lo_template_path>#" ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/loolwsd.xml
@@ -142,12 +158,6 @@ if [ "${LOOL_INSTALLED}" != "1" ] ; then
 	sed --in-place "s#>0</max_file_size>#>${LO_DOC_SIZE}</max_file_size>#" ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/loolwsd.xml
 	sed --in-place "s#></username>#>${LOOL_ADMIN_NAME}</username>#" ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/loolwsd.xml
 	sed --in-place "s#></password>#>${LOOL_ADMIN_PASSWD}</password>#" ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/loolwsd.xml
-
-	MY_NEXTCLOUD_DOMAIN_QUOTED="$(echo ${MY_NEXTCLOUD_DOMAIN} | sed 's/\./\\\\\\\./g')"
-	MY_GLOBAL_IP_QUOTED="$(dig +short ${MY_NEXTCLOUD_DOMAIN} | sed 's/\./\\\\\\\./g')"
-
-	sed --in-place "s#mycloud\\\.mydomain\\\.tld#${MY_NEXTCLOUD_DOMAIN_QUOTED}#" ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/loolwsd.xml
-	sed --in-place "s#my_global_ipv4#${MY_GLOBAL_IP_QUOTED}#" ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/loolwsd.xml
 
 	openssl genrsa -out ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/key.pem 4096
 	chown root:lool ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/key.pem
@@ -276,10 +286,24 @@ elif [ "${LOOL_VERSION}" != "${LOOL_LAST}" ] ; then
 	/bin/cp -af ${BACKUP_PATH}/etc/${BACKUP_LOOL_DISTRO}/*.pem ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/
 	/bin/cp ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/loolwsd.xml ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/loolwsd.xml.dist
 
+	csplit ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/loolwsd.xml '/            <host desc="Regex pattern of hostname to allow or deny." allow="true">10/'
+
+	MY_NEXTCLOUD_DOMAIN_QUOTED="$(echo ${MY_NEXTCLOUD_DOMAIN} | sed 's/\./\\\./g')"
+	MY_GLOBAL_IP_QUOTED="$(dig +short ${MY_NEXTCLOUD_DOMAIN} | sed 's/\./\\\./g')"
+
+	echo '            <host desc="Regex pattern of hostname to allow or deny." allow="true">'$MY_NEXTCLOUD_DOMAIN_QUOTED'</host>' >>xx00
+	echo '            <host desc="Regex pattern of hostname to allow or deny." allow="true">'$MY_GLOBAL_IP_QUOTED'</host>' >>xx00
+
+	for lool_client in $LOOL_CLIENTS; do
+		my_lool_client_domain_quoted="$(echo ${lool_client} | sed 's/\./\\\./g')"
+		echo '            <host desc="Regex pattern of hostname to allow or deny." allow="true">'$my_lool_client_domain_quoted'</host>' >>xx00
+	done
+
+	cat xx00 xx01 >${LOOL_PREFIX}/etc/${LOOL_DISTRO}/loolwsd.xml
+	/bin/rm xx00 xx01
+
 	chown root:lool ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/*
 	chmod o-r ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/*
-
-	patch ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/loolwsd.xml ${PATCH_DIR}/opt.lool.etc.loolwsd.loowsd.xml.patch
 
 	sed --in-place "s#\"systemplate\"></sys_template_path>#\"systemplate\">../var/systemplate</sys_template_path>#" ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/loolwsd.xml
 	sed --in-place "s#\"></lo_template_path>#\">${OFFICE_PATH}</lo_template_path>#" ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/loolwsd.xml
@@ -293,12 +317,6 @@ elif [ "${LOOL_VERSION}" != "${LOOL_LAST}" ] ; then
 	sed --in-place "s#>0</max_file_size>#>${LO_DOC_SIZE}</max_file_size>#" ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/loolwsd.xml
 	sed --in-place "s#></username>#>${LOOL_ADMIN_NAME}</username>#" ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/loolwsd.xml
 	sed --in-place "s#></password>#>${LOOL_ADMIN_PASSWD}</password>#" ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/loolwsd.xml
-
-	MY_NEXTCLOUD_DOMAIN_QUOTED="$(echo ${MY_NEXTCLOUD_DOMAIN} | sed 's/\./\\\\\\\./g')"
-	MY_GLOBAL_IP_QUOTED="$(dig +short ${MY_NEXTCLOUD_DOMAIN} | sed 's/\./\\\\\\\./g')"
-
-	sed --in-place "s#mycloud\\\.mydomain\\\.tld#${MY_NEXTCLOUD_DOMAIN_QUOTED}#" ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/loolwsd.xml
-	sed --in-place "s#my_global_ipv4#${MY_GLOBAL_IP_QUOTED}#" ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/loolwsd.xml
 
 	systemctl start loolwsd
 	a2ensite ${LOOL_SITE_CONFIG}

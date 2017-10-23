@@ -273,17 +273,32 @@ elif [ "${LOOL_VERSION}" != "${LOOL_LAST}" ] ; then
 	chown lool:lool ${LOOL_PREFIX}/var/cache/${LOOL_DISTRO}
 
 	/bin/rm -f ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/*.pem
-	/bin/mv ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/loolwsd.xml ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/loolwsd.xml.dist
-	/bin/cp -af ${BACKUP_PATH}/etc/${BACKUP_LOOL_DISTRO}/* ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/
+	/bin/cp -af ${BACKUP_PATH}/etc/${BACKUP_LOOL_DISTRO}/*.pem ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/
+	/bin/cp ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/loolwsd.xml ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/loolwsd.xml.dist
 
 	chown root:lool ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/*
 	chmod o-r ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/*
 
-	sed --in-place "s#${LOOL_PREFIX}/var/cache/${BACKUP_LOOL_DISTRO}#${LOOL_PREFIX}/var/cache/${LOOL_DISTRO}#g" ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/loolwsd.xml
-	sed --in-place "s#\">${BACKUP_OFFICE_PATH}</lo_template_path>#\">${OFFICE_PATH}</lo_template_path>#" ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/loolwsd.xml
-	sed --in-place "s#${LOOL_PREFIX}/etc/${BACKUP_LOOL_DISTRO}/cert.pem#${LOOL_PREFIX}/etc/${LOOL_DISTRO}/cert.pem#" ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/loolwsd.xml
-	sed --in-place "s#${LOOL_PREFIX}/etc/${BACKUP_LOOL_DISTRO}/key.pem#${LOOL_PREFIX}/etc/${LOOL_DISTRO}/key.pem#" ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/loolwsd.xml
-	sed --in-place "s#${LOOL_PREFIX}/etc/${BACKUP_LOOL_DISTRO}/ca-chain.cert.pem#${LOOL_PREFIX}/etc/${LOOL_DISTRO}/ca-chain.cert.pem#" ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/loolwsd.xml
+	patch ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/loolwsd.xml ${PATCH_DIR}/opt.lool.etc.loolwsd.loowsd.xml.patch
+
+	sed --in-place "s#\"systemplate\"></sys_template_path>#\"systemplate\">../var/systemplate</sys_template_path>#" ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/loolwsd.xml
+	sed --in-place "s#\"></lo_template_path>#\">${OFFICE_PATH}</lo_template_path>#" ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/loolwsd.xml
+	sed --in-place "s#\"jails\"></child_root_path>#\"jails\">../var/jails</child_root_path>#" ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/loolwsd.xml
+	sed --in-place "s#default=\"loleaflet/../\"></file_server_root_path>#default=\"loleaflet/../\">../var/www/loleaflet/../</file_server_root_path>#" ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/loolwsd.xml
+	sed --in-place "s#<file enable=\"false\">#<file enable=\"true\">#" ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/loolwsd.xml
+	sed --in-place "s#\"true\">/tmp/looltrace.gz</path>#\"true\">${LOOL_PREFIX}/var/tmp/looltrace.gz</path>#" ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/loolwsd.xml
+	sed --in-place "s#/etc/loolwsd/cert.pem#${LOOL_PREFIX}/etc/${LOOL_DISTRO}/cert.pem#" ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/loolwsd.xml
+	sed --in-place "s#/etc/loolwsd/key.pem#${LOOL_PREFIX}/etc/${LOOL_DISTRO}/key.pem#" ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/loolwsd.xml
+	sed --in-place "s#/etc/loolwsd/ca-chain.cert.pem#${LOOL_PREFIX}/etc/${LOOL_DISTRO}/ca-chain.cert.pem#" ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/loolwsd.xml
+	sed --in-place "s#>0</max_file_size>#>${LO_DOC_SIZE}</max_file_size>#" ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/loolwsd.xml
+	sed --in-place "s#></username>#>${LOOL_ADMIN_NAME}</username>#" ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/loolwsd.xml
+	sed --in-place "s#></password>#>${LOOL_ADMIN_PASSWD}</password>#" ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/loolwsd.xml
+
+	MY_NEXTCLOUD_DOMAIN_QUOTED="$(echo ${MY_NEXTCLOUD_DOMAIN} | sed 's/\./\\\\\\\./g')"
+	MY_GLOBAL_IP_QUOTED="$(dig +short ${MY_NEXTCLOUD_DOMAIN} | sed 's/\./\\\\\\\./g')"
+
+	sed --in-place "s#mycloud\\\.mydomain\\\.tld#${MY_NEXTCLOUD_DOMAIN_QUOTED}#" ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/loolwsd.xml
+	sed --in-place "s#my_global_ipv4#${MY_GLOBAL_IP_QUOTED}#" ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/loolwsd.xml
 
 	systemctl start loolwsd
 	a2ensite ${LOOL_SITE_CONFIG}

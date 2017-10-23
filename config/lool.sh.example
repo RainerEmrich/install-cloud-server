@@ -25,11 +25,6 @@ LOOL_ADMIN_NAME='looladminuser'
 LOOL_ADMIN_PASSWD='looladminuserpassword'
 
 #
-# Define maximum documents size in bytes, defaults to "0" for unlimited.
-
-LO_DOC_SIZE="0"
-
-#
 # Define the name of the lool package.
 LOOL_VERSION="lool-poco-1.7.9-core-cp-5.3-28-online-2.1.4-3"
 
@@ -44,6 +39,36 @@ LOOL_PREFIX="/opt/lool"
 # FQDNs seperated by blanks.
 
 LOOL_CLIENTS="mysecondcloud.mydomain.tld mythirdcloud.mydomain.tld"
+
+#
+# Define maximum documents size in bytes, defaults to "0" for unlimited.
+
+LO_DOC_SIZE="0"
+
+#
+# Define maximum virtual memory size for each process in Kbytes, defaults to "0" for unlimited, 1700 min..
+
+LO_MAX_VIRT_SIZE="100000"
+
+#
+# Define maximum memory data segment size in Kbytes, defaults to "0" for unlimited.
+
+LO_MAX_DATA_SEG_SIZE="100000"
+
+#
+# Define maximum stack memory size in Kbytes, defaults to "8000", "0" for unlimited.
+
+LO_MAX_STACK_SIZE="8000"
+
+#
+# Define maximum file size to write in Mbytes, defaults to "0" for unlimited.
+
+LO_MAX_FILE_SIZE="200"
+
+#
+# Define maximum number of open files, defaults to "0" for unlimited.
+
+LO_MAX_FILE_NUM="100"
 
 #
 # Don't edit below!

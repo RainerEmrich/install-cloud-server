@@ -158,6 +158,11 @@ if [ "${LOOL_INSTALLED}" != "1" ] ; then
 	sed --in-place "s#>0</max_file_size>#>${LO_DOC_SIZE}</max_file_size>#" ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/loolwsd.xml
 	sed --in-place "s#></username>#>${LOOL_ADMIN_NAME}</username>#" ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/loolwsd.xml
 	sed --in-place "s#></password>#>${LOOL_ADMIN_PASSWD}</password>#" ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/loolwsd.xml
+	sed --in-place "s#type=\"uint\">0</limit_virt_mem_kb>#type=\"uint\">${LO_MAX_VIRT_SIZE}</limit_virt_mem_kb>#" ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/loolwsd.xml
+	sed --in-place "s#type=\"uint\">0</limit_data_mem_kb>#type=\"uint\">${LO_MAX_DATA_SEG_SIZE}</limit_data_mem_kb>#" ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/loolwsd.xml
+	sed --in-place "s#type=\"uint\">8000</limit_stack_mem_kb>#type=\"uint\">${LO_MAX_STACK_SIZE}</limit_stack_mem_kb>#" ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/loolwsd.xml
+	sed --in-place "s#type=\"uint\">0</limit_file_size_mb>#type=\"uint\">${LO_MAX_FILE_SIZE}</limit_file_size_mb>#" ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/loolwsd.xml
+	sed --in-place "s#type=\"uint\">0</limit_num_open_files>#type=\"uint\">${LO_MAX_FILE_NUM}</limit_num_open_files>#" ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/loolwsd.xml
 
 	openssl genrsa -out ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/key.pem 4096
 	chown root:lool ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/key.pem
@@ -317,6 +322,11 @@ elif [ "${LOOL_VERSION}" != "${LOOL_LAST}" ] ; then
 	sed --in-place "s#>0</max_file_size>#>${LO_DOC_SIZE}</max_file_size>#" ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/loolwsd.xml
 	sed --in-place "s#></username>#>${LOOL_ADMIN_NAME}</username>#" ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/loolwsd.xml
 	sed --in-place "s#></password>#>${LOOL_ADMIN_PASSWD}</password>#" ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/loolwsd.xml
+	sed --in-place "s#type=\"uint\">0</limit_virt_mem_kb>#type=\"uint\">${LO_MAX_VIRT_SIZE}</limit_virt_mem_kb>#" ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/loolwsd.xml
+	sed --in-place "s#type=\"uint\">0</limit_data_mem_kb>#type=\"uint\">${LO_MAX_DATA_SEG_SIZE}</limit_data_mem_kb>#" ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/loolwsd.xml
+	sed --in-place "s#type=\"uint\">8000</limit_stack_mem_kb>#type=\"uint\">${LO_MAX_STACK_SIZE}</limit_stack_mem_kb>#" ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/loolwsd.xml
+	sed --in-place "s#type=\"uint\">0</limit_file_size_mb>#type=\"uint\">${LO_MAX_FILE_SIZE}</limit_file_size_mb>#" ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/loolwsd.xml
+	sed --in-place "s#type=\"uint\">0</limit_num_open_files>#type=\"uint\">${LO_MAX_FILE_NUM}</limit_num_open_files>#" ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/loolwsd.xml
 
 	systemctl start loolwsd
 	a2ensite ${LOOL_SITE_CONFIG}

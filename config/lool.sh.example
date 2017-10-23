@@ -31,7 +31,7 @@ LO_DOC_SIZE="0"
 
 #
 # Define the name of the lool package.
-LOOL_VERSION="lool-poco-1.7.8p3-core-cp-5.3-20-online-2.1.2-9"
+LOOL_VERSION="lool-poco-1.7.9-core-cp-5.3-28-online-2.1.4-3"
 
 #
 # Define the installation prefix for libreoffice online.

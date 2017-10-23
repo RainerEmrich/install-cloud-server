@@ -87,7 +87,7 @@ setup_mariadb () {
 
 		apt-get autoremove --purge -y
 
-		# Set BINLOG FORMAT = MIXED
+		# Set BINLOG FORMAT = ROW, innodb_large_prefix = 1, innodb_file_format = barracuda
 		patch /etc/mysql/my.cnf ${PATCH_DIR}/etc.mysql.my.cnf.patch
 		# Set default character  set to utf8
 		patch /etc/mysql/conf.d/mariadb.cnf ${PATCH_DIR}/etc.mysql.conf.d.mariadb.conf.patch

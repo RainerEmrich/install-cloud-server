@@ -94,7 +94,7 @@ setup_letsencrypt () {
 
 		sleep 3
 
-		a2enmod info rewrite
+		a2enmod info rewrite http2
 		/bin/rm -f /etc/apache2/mods-enabled/info.conf
 
 		/bin/rm -rf /var/www/html

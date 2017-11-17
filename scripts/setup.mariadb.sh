@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Set up MariaDB 10.1 from mariadb.org using the netcologne mirror.
+# Set up MariaDB 10.2 from mariadb.org using the netcologne mirror.
 #
 # Copyright 2017 Rainer Emrich, <rainer@emrich-ebersheim.de>
 #
@@ -40,7 +40,7 @@ setup_mariadb () {
 
 		ask_to_continue
 
-		export MARIADB_SOURCE="$(grep -R "http://mirror.netcologne.de/mariadb/repo/10.2/ubuntu xenial main" /etc/apt/ -l)"
+		export MARIADB_SOURCE="$(grep -R "http://mirror.netcologne.de/mariadb/repo/10.2/${DIST_NAME} ${DIST_CODENAME} main" /etc/apt/ -l)"
 
 		if [ "${MARIADB_SOURCE}" == "" ] ; then
 			echo
@@ -51,8 +51,29 @@ setup_mariadb () {
 			echo "#######################################################################################"
 			echo
 
-			apt-key adv --recv-keys --keyserver hkp://keyserver.ubuntu.com:80 0xF1656F24C74CD1D8
-			add-apt-repository 'deb [arch=amd64,i386,ppc64el] http://mirror.netcologne.de/mariadb/repo/10.2/ubuntu xenial main'
+			case ${DIST_ID} in
+			Ubuntu)
+				case ${DIST_RELEASE} in
+				16.04)
+					apt-key adv --recv-keys --keyserver hkp://keyserver.ubuntu.com:80 0xF1656F24C74CD1D8
+					;;
+				*)
+					;;
+				esac
+				;;
+			Debian)
+				case ${DIST_RELEASE} in
+				8.*)
+					apt-key adv --recv-keys --keyserver hkp://keyserver.ubuntu.com:80 0xCBCB082A1BB943DB
+					;;
+				*)
+					;;
+				esac
+				;;
+			*)
+				;;
+			esac
+			add-apt-repository "deb [arch=amd64,i386,ppc64el] http://mirror.netcologne.de/mariadb/repo/10.2/${DIST_NAME} ${DIST_CODENAME} main"
 
 			apt-get update
 		fi
@@ -77,8 +98,6 @@ setup_mariadb () {
 		echo "#######################################################################################"
 		echo "#"
 		echo "# Install MariaDB server."
-		echo "#"
-		echo "#"
 		echo "#"
 		echo "#######################################################################################"
 		echo
@@ -119,11 +138,83 @@ setup_mariadb () {
 
 		reboot
 
+	elif [ "${MARIADB_VERSION}" != "10.2" ] ; then
+
+		echo
+		echo "#######################################################################################"
+		echo "#"
+		echo "# Update MariaDB server."
+		echo "#"
+		echo "#######################################################################################"
+		echo
+
+		ask_to_continue
+
+		export MARIADB_SOURCE="$(grep -R "http://mirror.netcologne.de/mariadb/repo/10.2/${DIST_NAME} ${DIST_CODENAME} main" /etc/apt/ -l)"
+
+		if [ "${MARIADB_SOURCE}" == "" ] ; then
+			echo
+			echo "#######################################################################################"
+			echo "#"
+			echo "# Add MariaDB repository."
+			echo "#"
+			echo "#######################################################################################"
+			echo
+
+			case ${DIST_ID} in
+			Ubuntu)
+				case ${DIST_RELEASE} in
+				16.04)
+					apt-key adv --recv-keys --keyserver hkp://keyserver.ubuntu.com:80 0xF1656F24C74CD1D8
+					;;
+				*)
+					;;
+				esac
+				;;
+			Debian)
+				case ${DIST_RELEASE} in
+				8.*)
+					apt-key adv --recv-keys --keyserver hkp://keyserver.ubuntu.com:80 0xCBCB082A1BB943DB
+					;;
+				*)
+					;;
+				esac
+				;;
+			*)
+				;;
+			esac
+			add-apt-repository "deb [arch=amd64,i386,ppc64el] http://mirror.netcologne.de/mariadb/repo/10.2/${DIST_NAME} ${DIST_CODENAME} main"
+
+			apt-get update
+	
+			apt-get dist-upgrade -y
+
+			# Set BINLOG FORMAT = ROW, innodb_large_prefix = 1, innodb_file_format = barracuda
+			patch /etc/mysql/my.cnf ${PATCH_DIR}/etc.mysql.my.cnf.patch
+			# Set default character  set to utf8
+			patch /etc/mysql/conf.d/mariadb.cnf ${PATCH_DIR}/etc.mysql.conf.d.mariadb.conf.patch
+
+			# Set  transaction isolation to READ COMMITTED
+			if [ ! -f /etc/mysql/env.cnf ] ; then echo "MYSQLD_OPTS=--transaction-isolation=READ-COMMITTED" >/etc/mysql/env.cnf ; fi
+			if [ ! -f /etc/systemd/system/mariadb.service.d/environment.conf ] ; then
+				echo "[Service]" >/etc/systemd/system/mariadb.service.d/environment.conf
+				echo "EnvironmentFile=/etc/mysql/env.cnf" >>/etc/systemd/system/mariadb.service.d/environment.conf
+			fi
+
+			systemctl daemon-reload
+
+			systemctl restart mysql
+
+			sleep 5
+
+			mysql_secure_installation
+		fi
+
 	else
 		echo
 		echo "#######################################################################################"
 		echo "#"
-		echo "# INFO: MariaDB Server installed already, skipping..."
+		echo "# INFO: MariaDB Server 10.2 installed already, skipping..."
 		echo "#"
 		echo "#######################################################################################"
 		echo

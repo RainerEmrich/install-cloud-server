@@ -66,6 +66,15 @@ setup_letsencrypt () {
 		letsencrypt --apache --non-interactive --agree-tos --hsts --uir --email ${MY_EMAIL} --rsa-key-size ${MY_KEY_SIZE} -d ${MY_FQDN}
 
 		patch /etc/letsencrypt/options-ssl-apache.conf ${PATCH_DIR}/etc.letsencrypt.options-ssl-apache.conf.patch
+		case ${DIST_ID} in
+		Debian)
+			sed --in-place "s/SSLOpenSSLConfCmd ECDHParameters/# SSLOpenSSLConfCmd ECDHParameters/" /etc/letsencrypt/options-ssl-apache.conf
+			sed --in-place "s/SSLOpenSSLConfCmd Curves/# SSLOpenSSLConfCmd Curves/" /etc/letsencrypt/options-ssl-apache.conf
+			sed --in-place "s/SSLSessionTickets/# SSLSessionTickets/" /etc/letsencrypt/options-ssl-apache.conf
+			;;
+		*)
+			;;
+		esac
 
 		echo "# This is an example of the kind of things you can do in a configuration file." >/etc/letsencrypt/cli.ini
 		echo "# All flags used by the client can be configured here. Run Let's Encrypt with" >>/etc/letsencrypt/cli.ini

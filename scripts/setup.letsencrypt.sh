@@ -104,9 +104,14 @@ setup_letsencrypt () {
 		sed --in-place "s/ServerAdmin webmaster@localhost/ServerAdmin ${WEBMASTER_EMAIL}/" /etc/apache2/sites-available/000-default-le-ssl.conf
 		sed --in-place "s/myhost.mydomain.tld/${MY_FQDN}/g" /etc/apache2/sites-available/000-default-le-ssl.conf
 
-		sleep 3
-
-		a2enmod info rewrite http2
+		a2enmod info rewrite
+		case ${DIST_ID} in
+		Ubuntu)
+			a2enmod http2
+			;;
+		*)
+			;;
+		esac
 		/bin/rm -f /etc/apache2/mods-enabled/info.conf
 
 		/bin/rm -rf /var/www/html
@@ -125,6 +130,15 @@ setup_letsencrypt () {
 		sed --in-place "s/myhost.mydomain.tld/${MY_FQDN}/g" /etc/apache2/sites-available/${MY_SITE_CONFIG}.conf
 
 		a2ensite ${MY_SITE_CONFIG}
+
+		case ${DIST_ID} in
+		Debian)
+			sed --in-place "s/Protocols h2/# Protocols h2/" /etc/apache2/sites-available/000-default-le-ssl.conf
+			sed --in-place "s/Protocols h2/# Protocols h2/" /etc/apache2/sites-available/${MY_SITE_CONFIG}.conf
+			;;
+		*)
+			;;
+		esac
 
 		systemctl restart apache2
 

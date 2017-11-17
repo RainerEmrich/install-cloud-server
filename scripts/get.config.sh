@@ -75,6 +75,7 @@ get_config () {
 	export MY_GLOBAL_IP="$(ip addr show up scope global | grep inet | grep ${MY_GLOBAL_INTERFACE} | cut -d " " -f 6 | cut -d "/" -f 1)"
 
 	export MARIADB_INSTALLED=$(test ! -z "$(dpkg -l | grep "mariadb-server")" && echo "1")
+	if [ "${MARIADB_INSTALLED}" == "1" ] ; then export MARIADB_VERSION="$(dpkg -l | grep mariadb-server-core- | cut -d " " -f 3 | cut -d "-" -f 4)"; fi
 	export MYSQL_INSTALLED=$(test ! -z "$(dpkg -l | grep "mysql-server")" && echo "1")
 	if [ "${MYSQL_INSTALLED}" == "1" ] ; then export MYSQL_VERSION="$(dpkg -l | grep mysql-server-core- | cut -d " " -f 3 | cut -d "-" -f 4)"; fi
 

@@ -7,7 +7,8 @@ MY_HOSTNAME="myhost"
 MY_DOMAIN="mydomain.tld"
 
 #
-# The global network interface, defaults to "ens192" for 1&1 cloud server.
+# The global network interface, defaults to "ens192" for Ubuntu 16.04.
+#                                           "eth0" for Debain 8.x.
 
 MY_GLOBAL_INTERFACE="ens192"
 

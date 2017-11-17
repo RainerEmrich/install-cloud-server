@@ -23,20 +23,27 @@ setup_apache () {
 
 	if [ "${APACHE2_INSTALLED}" != "1" ] ; then
 
-		echo
-		echo "#######################################################################################"
-		echo "#"
-		echo "# Install apache2 from the ppa of Ondřej Surý."
-		echo "#"
-		echo "#######################################################################################"
-		echo
+		case ${DIST_ID} in
+		Ubuntu)
+			echo
+			echo "#######################################################################################"
+			echo "#"
+			echo "# Install apache2 from the ppa of Ondřej Surý."
+			echo "#"
+			echo "#######################################################################################"
+			echo
 
-		ask_to_continue
+			ask_to_continue
 
-		apt-add-repository -y ppa:ondrej/apache2
-		apt-get update
+			apt-add-repository -y ppa:ondrej/apache2
+			apt-get update
 
-		apt-get dist-upgrade -y
+			apt-get dist-upgrade -y
+			;;
+		*)
+			;;
+		esac
+
 		apt-get install apache2-doc -y
 
 		/bin/rm -f /etc/apache2/mods-enabled/status.conf

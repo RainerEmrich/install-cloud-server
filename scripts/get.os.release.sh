@@ -22,6 +22,7 @@
 get_os_release () {
 
 	export DIST_ID="$(lsb_release -si)"
+	export DIST_NAME="$(echo "$DIST_ID" | tr '[:upper:]' '[:lower:]')"
 	export DIST_RELEASE="$(lsb_release -sr)"
 	export DIST_CODENAME="$(lsb_release -sc)"
 

@@ -49,8 +49,14 @@ setup_base_software () {
 		apt-get update
 		apt-get install software-properties-common -y
 
-		apt-get install update-notifier-common -y
-		/usr/lib/update-notifier/update-motd-updates-available --force
+		case ${DIST_ID} in
+		Ubuntu)
+			apt-get install update-notifier-common -y
+			/usr/lib/update-notifier/update-motd-updates-available --force
+			;;
+		*)
+			;;
+		esac
 
 		apt-get install apt-show-versions dnsutils git -y
 

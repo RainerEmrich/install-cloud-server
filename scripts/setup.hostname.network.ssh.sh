@@ -140,12 +140,27 @@ setup_hostname_network_ssh () {
 
 				exit
 			else
-				echo "" >>/etc/network/interfaces
-				echo "# The private network interface" >>/etc/network/interfaces
-				echo "auto ${MY_PRIVATE_NETWORK_DEVICE}" >>/etc/network/interfaces
-				echo "iface ${MY_PRIVATE_NETWORK_DEVICE} inet static" >>/etc/network/interfaces
-				echo "address ${MY_PRIVATE_NETWORK_IP}" >>/etc/network/interfaces
-				echo "netmask ${MY_PRIVATE_NETWORK_MASK}" >>/etc/network/interfaces
+				case ${DIST_ID} in
+				Debian)
+					case ${DIST_RELEASE} in
+					8.*)
+						echo "# The private network interface" >/etc/network/interfaces.d/${MY_PRIVATE_NETWORK_DEVICE}.cfg
+						echo "auto ${MY_PRIVATE_NETWORK_DEVICE}" >>/etc/network/interfaces.d/${MY_PRIVATE_NETWORK_DEVICE}.cfg
+						echo "iface ${MY_PRIVATE_NETWORK_DEVICE} inet static" >>/etc/network/interfaces.d/${MY_PRIVATE_NETWORK_DEVICE}.cfg
+						echo "address ${MY_PRIVATE_NETWORK_IP}" >>/etc/network/interfaces.d/${MY_PRIVATE_NETWORK_DEVICE}.cfg
+						echo "netmask ${MY_PRIVATE_NETWORK_MASK}" >>/etc/network/interfaces.d/${MY_PRIVATE_NETWORK_DEVICE}.cfg
+						;;
+					esac
+					;;
+				*)
+					echo "" >>/etc/network/interfaces
+					echo "# The private network interface" >>/etc/network/interfaces
+					echo "auto ${MY_PRIVATE_NETWORK_DEVICE}" >>/etc/network/interfaces
+					echo "iface ${MY_PRIVATE_NETWORK_DEVICE} inet static" >>/etc/network/interfaces
+					echo "address ${MY_PRIVATE_NETWORK_IP}" >>/etc/network/interfaces
+					echo "netmask ${MY_PRIVATE_NETWORK_MASK}" >>/etc/network/interfaces
+					;;
+				esac
 
 				echo "" >>/etc/hosts
 				echo "${MY_PRIVATE_NETWORK_IP}   ${MY_PRIVATE_NETWORK_NAME}" >>/etc/hosts

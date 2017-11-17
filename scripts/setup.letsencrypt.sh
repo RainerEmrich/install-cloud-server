@@ -53,7 +53,7 @@ setup_letsencrypt () {
 		Debian)
 			echo "deb http://ftp.debian.org/debian ${DIST_CODENAME}-backports main" >/etc/apt/sources.list.d/backports.list
 			apt-get update
-			apt-get install python-certbot-apache -t ${DIST_CODENAME}-backports
+			apt-get install python-certbot-apache -t ${DIST_CODENAME}-backports -y
 			apt-get autoremove --purge -y
 			;;
 		*)

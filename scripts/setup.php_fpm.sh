@@ -38,7 +38,7 @@ setup_php_fpm () {
 		ask_to_continue
 
 		apt-get update
-		apt-get install php7.0-fpm php7.1-fpm
+		apt-get install php7.0-fpm php7.1-fpm -y
 
 		PACKAGES=""
 		for PACKAGE in $(dpkg -l | grep php7.0 | awk '{print $2}' | sed 's/7.0/7.1/') ; do PACKAGES="${PACKAGES} ${PACKAGE}"; done
@@ -51,6 +51,20 @@ setup_php_fpm () {
 
 		systemctl restart php7.0-fpm
 		systemctl restart php7.1-fpm
+
+		case ${DIST_ID} in
+		Debian)
+			case ${DIST_RELEASE} in
+			8.*)
+				a2dismod php5
+				;;
+			*)
+				;;
+			esac
+			;;
+		*)
+			;;
+		esac
 
 		a2dismod php7.0 php7.1 mpm_prefork
 		a2enmod proxy_fcgi setenvif mpm_event

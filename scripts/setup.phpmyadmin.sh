@@ -47,7 +47,24 @@ setup_phpmyadmin () {
 
 		ask_to_continue
 
-		apt-add-repository ppa:ondrej/php
+		case ${DIST_ID} in
+		Ubuntu)
+			apt-add-repository ppa:ondrej/php
+			;;
+		Debian)
+			case ${DIST_RELEASE} in
+			8.*)
+				wget -O /etc/apt/trusted.gpg.d/php.gpg https://packages.sury.org/php/apt.gpg
+				echo "deb https://packages.sury.org/php/ $(lsb_release -sc) main" > /etc/apt/sources.list.d/php.list
+				;;
+			*)
+				;;
+			esac
+			;;
+		*)
+			;;
+		esac
+
 		apt-get update
 
 		PACKAGES70=""
@@ -57,10 +74,19 @@ setup_phpmyadmin () {
 
 		apt-get dist-upgrade -y
 
-		apt-add-repository ppa:nijel/phpmyadmin
-		apt-get update
-		apt-get install phpmyadmin php7.0 php7.0-bz2 php7.0-curl php7.0-gd php7.0-mbstring php7.0-mcrypt php7.0-xml php7.0-zip \
+		apt-get install php7.0 php7.0-bz2 php7.0-curl php7.0-gd php7.0-mbstring php7.0-mcrypt php7.0-xml php7.0-zip \
 				php7.1 php7.1-bz2 php7.1-curl php7.1-gd php7.1-mbstring php7.1-mcrypt php7.1-xml php7.1-zip -y
+
+		case ${DIST_ID} in
+		Ubuntu)
+			apt-add-repository ppa:nijel/phpmyadmin
+			;;
+		*)
+			;;
+		esac
+	
+		apt-get update
+		apt-get install phpmyadmin -y
 
 		a2disconf phpmyadmin
 		systemctl restart apache2
@@ -69,9 +95,25 @@ setup_phpmyadmin () {
 		/bin/cp ${DATA_DIR}/root/bin/mysql-backup.sh ~/bin/
 		/bin/cp ${DATA_DIR}/root/bin/cronjob-backup.sh ~/bin/
 
-		patch /etc/phpmyadmin/apache.conf ${PATCH_DIR}/etc.phpmyadmin.apache.conf.patch
-		patch /etc/phpmyadmin/config.inc.php ${PATCH_DIR}/etc.phpmyadmin.config.inc.php.patch
-
+		case ${DIST_ID} in
+		Ubuntu)
+			patch /etc/phpmyadmin/apache.conf ${PATCH_DIR}/etc.phpmyadmin.apache.conf.patch
+			patch /etc/phpmyadmin/config.inc.php ${PATCH_DIR}/etc.phpmyadmin.config.inc.php.patch
+			;;
+		Debian)
+			case ${DIST_RELEASE} in
+			8.*)
+				patch /etc/phpmyadmin/apache.conf ${PATCH_DIR}/etc.phpmyadmin.apache.conf.patch
+				patch /etc/phpmyadmin/config.inc.php ${PATCH_DIR}/etc.phpmyadmin.config.inc.php.debian8.patch
+				;;
+			*)
+				;;
+			esac
+			;;
+		*)
+			;;
+		esac
+	
 		sed --in-place 's/#Include \/etc\/apache2\/misc\/my-phpmyadmin/Include \/etc\/apache2\/misc\/my-phpmyadmin/' /etc/apache2/sites-available/${MY_SITE_CONFIG}.conf
 		sed --in-place 's/Header always set Content-Security-Policy /# Header always set Content-Security-Policy /g' /etc/apache2/sites-available/${MY_SITE_CONFIG}.conf
 

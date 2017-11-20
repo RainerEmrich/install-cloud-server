@@ -36,7 +36,7 @@ setup_munin () {
 
 		ask_to_continue
 
-		apt-get install munin munin-doc munin-node gawk-doc time -y
+		apt-get install munin munin-doc munin-node time -y
 
 		systemctl stop munin-node
 		a2disconf munin
@@ -56,12 +56,29 @@ setup_munin () {
 		patch /etc/munin/plugin-conf.d/munin-node ${PATCH_DIR}/etc.munin.plugin-conf.d.munin-node.patch
 		sed --in-place "s/myhost.mydomain.tld/${MY_FQDN}/g" /etc/munin/plugin-conf.d/munin-node
 
+		case ${DIST_ID} in
+		Debian)
+			case ${DIST_RELEASE} in
+			8.*)
+				MUNIN_PASSWD="$(grep password /etc/mysql/debian.cnf | head -n 1 | cut -d " " -f 3)"
+				sed --in-place "/env.mysqluser debian-sys-maint/aenv.mysqlpassword ${MUNIN_PASSWD}" /etc/munin/plugin-conf.d/munin-node
+
+				chmod 600 /etc/munin/plugin-conf.d/munin-node
+				;;
+			*)
+				;;
+			esac
+			;;
+		*)
+			;;
+		esac
+
 		munin-node-configure --shell | sh -x
 		/bin/ln -s /usr/share/munin/plugins/proc /etc/munin/plugins/proc
 		/bin/ln -s /usr/share/munin/plugins/http_loadtime /etc/munin/plugins/http_loadtime
-		/bin/rm /etc/munin/plugins/mysql_innodb_insert_buf
-		/bin/rm /etc/munin/plugins/mysql_innodb_io_pend
-		/bin/rm /etc/munin/plugins/mysql_replication
+		/bin/rm -f /etc/munin/plugins/mysql_innodb_insert_buf
+		/bin/rm -f /etc/munin/plugins/mysql_innodb_io_pend
+		/bin/rm -f /etc/munin/plugins/mysql_replication
 
 		systemctl start munin-node
 

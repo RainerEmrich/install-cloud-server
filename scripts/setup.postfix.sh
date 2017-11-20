@@ -45,6 +45,21 @@ setup_postfix () {
 		echo "${MY_MAIL_RELAY} ${MY_MAIL_RELAY_USER}:${MY_MAIL_RELAY_PASSWD}" >/etc/postfix/sasl_passwd
 		postmap /etc/postfix/sasl_passwd
 
+		case ${DIST_ID} in
+		Debian)
+			case ${DIST_RELEASE} in
+			8.*)
+				sed --in-place "/html_directory/d" /etc/postfix/main.cf
+				echo "inet_protocols = all" >>/etc/postfix/main.cf
+				;;
+			*)
+				;;
+			esac
+			;;
+		*)
+			;;
+		esac
+
 		patch /etc/postfix/main.cf ${PATCH_DIR}/etc.postfix.main.cf.patch
 		sed --in-place "s/myhostname = localhost.localdomain/myhostname = ${MY_FQDN}/" /etc/postfix/main.cf
 		sed --in-place "s/myhost.mydomain.tld/${MY_FQDN}/g" /etc/postfix/main.cf

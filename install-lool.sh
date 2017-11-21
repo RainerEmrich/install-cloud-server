@@ -85,6 +85,20 @@ if [ "${LOOL_INSTALLED}" != "1" ] ; then
 	echo
 
 	apt-get install libiodbc2 libcunit1 python-polib python3-polib -y
+
+	case ${DIST_ID} in
+	Debian)
+		case ${DIST_RELEASE} in
+		8.*)
+			apt-get install libgtk-3-0 libcairo-gobject2 -y
+			;;
+		*)
+			;;
+		esac
+	*)
+		;;
+	esac
+
 	apt-get autoremove --purge -y
 
 	echo
@@ -217,6 +231,14 @@ if [ "${LOOL_INSTALLED}" != "1" ] ; then
 
 	sed --in-place "s/ServerAdmin webmaster@localhost/ServerAdmin ${LOOL_SA}/" /etc/apache2/sites-available/${LOOL_SITE_CONFIG}.conf
 	sed --in-place "s/myhost.mydomain.tld/${LOOL_DOMAIN}/g" /etc/apache2/sites-available/${LOOL_SITE_CONFIG}.conf
+
+	case ${DIST_ID} in
+	Debian)
+		sed --in-place "s/Protocols h2/# Protocols h2/" /etc/apache2/sites-available/${LOOL_SITE_CONFIG}.conf
+		;;
+	*)
+		;;
+	esac
 
 	echo
 	echo "#######################################################################################"

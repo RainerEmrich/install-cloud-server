@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# This script sets up an 1&1 cloud server server with ubuntu 16.04.
+# This script sets up a cloud server with Ubuntu 16.04 or Debian 8.
 # Installs and sets up all required packages for nextcloud.
 # Finally installs nextcloud.
 #

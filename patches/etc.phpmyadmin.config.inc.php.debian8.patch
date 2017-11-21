@@ -1,0 +1,10 @@
+--- config.inc.php.orig	2017-11-20 14:17:53.411103459 +0000
++++ config.inc.php	2017-11-20 15:00:47.086458048 +0000
+@@ -95,6 +95,7 @@
+     $cfg['Servers'][$i]['usergroups'] = 'pma__usergroups';
+     $cfg['Servers'][$i]['navigationhiding'] = 'pma__navigationhiding';
+     $cfg['Servers'][$i]['savedsearches'] = 'pma__savedsearches';
++    $cfg['Servers'][$i]['AllowRoot'] = FALSE;
+ 
+     /* Uncomment the following to enable logging in to passwordless accounts,
+      * after taking note of the associated security risks. */

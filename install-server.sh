@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# This script sets up an 1&1 cloud server server with ubuntu 16.04.
+# This script sets up a cloud server with Ubuntu 16.04 or Debian 8.
 # Installs and sets up all required packages for nextcloud.
 # Finally installs nextcloud.
 #
@@ -54,7 +54,7 @@ if [[ "${CURRENT_FQDN}" != "localhost.localdomain" && "${CURRENT_FQDN}" != "${MY
 	echo "#######################################################################################"
 	echo "#"
 	echo "# ERROR: A hostname is already set and differs from the one in the configuration."
-	echo "#        See ${CONFIG_DIR}/names.sh"
+	echo "#        See ${CONFIG_DIR}/hostname.sh"
 	echo "#"
 	echo "#        Wrong host exiting..."
 	echo "#"
@@ -62,6 +62,12 @@ if [[ "${CURRENT_FQDN}" != "localhost.localdomain" && "${CURRENT_FQDN}" != "${MY
 	exit
 
 else
+
+	if [ "$(grep "\.bash_aliases" ~/.bashrc)" == "" ] ; then
+		echo "if [ -f ~/.bash_aliases ]; then" >>~/.bashrc
+		echo "    . ~/.bash_aliases" >>~/.bashrc
+		echo "fi" >>~/.bashrc
+	fi
 
 	test -z "$(grep "${MYSELF}" ~/.bashrc)" && echo "${MYSELF}" >>~/.bashrc
 

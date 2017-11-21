@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Set up docker engine.
+# Set up docker ce.
 #
 # Copyright 2017 Rainer Emrich, <rainer@emrich-ebersheim.de>
 #
@@ -26,8 +26,7 @@ setup_docker () {
 		echo
 		echo "#######################################################################################"
 		echo "#"
-		echo "# Install Docker from the dockerproject.org repository."
-		echo "# deb https://apt.dockerproject.org/repo/ ubuntu-xenial main"
+		echo "# Install Docker (docker-ce) from the docker.com repository."
 		echo "#"
 		echo "#######################################################################################"
 		echo
@@ -35,16 +34,26 @@ setup_docker () {
 		ask_to_continue
 
 		apt-get update
-		apt-get install curl linux-image-extra-virtual -y
-		apt-get install apt-transport-https ca-certificates -y
 
-		curl -fsSL https://yum.dockerproject.org/gpg | sudo apt-key add -
-		apt-key fingerprint 58118E89F3A912897C070ADBF76221572C52609D
+		apt-get install curl apt-transport-https ca-certificates software-properties-common -y
 
-		add-apt-repository "deb https://apt.dockerproject.org/repo/ ubuntu-xenial main"
+		case ${DIST_ID} in
+		Ubuntu)
+			apt-get install linux-image-extra-virtual -y
+			;;
+		Debian)
+			apt-get install gnupg2 -y
+			;;
+		*)
+			;;
+		esac
+	
+		curl -fsSL https://download.docker.com/linux/$(. /etc/os-release; echo "$ID")/gpg | apt-key add -
+
+		add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/$(. /etc/os-release; echo "$ID") $(lsb_release -cs) stable"
 
 		apt-get update
-		apt-get -y install docker-engine
+		apt-get -y install docker-ce
 
 		docker run hello-world
 

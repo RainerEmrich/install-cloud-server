@@ -42,11 +42,23 @@ setup_letsencrypt () {
 
 		ask_to_continue
 
-		apt-add-repository -y ppa:certbot/certbot
+		case ${DIST_ID} in
+		Ubuntu)
+			apt-add-repository -y ppa:certbot/certbot
 
-		apt-get update
-		apt-get install certbot python-certbot-apache python-certbot-doc python-acme-doc python-cryptography-vectors python-certbot-apache-doc python-openssl-doc -y
-		apt-get upgrade -y
+			apt-get update
+			apt-get install certbot python-certbot-apache python-certbot-doc python-acme-doc python-cryptography-vectors python-certbot-apache-doc python-openssl-doc -y
+			apt-get upgrade -y
+			;;
+		Debian)
+			echo "deb http://ftp.debian.org/debian ${DIST_CODENAME}-backports main" >/etc/apt/sources.list.d/backports.list
+			apt-get update
+			apt-get install python-certbot-apache -t ${DIST_CODENAME}-backports -y
+			apt-get autoremove --purge -y
+			;;
+		*)
+			;;
+		esac
 
 		mkdir -p ~/Dokumentation/letsencrypt/
 		echo "letsencrypt --apache --non-interactive --agree-tos --hsts --uir --email ${MY_EMAIL} --rsa-key-size ${MY_KEY_SIZE} -d ${MY_FQDN}" >~/Dokumentation/letsencrypt/${MY_FQDN}.txt
@@ -54,6 +66,15 @@ setup_letsencrypt () {
 		letsencrypt --apache --non-interactive --agree-tos --hsts --uir --email ${MY_EMAIL} --rsa-key-size ${MY_KEY_SIZE} -d ${MY_FQDN}
 
 		patch /etc/letsencrypt/options-ssl-apache.conf ${PATCH_DIR}/etc.letsencrypt.options-ssl-apache.conf.patch
+		case ${DIST_ID} in
+		Debian)
+			sed --in-place "s/SSLOpenSSLConfCmd ECDHParameters/# SSLOpenSSLConfCmd ECDHParameters/" /etc/letsencrypt/options-ssl-apache.conf
+			sed --in-place "s/SSLOpenSSLConfCmd Curves/# SSLOpenSSLConfCmd Curves/" /etc/letsencrypt/options-ssl-apache.conf
+			sed --in-place "s/SSLSessionTickets/# SSLSessionTickets/" /etc/letsencrypt/options-ssl-apache.conf
+			;;
+		*)
+			;;
+		esac
 
 		echo "# This is an example of the kind of things you can do in a configuration file." >/etc/letsencrypt/cli.ini
 		echo "# All flags used by the client can be configured here. Run Let's Encrypt with" >>/etc/letsencrypt/cli.ini
@@ -92,9 +113,14 @@ setup_letsencrypt () {
 		sed --in-place "s/ServerAdmin webmaster@localhost/ServerAdmin ${WEBMASTER_EMAIL}/" /etc/apache2/sites-available/000-default-le-ssl.conf
 		sed --in-place "s/myhost.mydomain.tld/${MY_FQDN}/g" /etc/apache2/sites-available/000-default-le-ssl.conf
 
-		sleep 3
-
-		a2enmod info rewrite http2
+		a2enmod info rewrite
+		case ${DIST_ID} in
+		Ubuntu)
+			a2enmod http2
+			;;
+		*)
+			;;
+		esac
 		/bin/rm -f /etc/apache2/mods-enabled/info.conf
 
 		/bin/rm -rf /var/www/html
@@ -113,6 +139,15 @@ setup_letsencrypt () {
 		sed --in-place "s/myhost.mydomain.tld/${MY_FQDN}/g" /etc/apache2/sites-available/${MY_SITE_CONFIG}.conf
 
 		a2ensite ${MY_SITE_CONFIG}
+
+		case ${DIST_ID} in
+		Debian)
+			sed --in-place "s/Protocols h2/# Protocols h2/" /etc/apache2/sites-available/000-default-le-ssl.conf
+			sed --in-place "s/Protocols h2/# Protocols h2/" /etc/apache2/sites-available/${MY_SITE_CONFIG}.conf
+			;;
+		*)
+			;;
+		esac
 
 		systemctl restart apache2
 

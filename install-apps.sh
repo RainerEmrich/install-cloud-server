@@ -114,6 +114,7 @@ if [ "${NEXTCLOUD_APPS_INSTALLED}" != "1" ] ; then
 			crontab -u www-data -l >~/crontab.txt
 			echo "5,20,35,50  *  *  *  * php7.1 ${MY_NEXTCLOUD_DR}/occ preview:pre-generate" >>~/crontab.txt
 			crontab -u www-data ~/crontab.txt
+			/bin/rm ~/crontab.txt
 		fi
 	done
 

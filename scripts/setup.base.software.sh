@@ -32,6 +32,7 @@ setup_base_software () {
 		echo "# update-notifier-common"
 		echo "# apt-show-versions"
 		echo "# dnsutils"
+		echo "# bsd-mailx"
 		echo "# git"
 		echo "# man-db"
 		echo "# manpages"
@@ -47,12 +48,18 @@ setup_base_software () {
 		ask_to_continue
 
 		apt-get update
-		apt-get install software-properties-common -y
+		apt-get install software-properties-common bzip2 -y
 
-		apt-get install update-notifier-common -y
-		/usr/lib/update-notifier/update-motd-updates-available --force
+		case ${DIST_ID} in
+		Ubuntu)
+			apt-get install update-notifier-common -y
+			/usr/lib/update-notifier/update-motd-updates-available --force
+			;;
+		*)
+			;;
+		esac
 
-		apt-get install apt-show-versions dnsutils git -y
+		apt-get install apt-show-versions dnsutils bsd-mailx git -y
 
 		apt-get install man-db manpages -y
 

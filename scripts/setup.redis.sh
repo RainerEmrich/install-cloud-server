@@ -37,6 +37,17 @@ setup_redis () {
 
 		ask_to_continue
 
+		case ${DIST_ID} in
+		Debian)
+			wget -qO- https://www.dotdeb.org/dotdeb.gpg | apt-key add -
+			echo "deb http://packages.dotdeb.org ${DIST_CODENAME} all" >/etc/apt/sources.list.d/dotdeb.list
+			echo "deb-src http://packages.dotdeb.org ${DIST_CODENAME} all" >>/etc/apt/sources.list.d/dotdeb.list
+			apt-get update
+			;;
+		*)
+			;;
+		esac
+
 		apt-get install redis-server redis-tools -y
 
 		systemctl stop redis

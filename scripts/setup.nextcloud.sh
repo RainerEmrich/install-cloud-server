@@ -110,6 +110,14 @@ setup_nextcloud () {
 		sed --in-place "s/myhost.mydomain.tld/${MY_NEXTCLOUD_DOMAIN}/g" /etc/apache2/sites-available/${MY_NEXTCLOUD_SITE_CONFIG}.conf
 		sed --in-place "s#my_document_root#${MY_NEXTCLOUD_DR}#g" /etc/apache2/sites-available/${MY_NEXTCLOUD_SITE_CONFIG}.conf
 
+		case ${DIST_ID} in
+		Debian)
+			sed --in-place "s/Protocols h2/# Protocols h2/" /etc/apache2/sites-available/${MY_NEXTCLOUD_SITE_CONFIG}.conf
+			;;
+		*)
+			;;
+		esac
+
 		echo
 		echo "#######################################################################################"
 		echo "#"

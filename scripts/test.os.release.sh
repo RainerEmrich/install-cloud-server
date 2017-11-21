@@ -32,6 +32,16 @@ test_os_release () {
 			;;
 		esac
 		;;
+	Debian)
+		case ${DIST_RELEASE} in
+		8.*)
+			SUPPORTED="1"
+			;;
+		*)
+			SUPPORTED="0"
+			;;
+		esac
+		;;
 	*)
 		SUPPORTED="0"
 		;;
@@ -49,7 +59,10 @@ test_os_release () {
 	else
 		echo "# ERROR: This Operating System is not supported!"
 		echo "#"
-		echo "#        At the moment only Ubuntu 16.04 xenial is supported."
+		echo "#        At the moment the following systems are supported."
+		echo "#"
+		echo "#        Ubuntu 16.04.* xenial"
+		echo "#        Debian 8.* jessie"
 		echo "#"
 		echo "#######################################################################################"
 		echo

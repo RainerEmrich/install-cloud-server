@@ -48,7 +48,7 @@ setup_base_software () {
 		ask_to_continue
 
 		apt-get update
-		apt-get install software-properties-common -y
+		apt-get install software-properties-common bzip2 -y
 
 		case ${DIST_ID} in
 		Ubuntu)

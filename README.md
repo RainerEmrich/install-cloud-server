@@ -1,6 +1,6 @@
 # install-cloud-server
 
-Script collection to setup an 1&amp;1 cloud server with ubuntu 16.04.
+Script collection to setup a cloud server with Ubuntu 16.04 or Debian 8.
 Installs and sets up all required packages for nextcloud.
 Finally installs nextcloud.
 
@@ -9,8 +9,8 @@ Optionally installs additional nextcloud apps.
 
 ## Requirements
 
-The scripts collection is tested for an 1&amp;1 cloud server, ubuntu 16.04,
-64-bit, standard installation. 
+The scripts collection is tested for an 1&amp;1 cloud server, Ubuntu 16.04,
+64-bit, standard installation and Debian 8, 64-bit, standard installation.
 
 1. For the scripts to work, you have to setup such a server as descripted in my blog at https://blog.emrich-ebersheim.de/2016/09/05/11-cloud-server-unter-ubuntu-16-04-1-lts-teil-1-server-erstellen/ (in german). For testing purposes a Cloud Server S incl. one public IP is sufficient.
 2. You have to point a DNS Entry for the host itself and a DNS Entry for the nexcloud instance to the public IP you've got.

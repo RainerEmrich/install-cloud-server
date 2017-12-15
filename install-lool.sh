@@ -84,22 +84,24 @@ if [ "${LOOL_INSTALLED}" != "1" ] ; then
 	echo "#######################################################################################"
 	echo
 
-	apt-get install libiodbc2 libcunit1 python-polib python3-polib -y
+	if [ -f ${PKG_DIR}/${LOOL_VERSION}-required-packages.txt ] ; then
+		dpkg -l | grep "ii  " | cut -d " " -f 3 | cut -d ":" -f 1 >available-packages.tmp
 
-	case ${DIST_ID} in
-	Debian)
-		case ${DIST_RELEASE} in
-		8.*)
-			apt-get install libgtk-3-0 libcairo-gobject2 -y
-			;;
-		*)
-			;;
-		esac
-	*)
-		;;
-	esac
+		PACKAGES=""
+		for PACKAGE in $(cat ${PKG_DIR}/${LOOL_VERSION}-required-packages.txt) ; do
+			if [ "$(grep "${PACKAGE}" available-packages.tmp)" == "" ] ; then
+				PACKAGES="${PACKAGES} ${PACKAGE}"
+			fi
+		done
 
-	apt-get autoremove --purge -y
+		/bin/rm available-packages.tmp
+
+		if [ "${PACKAGES}" != "" ] ; then
+			apt-get install ${PACKAGES} -y
+		fi
+
+		apt-get autoremove --purge -y
+	fi
 
 	echo
 	echo "#######################################################################################"
@@ -287,6 +289,25 @@ elif [ "${LOOL_VERSION}" != "${LOOL_LAST}" ] ; then
 	systemctl stop loolwsd
 
 	/bin/mv -f ${LOOL_PREFIX} ${BACKUP_PATH}
+
+	if [ -f ${PKG_DIR}/${LOOL_VERSION}-required-packages.txt ] ; then
+		dpkg -l | grep "ii  " | cut -d " " -f 3 | cut -d ":" -f 1 >available-packages.tmp
+
+		PACKAGES=""
+		for PACKAGE in $(cat ${PKG_DIR}/${LOOL_VERSION}-required-packages.txt) ; do
+			if [ "$(grep "${PACKAGE}" available-packages.tmp)" == "" ] ; then
+				PACKAGES="${PACKAGES} ${PACKAGE}"
+			fi
+		done
+
+		/bin/rm available-packages.tmp
+
+		if [ "${PACKAGES}" != "" ] ; then
+			apt-get install ${PACKAGES} -y
+		fi
+
+		apt-get autoremove --purge -y
+	fi
 
 	mkdir -p ${LOOL_PREFIX}
 	tar -C ${LOOL_PREFIX} -xf ${PKG_DIR}/${LOOL_VERSION}.tar.xz

@@ -66,9 +66,9 @@ get_config () {
 		;;
 	*)
 		export CURRENT_HOSTNAME="$(hostname -s)"
-		export CURRENT_FQDN="$(hostname)"
+		export CURRENT_FQDN="$(hostname -s).$(hostname -d)"
 
-		export AVAILABLE_NETWORK_DEVICE="$(ip link show | grep DOWN | cut -d " " -f 2 | cut -d ":" -f 1)"
+		export AVAILABLE_NETWORK_DEVICE="ens224"
 		;;
 	esac
 

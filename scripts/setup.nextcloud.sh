@@ -103,6 +103,30 @@ setup_nextcloud () {
 		echo "#######################################################################################"
 		echo
 
+		/bin/cp -a ${DATA_DIR}/etc/apache2/sites-available/998-mycloud-mydomain-tld.conf /etc/apache2/sites-available/
+		/bin/cp -a /etc/apache2/sites-available/998-mycloud-mydomain-tld.conf /etc/apache2/sites-available/${MY_NEXTCLOUD_SITE_CONFIG}.conf
+
+		sed --in-place "s/ServerAdmin webmaster@localhost/ServerAdmin ${MY_NEXTCLOUD_SA}/" /etc/apache2/sites-available/${MY_NEXTCLOUD_SITE_CONFIG}.conf
+		sed --in-place "s/myhost.mydomain.tld/${MY_NEXTCLOUD_DOMAIN}/g" /etc/apache2/sites-available/${MY_NEXTCLOUD_SITE_CONFIG}.conf
+		sed --in-place "s#my_document_root#${MY_NEXTCLOUD_DR}#g" /etc/apache2/sites-available/${MY_NEXTCLOUD_SITE_CONFIG}.conf
+
+		a2ensite ${MY_NEXTCLOUD_SITE_CONFIG}
+		systemctl reload apache2
+
+		echo
+		echo "#######################################################################################"
+		echo "#"
+		echo "# INFO: Get let's encrypt certificate for the nextcloud site."
+		echo "#"
+		echo "#######################################################################################"
+		echo
+
+		echo "letsencrypt --apache --non-interactive --agree-tos --hsts --uir --email ${MY_EMAIL} --rsa-key-size ${MY_KEY_SIZE} -d ${MY_NEXTCLOUD_DOMAIN}" >~/Dokumentation/letsencrypt/${MY_NEXTCLOUD_DOMAIN}.txt
+		letsencrypt --apache --non-interactive --agree-tos --hsts --uir --email ${MY_EMAIL} --rsa-key-size ${MY_KEY_SIZE} -d ${MY_NEXTCLOUD_DOMAIN}
+
+		a2dissite ${MY_NEXTCLOUD_SITE_CONFIG}
+		/bin/rm /etc/apache2/sites-available/${MY_NEXTCLOUD_SITE_CONFIG}*
+
 		/bin/cp -a ${DATA_DIR}/etc/apache2/sites-available/999-mycloud-mydomain-tld-le-ssl.conf /etc/apache2/sites-available/
 		/bin/cp -a /etc/apache2/sites-available/999-mycloud-mydomain-tld-le-ssl.conf /etc/apache2/sites-available/${MY_NEXTCLOUD_SITE_CONFIG}.conf
 
@@ -117,17 +141,6 @@ setup_nextcloud () {
 		*)
 			;;
 		esac
-
-		echo
-		echo "#######################################################################################"
-		echo "#"
-		echo "# INFO: Get let's encrypt certificate for the nextcloud site."
-		echo "#"
-		echo "#######################################################################################"
-		echo
-
-		echo "letsencrypt --apache --non-interactive --agree-tos --hsts --uir --email ${MY_EMAIL} --rsa-key-size ${MY_KEY_SIZE} -d ${MY_NEXTCLOUD_DOMAIN}" >~/Dokumentation/letsencrypt/${MY_NEXTCLOUD_DOMAIN}.txt
-		letsencrypt --apache --non-interactive --agree-tos --hsts --uir --email ${MY_EMAIL} --rsa-key-size ${MY_KEY_SIZE} -d ${MY_NEXTCLOUD_DOMAIN}
 
 		echo
 		echo "#######################################################################################"

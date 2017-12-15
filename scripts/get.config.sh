@@ -53,24 +53,12 @@ get_config () {
 	. ${CONFIG_DIR}/nextcloud.sh
 	. ${CONFIG_DIR}/lool.sh
 
-	case ${DIST_ID} in
-	Debian)
-		case ${DIST_RELEASE} in
-		8.*)
-			export CURRENT_HOSTNAME="$(hostname -s)"
-			export CURRENT_FQDN="$(hostname -s).$(hostname -d)"
+	export CURRENT_HOSTNAME="$(hostname -s)"
+	export CURRENT_FQDN="$(hostname -s).$(hostname -d)"
 
-			export AVAILABLE_NETWORK_DEVICE="eth1"
-			;;
-		esac
-		;;
-	*)
-		export CURRENT_HOSTNAME="$(hostname -s)"
-		export CURRENT_FQDN="$(hostname -s).$(hostname -d)"
-
-		export AVAILABLE_NETWORK_DEVICE="ens224"
-		;;
-	esac
+	if [ -f /etc/network/interfaces.d/${MY_PRIVATE_NETWORK_DEVICE}.cfg ] ; then
+		export AVAILABLE_NETWORK_DEVICE="${MY_PRIVATE_NETWORK_DEVICE}"
+	fi
 
 	export MY_GLOBAL_IP="$(ip addr show up scope global | grep inet | grep ${MY_GLOBAL_INTERFACE} | cut -d " " -f 6 | cut -d "/" -f 1)"
 

@@ -98,7 +98,7 @@ setup_nextcloud () {
 		echo
 		echo "#######################################################################################"
 		echo "#"
-		echo "# INFO: Setup apache configuration for nextcloud."
+		echo "# INFO: Setup temporary apache configuration for nextcloud."
 		echo "#"
 		echo "#######################################################################################"
 		echo
@@ -123,6 +123,14 @@ setup_nextcloud () {
 
 		echo "letsencrypt --apache --non-interactive --agree-tos --hsts --uir --email ${MY_EMAIL} --rsa-key-size ${MY_KEY_SIZE} -d ${MY_NEXTCLOUD_DOMAIN}" >~/Dokumentation/letsencrypt/${MY_NEXTCLOUD_DOMAIN}.txt
 		letsencrypt --apache --non-interactive --agree-tos --hsts --uir --email ${MY_EMAIL} --rsa-key-size ${MY_KEY_SIZE} -d ${MY_NEXTCLOUD_DOMAIN}
+
+		echo
+		echo "#######################################################################################"
+		echo "#"
+		echo "# INFO: Setup final apache configuration for nextcloud."
+		echo "#"
+		echo "#######################################################################################"
+		echo
 
 		a2dissite ${MY_NEXTCLOUD_SITE_CONFIG}
 		/bin/rm /etc/apache2/sites-available/${MY_NEXTCLOUD_SITE_CONFIG}*

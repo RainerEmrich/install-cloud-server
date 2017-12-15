@@ -223,10 +223,41 @@ if [ "${LOOL_INSTALLED}" != "1" ] ; then
 	echo
 	echo "#######################################################################################"
 	echo "#"
-	echo "# INFO: Create apache2 site configuration for libreoffice online."
+	echo "# INFO: Create temporary apache2 site configuration for libreoffice online."
 	echo "#"
 	echo "#######################################################################################"
 	echo
+
+	/bin/cp -a ${DATA_DIR}/etc/apache2/sites-available/998-myoffice-mydomain-tld.conf /etc/apache2/sites-available/
+	/bin/cp -a /etc/apache2/sites-available/998-myoffice-mydomain-tld.conf /etc/apache2/sites-available/${LOOL_SITE_CONFIG}.conf
+
+	sed --in-place "s/ServerAdmin webmaster@localhost/ServerAdmin ${LOOL_SA}/" /etc/apache2/sites-available/${LOOL_SITE_CONFIG}.conf
+	sed --in-place "s/myhost.mydomain.tld/${LOOL_DOMAIN}/g" /etc/apache2/sites-available/${LOOL_SITE_CONFIG}.conf
+
+	a2ensite ${LOOL_SITE_CONFIG}
+	systemctl reload apache2
+
+	echo
+	echo "#######################################################################################"
+	echo "#"
+	echo "# INFO: Get a Let's Encrypt Certificate."
+	echo "#"
+	echo "#######################################################################################"
+	echo
+
+	echo "letsencrypt --apache --non-interactive --agree-tos --hsts --uir --email ${MY_EMAIL} --rsa-key-size ${MY_KEY_SIZE} -d ${LOOL_DOMAIN}" >~/Dokumentation/letsencrypt/${LOOL_DOMAIN}.txt
+	letsencrypt --apache --non-interactive --agree-tos --hsts --uir --email ${MY_EMAIL} --rsa-key-size ${MY_KEY_SIZE} -d ${LOOL_DOMAIN}
+
+	echo
+	echo "#######################################################################################"
+	echo "#"
+	echo "# INFO: Create final apache2 site configuration for libreoffice online."
+	echo "#"
+	echo "#######################################################################################"
+	echo
+
+	a2ensite ${LOOL_SITE_CONFIG}
+	/bin/rm /etc/apache2/sites-available/${LOOL_SITE_CONFIG}*
 
 	/bin/cp -a ${DATA_DIR}/etc/apache2/sites-available/999-myoffice-mydomain-tld-le-ssl.conf /etc/apache2/sites-available/
 	/bin/cp -a /etc/apache2/sites-available/999-myoffice-mydomain-tld-le-ssl.conf /etc/apache2/sites-available/${LOOL_SITE_CONFIG}.conf
@@ -241,17 +272,6 @@ if [ "${LOOL_INSTALLED}" != "1" ] ; then
 	*)
 		;;
 	esac
-
-	echo
-	echo "#######################################################################################"
-	echo "#"
-	echo "# INFO: Get a Let's Encrypt Certificate."
-	echo "#"
-	echo "#######################################################################################"
-	echo
-
-	echo "letsencrypt --apache --non-interactive --agree-tos --hsts --uir --email ${MY_EMAIL} --rsa-key-size ${MY_KEY_SIZE} -d ${LOOL_DOMAIN}" >~/Dokumentation/letsencrypt/${LOOL_DOMAIN}.txt
-	letsencrypt --apache --non-interactive --agree-tos --hsts --uir --email ${MY_EMAIL} --rsa-key-size ${MY_KEY_SIZE} -d ${LOOL_DOMAIN}
 
 	echo
 	echo "#######################################################################################"

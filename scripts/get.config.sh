@@ -56,7 +56,8 @@ get_config () {
 	export CURRENT_HOSTNAME="$(hostname -s)"
 	export CURRENT_FQDN="$(hostname -s).$(hostname -d)"
 
-	if [ -f /etc/network/interfaces.d/${MY_PRIVATE_NETWORK_DEVICE}.cfg ] ; then
+	export AVAILABLE_NETWORK_DEVICE="$(ip link show | grep DOWN | cut -d " " -f 2 | cut -d ":" -f 1)"
+	if [[ "${AVAILABLE_NETWORK_DEVICE}" == "" && -f /etc/network/interfaces.d/${MY_PRIVATE_NETWORK_DEVICE}.cfg ]] ; then
 		export AVAILABLE_NETWORK_DEVICE="${MY_PRIVATE_NETWORK_DEVICE}"
 	fi
 

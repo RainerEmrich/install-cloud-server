@@ -49,7 +49,7 @@ setup_phpmyadmin () {
 
 		case ${DIST_ID} in
 		Ubuntu)
-			apt-add-repository ppa:ondrej/php
+			apt-add-repository ppa:ondrej/php -y
 			;;
 		Debian)
 			case ${DIST_RELEASE} in
@@ -79,7 +79,7 @@ setup_phpmyadmin () {
 
 		case ${DIST_ID} in
 		Ubuntu)
-			apt-add-repository ppa:nijel/phpmyadmin
+			apt-add-repository ppa:nijel/phpmyadmin -y
 			;;
 		*)
 			;;

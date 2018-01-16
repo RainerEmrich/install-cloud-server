@@ -26,7 +26,7 @@ setup_php_fpm () {
 		echo
 		echo "#######################################################################################"
 		echo "#"
-		echo "# Install and enable php7.0-fpm and php7.1-fpm."
+		echo "# Install and enable php7.0-fpm, php7.1-fpm and php7.2-fpm."
 		echo "#"
 		echo "# The php-fpm status and ping pages are available for the admin host or local at:"
 		echo "# https://${MY_FQDN}/fpm-status?html&full"

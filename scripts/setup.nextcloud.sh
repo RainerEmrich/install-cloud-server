@@ -121,8 +121,8 @@ setup_nextcloud () {
 		echo "#######################################################################################"
 		echo
 
-		echo "letsencrypt --apache --non-interactive --agree-tos --hsts --uir --email ${MY_EMAIL} --rsa-key-size ${MY_KEY_SIZE} -d ${MY_NEXTCLOUD_DOMAIN}" >~/Dokumentation/letsencrypt/${MY_NEXTCLOUD_DOMAIN}.txt
-		letsencrypt --apache --non-interactive --agree-tos --hsts --uir --email ${MY_EMAIL} --rsa-key-size ${MY_KEY_SIZE} -d ${MY_NEXTCLOUD_DOMAIN}
+		echo "letsencrypt --authenticator webroot --webroot-path /var/www/html --installer apache --non-interactive --agree-tos --hsts --uir --email ${MY_EMAIL} --rsa-key-size ${MY_KEY_SIZE} -d ${MY_NEXTCLOUD_DOMAIN}" >~/Dokumentation/letsencrypt/${MY_NEXTCLOUD_DOMAIN}.txt
+		letsencrypt --authenticator webroot --webroot-path /var/www/html --installer apache --non-interactive --agree-tos --hsts --uir --email ${MY_EMAIL} --rsa-key-size ${MY_KEY_SIZE} -d ${MY_NEXTCLOUD_DOMAIN}
 
 		echo
 		echo "#######################################################################################"

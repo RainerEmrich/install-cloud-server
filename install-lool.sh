@@ -245,8 +245,8 @@ if [ "${LOOL_INSTALLED}" != "1" ] ; then
 	echo "#######################################################################################"
 	echo
 
-	echo "letsencrypt --apache --non-interactive --agree-tos --hsts --uir --email ${MY_EMAIL} --rsa-key-size ${MY_KEY_SIZE} -d ${LOOL_DOMAIN}" >~/Dokumentation/letsencrypt/${LOOL_DOMAIN}.txt
-	letsencrypt --apache --non-interactive --agree-tos --hsts --uir --email ${MY_EMAIL} --rsa-key-size ${MY_KEY_SIZE} -d ${LOOL_DOMAIN}
+	echo "letsencrypt --authenticator webroot --webroot-path /var/www/html --installer apache --non-interactive --agree-tos --hsts --uir --email ${MY_EMAIL} --rsa-key-size ${MY_KEY_SIZE} -d ${LOOL_DOMAIN}" >~/Dokumentation/letsencrypt/${LOOL_DOMAIN}.txt
+	letsencrypt --authenticator webroot --webroot-path /var/www/html --installer apache --non-interactive --agree-tos --hsts --uir --email ${MY_EMAIL} --rsa-key-size ${MY_KEY_SIZE} -d ${LOOL_DOMAIN}
 
 	echo
 	echo "#######################################################################################"

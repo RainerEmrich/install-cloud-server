@@ -44,6 +44,10 @@ setup_redis () {
 			echo "deb-src http://packages.dotdeb.org ${DIST_CODENAME} all" >>/etc/apt/sources.list.d/dotdeb.list
 			apt-get update
 			;;
+		Ubuntu)
+			add-apt-repository ppa:chris-lea/redis-server -y
+			apt-get update
+			;;
 		*)
 			;;
 		esac

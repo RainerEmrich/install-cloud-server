@@ -1,0 +1,13 @@
+--- php7.2-fpm.conf.orig	2018-01-15 14:16:25.875738784 +0000
++++ php7.2-fpm.conf	2018-01-15 14:16:52.747932031 +0000
+@@ -19,5 +19,10 @@
+     <FilesMatch "^\.ph(ar|p|ps|tml)$">
+         Require all denied
+     </FilesMatch>
++    <LocationMatch "/(fpm-ping|fpm-status)">
++        SetHandler "proxy:unix:/run/php/php7.2-fpm.sock|fcgi://localhost"
++        Require local
++        Include /etc/apache2/misc/my-current-admin-host.conf
++    </LocationMatch>
+ </IfModule>
+ </IfModule>

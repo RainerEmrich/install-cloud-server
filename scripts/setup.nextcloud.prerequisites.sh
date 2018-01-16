@@ -1,7 +1,6 @@
 #!/bin/bash
 #
-# Set up additional php modules, ffmpeg, imagemagick and libreoffice
-# for the use with nextcloud.
+# Set up additional php modules, ffmpeg and imagemagick for the use with nextcloud.
 #
 # Copyright 2017 Rainer Emrich, <rainer@emrich-ebersheim.de>
 #
@@ -46,11 +45,13 @@ setup_nextcloud_prerequisites () {
 
 		apt-get install php7.0-gmp php7.0-imap php7.0-intl php7.0-ldap php7.0-pgsql php7.0-sqlite3 \
 				php7.1-gmp php7.1-imap php7.1-intl php7.1-ldap php7.1-pgsql php7.1-sqlite3 \
+				php7.2-gmp php7.2-imap php7.2-intl php7.2-ldap php7.2-pgsql php7.2-sqlite3 \
 				php-apcu php-apcu-bc php-igbinary php-imagick php-memcached php-msgpack \
 				php-redis php-smbclient -y
 
 		systemctl restart php7.0-fpm
 		systemctl restart php7.1-fpm
+		systemctl restart php7.2-fpm
 
 		echo "#######################################################################################"
 		echo "#"
@@ -67,14 +68,6 @@ setup_nextcloud_prerequisites () {
 		echo "#######################################################################################"
 
 		apt-get install imagemagick imagemagick-doc -y
-
-		echo "#######################################################################################"
-		echo "#"
-		echo "# Install libreoffice."
-		echo "#"
-		echo "#######################################################################################"
-
-		apt-get install libreoffice -y
 
 		touch ${STAMP_DIR}/nextcloud_prerequisites_installed
 

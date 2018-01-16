@@ -48,7 +48,8 @@ setup_letsencrypt () {
 
 			apt-get update
 			apt-get install certbot python-certbot-apache python-certbot-doc python-acme-doc python-cryptography-vectors python-certbot-apache-doc python-openssl-doc -y
-			apt-get upgrade -y
+			apt-get dist-upgrade -y
+			apt-get autoremove --purge -y
 			;;
 		Debian)
 			echo "deb http://ftp.debian.org/debian ${DIST_CODENAME}-backports main" >/etc/apt/sources.list.d/backports.list
@@ -61,9 +62,9 @@ setup_letsencrypt () {
 		esac
 
 		mkdir -p ~/Dokumentation/letsencrypt/
-		echo "letsencrypt --apache --non-interactive --agree-tos --hsts --uir --email ${MY_EMAIL} --rsa-key-size ${MY_KEY_SIZE} -d ${MY_FQDN}" >~/Dokumentation/letsencrypt/${MY_FQDN}.txt
+		echo "letsencrypt --authenticator webroot --webroot-path /var/www/html --installer apache --non-interactive --agree-tos --hsts --uir --email ${MY_EMAIL} --rsa-key-size ${MY_KEY_SIZE} -d ${MY_FQDN}" >~/Dokumentation/letsencrypt/${MY_FQDN}.txt
 
-		letsencrypt --apache --non-interactive --agree-tos --hsts --uir --email ${MY_EMAIL} --rsa-key-size ${MY_KEY_SIZE} -d ${MY_FQDN}
+		letsencrypt --authenticator webroot --webroot-path /var/www/html --installer apache --non-interactive --agree-tos --hsts --uir --email ${MY_EMAIL} --rsa-key-size ${MY_KEY_SIZE} -d ${MY_FQDN}
 
 		patch /etc/letsencrypt/options-ssl-apache.conf ${PATCH_DIR}/etc.letsencrypt.options-ssl-apache.conf.patch
 		case ${DIST_ID} in

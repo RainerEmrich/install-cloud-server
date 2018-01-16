@@ -38,19 +38,27 @@ setup_php_fpm () {
 		ask_to_continue
 
 		apt-get update
-		apt-get install php7.0-fpm php7.1-fpm -y
+		apt-get install php7.0-fpm php7.1-fpm php7.2-fpm -y
 
 		PACKAGES=""
 		for PACKAGE in $(dpkg -l | grep php7.0 | awk '{print $2}' | sed 's/7.0/7.1/') ; do PACKAGES="${PACKAGES} ${PACKAGE}"; done
 		apt-get install ${PACKAGES} -y
 
+		PACKAGES=""
+		for PACKAGE in $(dpkg -l | grep php7.1 | awk '{print $2}' | sed 's/7.1/7.2/') ; do PACKAGES="${PACKAGES} ${PACKAGE}"; done
+		PACKAGES=$(echo $PACKAGES | sed 's/php7.2-mcrypt//')
+		apt-get install ${PACKAGES} -y
+
 		patch /etc/php/7.0/fpm/php.ini ${PATCH_DIR}/etc.php.7.0.fpm.php.ini.patch
 		patch /etc/php/7.1/fpm/php.ini ${PATCH_DIR}/etc.php.7.1.fpm.php.ini.patch
+		patch /etc/php/7.2/fpm/php.ini ${PATCH_DIR}/etc.php.7.2.fpm.php.ini.patch
 		patch /etc/php/7.0/fpm/pool.d/www.conf ${PATCH_DIR}/etc.php.7.0.fpm.pool.d.www.conf.patch
 		patch /etc/php/7.1/fpm/pool.d/www.conf ${PATCH_DIR}/etc.php.7.1.fpm.pool.d.www.conf.patch
+		patch /etc/php/7.2/fpm/pool.d/www.conf ${PATCH_DIR}/etc.php.7.2.fpm.pool.d.www.conf.patch
 
 		systemctl restart php7.0-fpm
 		systemctl restart php7.1-fpm
+		systemctl restart php7.2-fpm
 
 		case ${DIST_ID} in
 		Debian)
@@ -66,11 +74,12 @@ setup_php_fpm () {
 			;;
 		esac
 
-		a2dismod php7.0 php7.1 mpm_prefork
+		a2dismod php7.0 php7.1 php7.2 mpm_prefork
 		a2enmod proxy_fcgi setenvif mpm_event
 
 		patch /etc/apache2/conf-available/php7.0-fpm.conf ${PATCH_DIR}/etc.apache2.conf-available.php7.0-fpm.conf.patch
 		patch /etc/apache2/conf-available/php7.1-fpm.conf ${PATCH_DIR}/etc.apache2.conf-available.php7.1-fpm.conf.patch
+		patch /etc/apache2/conf-available/php7.2-fpm.conf ${PATCH_DIR}/etc.apache2.conf-available.php7.2-fpm.conf.patch
 
 		sed --in-place 's/#Include \/etc\/apache2\/conf-available\/php7.1-fpm/Include \/etc\/apache2\/conf-available\/php7.1-fpm/' /etc/apache2/sites-available/${MY_SITE_CONFIG}.conf
 

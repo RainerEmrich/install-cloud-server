@@ -79,6 +79,7 @@ get_config () {
 	export APPARMOR_DISABLED=$(test -f "${STAMP_DIR}/apparmor_disabled" && echo "1")
 	export APACHE2_INSTALLED=$(test -f "${STAMP_DIR}/apache2_installed" && echo "1")
 	export LETSENCRYPT_INSTALLED=$(test -f "${STAMP_DIR}/letsencrypt_installed" && echo "1")
+	export LETSENCRYPT_CONFIG_ARCHIVE=$(test -f "${ARCHIVES_DIR}/letsencrypt.tar" && echo "1")
 	export POSTFIX_SETUP=$(test -f "${STAMP_DIR}/postfix_setup" && echo "1")
 	export DOCKER_INSTALLED=$(test -f "${STAMP_DIR}/docker_installed" && echo "1")
 	export MUNIN_INSTALLED=$(test -f "${STAMP_DIR}/munin_installed" && echo "1")

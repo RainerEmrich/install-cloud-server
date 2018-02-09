@@ -31,7 +31,7 @@ setup_postfix () {
 		echo "# See configuration in file"
 		echo "# ${CONFIG_DIR}/postfix.sh"
 		echo "#"
-		echo "# E-mail address for redirectrion: ${MY_MAIL_REDIRECT}"
+		echo "# E-mail address for redirection: ${MY_MAIL_REDIRECT}"
 		echo "# Relayhost: ${MY_MAIL_RELAY}"
 		echo "# Relayhost port: ${MY_MAIL_RELAY_PORT}"
 		echo "# Relayhost user: ${MY_MAIL_RELAY_USER}"

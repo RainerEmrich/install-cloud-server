@@ -47,7 +47,7 @@ setup_letsencrypt () {
 			apt-add-repository -y ppa:certbot/certbot
 
 			apt-get update
-			apt-get install certbot python-certbot-apache python-certbot-doc python-acme-doc python-cryptography-vectors python-certbot-apache-doc python-openssl-doc -y
+			apt-get install certbot python-certbot-apache -y
 			apt-get dist-upgrade -y
 			apt-get autoremove --purge -y
 			;;
@@ -64,16 +64,29 @@ setup_letsencrypt () {
 		mkdir -p ~/Dokumentation/letsencrypt/
 		echo "letsencrypt --authenticator webroot --webroot-path /var/www/html --installer apache --non-interactive --agree-tos --hsts --uir --email ${MY_EMAIL} --rsa-key-size ${MY_KEY_SIZE} -d ${MY_FQDN}" >~/Dokumentation/letsencrypt/${MY_FQDN}.txt
 
+		if [ "${LETSENCRYPT_CONFIG_ARCHIVE}" == "1" ] ; then
+			tar -C /etc -xvf ${ARCHIVES_DIR}/letsencrypt.tar
+			sed --in-place "s/^Header edit Set-Cookie/# Header edit Set-Cookie/" /etc/letsencrypt/options-ssl-apache.conf
+		fi
+
 		letsencrypt --authenticator webroot --webroot-path /var/www/html --installer apache --non-interactive --agree-tos --hsts --uir --email ${MY_EMAIL} --rsa-key-size ${MY_KEY_SIZE} -d ${MY_FQDN}
 
-		patch /etc/letsencrypt/options-ssl-apache.conf ${PATCH_DIR}/etc.letsencrypt.options-ssl-apache.conf.patch
+		if [ "${LETSENCRYPT_CONFIG_ARCHIVE}" == "1" ] ; then
+			sed --in-place "s/^# Header edit Set-Cookie/Header edit Set-Cookie/" /etc/letsencrypt/options-ssl-apache.conf
+		else
+			patch /etc/letsencrypt/options-ssl-apache.conf ${PATCH_DIR}/etc.letsencrypt.options-ssl-apache.conf.patch
+		fi
+
 		case ${DIST_ID} in
 		Debian)
-			sed --in-place "s/SSLOpenSSLConfCmd ECDHParameters/# SSLOpenSSLConfCmd ECDHParameters/" /etc/letsencrypt/options-ssl-apache.conf
-			sed --in-place "s/SSLOpenSSLConfCmd Curves/# SSLOpenSSLConfCmd Curves/" /etc/letsencrypt/options-ssl-apache.conf
-			sed --in-place "s/SSLSessionTickets/# SSLSessionTickets/" /etc/letsencrypt/options-ssl-apache.conf
+			sed --in-place "s/^SSLOpenSSLConfCmd ECDHParameters/# SSLOpenSSLConfCmd ECDHParameters/" /etc/letsencrypt/options-ssl-apache.conf
+			sed --in-place "s/^SSLOpenSSLConfCmd Curves/# SSLOpenSSLConfCmd Curves/" /etc/letsencrypt/options-ssl-apache.conf
+			sed --in-place "s/^SSLSessionTickets/# SSLSessionTickets/" /etc/letsencrypt/options-ssl-apache.conf
 			;;
 		*)
+			sed --in-place "s/# SSLOpenSSLConfCmd ECDHParameters/SSLOpenSSLConfCmd ECDHParameters/" /etc/letsencrypt/options-ssl-apache.conf
+			sed --in-place "s/# SSLOpenSSLConfCmd Curves/SSLOpenSSLConfCmd Curves/" /etc/letsencrypt/options-ssl-apache.conf
+			sed --in-place "s/# SSLSessionTickets/SSLSessionTickets/" /etc/letsencrypt/options-ssl-apache.conf
 			;;
 		esac
 
@@ -102,6 +115,10 @@ setup_letsencrypt () {
 		echo "# path to the public_html / webroot folder being served by your web server." >>/etc/letsencrypt/cli.ini
 		echo "# authenticator = webroot" >>/etc/letsencrypt/cli.ini
 		echo "# webroot-path = /usr/share/nginx/html" >>/etc/letsencrypt/cli.ini
+		echo "" >>/etc/letsencrypt/cli.ini
+		echo "# Because we are using logrotate for greater flexibility, disable the" >>/etc/letsencrypt/cli.ini
+		echo "# internal certbot logrotation." >>/etc/letsencrypt/cli.ini
+		echo "max-log-backups = 0" >>/etc/letsencrypt/cli.ini
 
 		patch /etc/apache2/conf-available/security.conf ${PATCH_DIR}/etc.apache2.conf-available.security.conf.patch
 		patch /etc/apache2/conf-available/apache2-doc.conf ${PATCH_DIR}/etc.apache2.conf-available.apache2-doc.conf.patch

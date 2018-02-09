@@ -28,7 +28,7 @@ setup_nextcloud_prerequisites () {
 		echo "#"
 		echo "# Install nextcloud prerequisites."
 		echo "#"
-		echo "# Additional php modules, ffmpeg, imagemagick and libreoffice."
+		echo "# Additional php modules, ffmpeg and imagemagick."
 		echo "#"
 		echo "# To finish the installation we reboot the system!"
 		echo "#"

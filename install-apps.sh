@@ -105,14 +105,14 @@ if [ "${NEXTCLOUD_APPS_INSTALLED}" != "1" ] ; then
 		cd ${MY_NEXTCLOUD_DR}
 		~/bin/${_MY_NEXTCLOUD_DOMAIN_}-upgrade.sh
 		echo "Enabling ${APP}."
-		sudo -u www-data php7.1 occ app:enable ${APP}
+		sudo -u www-data php7.2 occ app:enable ${APP}
 
 		if [ "${APP}" == "previewgenerator" ] ; then
-			sudo -u www-data php7.1 occ preview:delete_old
-			sudo -u www-data php7.1 occ preview:generate-all
-			sudo -u www-data php7.1 occ preview:pre-generate
+			sudo -u www-data php7.2 occ preview:delete_old
+			sudo -u www-data php7.2 occ preview:generate-all
+			sudo -u www-data php7.2 occ preview:pre-generate
 			crontab -u www-data -l >~/crontab.txt
-			echo "5,20,35,50  *  *  *  * php7.1 ${MY_NEXTCLOUD_DR}/occ preview:pre-generate" >>~/crontab.txt
+			echo "5,20,35,50  *  *  *  * php7.2 ${MY_NEXTCLOUD_DR}/occ preview:pre-generate" >>~/crontab.txt
 			crontab -u www-data ~/crontab.txt
 			/bin/rm ~/crontab.txt
 		fi
@@ -128,8 +128,8 @@ if [ "${NEXTCLOUD_APPS_INSTALLED}" != "1" ] ; then
 
 	~/bin/${_MY_NEXTCLOUD_DOMAIN_}-upgrade.sh
 
-	sudo -u www-data php7.1 occ maintenance:mimetype:update-js
-	sudo -u www-data php7.1 occ files:scan --all
+	sudo -u www-data php7.2 occ maintenance:mimetype:update-js
+	sudo -u www-data php7.2 occ files:scan --all
 
 	~/bin/${_MY_NEXTCLOUD_DOMAIN_}-safe.sh
 

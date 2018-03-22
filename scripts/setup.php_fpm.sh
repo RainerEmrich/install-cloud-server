@@ -51,7 +51,9 @@ setup_php_fpm () {
 
 		patch /etc/php/7.0/fpm/php.ini ${PATCH_DIR}/etc.php.7.0.fpm.php.ini.patch
 		patch /etc/php/7.1/fpm/php.ini ${PATCH_DIR}/etc.php.7.1.fpm.php.ini.patch
+		patch /etc/php/7.1/cli/php.ini ${PATCH_DIR}/etc.php.7.1.cli.php.ini.patch
 		patch /etc/php/7.2/fpm/php.ini ${PATCH_DIR}/etc.php.7.2.fpm.php.ini.patch
+		patch /etc/php/7.2/cli/php.ini ${PATCH_DIR}/etc.php.7.2.cli.php.ini.patch
 		patch /etc/php/7.0/fpm/pool.d/www.conf ${PATCH_DIR}/etc.php.7.0.fpm.pool.d.www.conf.patch
 		patch /etc/php/7.1/fpm/pool.d/www.conf ${PATCH_DIR}/etc.php.7.1.fpm.pool.d.www.conf.patch
 		patch /etc/php/7.2/fpm/pool.d/www.conf ${PATCH_DIR}/etc.php.7.2.fpm.pool.d.www.conf.patch
@@ -81,7 +83,7 @@ setup_php_fpm () {
 		patch /etc/apache2/conf-available/php7.1-fpm.conf ${PATCH_DIR}/etc.apache2.conf-available.php7.1-fpm.conf.patch
 		patch /etc/apache2/conf-available/php7.2-fpm.conf ${PATCH_DIR}/etc.apache2.conf-available.php7.2-fpm.conf.patch
 
-		sed --in-place 's/#Include \/etc\/apache2\/conf-available\/php7.1-fpm/Include \/etc\/apache2\/conf-available\/php7.1-fpm/' /etc/apache2/sites-available/${MY_SITE_CONFIG}.conf
+		sed --in-place 's/#Include \/etc\/apache2\/conf-available\/php7.2-fpm/Include \/etc\/apache2\/conf-available\/php7.2-fpm/' /etc/apache2/sites-available/${MY_SITE_CONFIG}.conf
 
 		systemctl restart apache2
 

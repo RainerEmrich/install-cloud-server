@@ -171,7 +171,7 @@ setup_nextcloud () {
 
 		cd ${MY_NEXTCLOUD_DR}
 
-		sudo -u www-data php7.1 occ maintenance:install --database "mysql" \
+		sudo -u www-data php7.2 occ maintenance:install --database "mysql" \
 			--database-name "${MY_DATABASE_NAME}" --database-user "${MY_DATABASE_NAME}" --database-pass "${MY_DATABASE_PASSWD}" \
 			--admin-user "${MY_NC_ADMIN_NAME}" --admin-pass "${MY_NC_ADMIN_PASSWD}" --data-dir "${MY_NEXTCLOUD_DATA_DIR}"
 
@@ -251,7 +251,7 @@ setup_nextcloud () {
 		  echo "# For more information see the manual pages of crontab(5) and cron(8)" ; \
 		  echo "#" ; \
 		  echo "# m h  dom mon dow   command" ; \
-		  echo "0,15,30,45  *  *  *  * php7.1 -f ${MY_NEXTCLOUD_DR}/cron.php >/dev/null 2>&1") | crontab -u www-data -
+		  echo "0,15,30,45  *  *  *  * php7.2 -f ${MY_NEXTCLOUD_DR}/cron.php >/dev/null 2>&1") | crontab -u www-data -
 
 		touch ${STAMP_DIR}/nextcloud_installed
 

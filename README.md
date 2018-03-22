@@ -38,9 +38,9 @@ office.mydomain.tld and cloud.mydomain.tld.
 * Setup docker
 * Setup munin
 * Setup phpmyadmin
-* Setup php7.0-fpm and php7.1-fpm
-* Install nextcloud prerequisites (including the necessary php 7.0 and php 7.1 modules)
-* Install nextcloud using php 7.1
+* Setup php7.0-fpm, php7.1-fpm and php7.2-fpm
+* Install nextcloud prerequisites (including the necessary php 7.0, php7.1 and php 7.2 modules)
+* Install nextcloud using php 7.2
 * Install libreoffice online [optional, seperate script]
 * Install additional nextcloud apps [optional, seperate script]
 
@@ -148,7 +148,7 @@ apt-show-versions, dnsutils, git, man-db, manpages, vim, vim-doc, vim-scripts an
 20. Setup phpmyadmin from the ppa of Michal Čihař (nijel). Acces is restricted to local and the
 administration host. Additionally scripts are copied to ~/bin/ for enabling and disabling the phpmyadmin
 page completely and to enable or disbale root login for phpmyadmin.
-21. Install and configure php7.0-fpm and php7.1-fpm.
+21. Install and configure php7.0-fpm, php7.1-fpm and php7.2-fpm.
 22. Install the remaining prerequisites for nextcloud.
 23. Install nextcloud.
 24. We remove the startup line from ~/.bashrc.

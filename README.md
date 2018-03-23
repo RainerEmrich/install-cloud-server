@@ -156,7 +156,6 @@ page completely and to enable or disbale root login for phpmyadmin.
 26. Optionally install additional nextcloud apps using the install-apps.sh script, has to be started manually.
 
 Running install-server.sh takes about 12 minutes. Last tested on 22nd of March 2017.
-
 Running install-lool.sh takes additional 2 minutes. Most of the time is used to unpack the libreoffice online package.
 
 
@@ -198,3 +197,9 @@ The script ~/bin/phpmyadmin-off.sh disables the page again.
 I'm sure there is a lot of room for improvements. Don't hesitate to contact me.
 
 The script collection is based on my two article series about 1&amp;1 cloud server on https://blog.emrich-ebersheim.de
+
+
+## Status
+
+Last tested with Ubuntu 16.04 on 22nd of March 2018
+Debian 8 untested at the moment.

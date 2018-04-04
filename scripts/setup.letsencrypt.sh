@@ -67,58 +67,103 @@ setup_letsencrypt () {
 		if [ "${LETSENCRYPT_CONFIG_ARCHIVE}" == "1" ] ; then
 			tar -C /etc -xvf ${ARCHIVES_DIR}/letsencrypt.tar
 			sed --in-place "s/^Header edit Set-Cookie/# Header edit Set-Cookie/" /etc/letsencrypt/options-ssl-apache.conf
-		fi
+			case ${DIST_ID} in
+			Debian)
+				case ${DIST_RELEASE} in
+				8.*)
+					sed --in-place "s/^max-log-backups/# max-log-backups/" /etc/letsencrypt/cli.ini
+					sed --in-place "s/^SSLOpenSSLConfCmd ECDHParameters/# SSLOpenSSLConfCmd ECDHParameters/" /etc/letsencrypt/options-ssl-apache.conf
+					sed --in-place "s/^SSLOpenSSLConfCmd Curves/# SSLOpenSSLConfCmd Curves/" /etc/letsencrypt/options-ssl-apache.conf
+					sed --in-place "s/^SSLSessionTickets/# SSLSessionTickets/" /etc/letsencrypt/options-ssl-apache.conf
+					;;
+				*)
+					;;
+				esac
+				;;
+			*)
+				;;
+			esac
 
-		letsencrypt --authenticator webroot --webroot-path /var/www/html --installer apache --non-interactive --agree-tos --hsts --uir --email ${MY_EMAIL} --rsa-key-size ${MY_KEY_SIZE} -d ${MY_FQDN}
+			letsencrypt --authenticator webroot --webroot-path /var/www/html --installer apache --non-interactive --agree-tos --hsts --uir --email ${MY_EMAIL} --rsa-key-size ${MY_KEY_SIZE} -d ${MY_FQDN}
 
-		if [ "${LETSENCRYPT_CONFIG_ARCHIVE}" == "1" ] ; then
 			sed --in-place "s/^# Header edit Set-Cookie/Header edit Set-Cookie/" /etc/letsencrypt/options-ssl-apache.conf
+
+			case ${DIST_ID} in
+			Debian)
+				;;
+			*)
+				sed --in-place "s/# max-log-backups/max-log-backups/" /etc/letsencrypt/cli.ini
+				sed --in-place "s/# SSLOpenSSLConfCmd ECDHParameters/SSLOpenSSLConfCmd ECDHParameters/" /etc/letsencrypt/options-ssl-apache.conf
+				sed --in-place "s/# SSLOpenSSLConfCmd Curves/SSLOpenSSLConfCmd Curves/" /etc/letsencrypt/options-ssl-apache.conf
+				sed --in-place "s/# SSLSessionTickets/SSLSessionTickets/" /etc/letsencrypt/options-ssl-apache.conf
+				;;
+			esac
 		else
+			letsencrypt --authenticator webroot --webroot-path /var/www/html --installer apache --non-interactive --agree-tos --hsts --uir --email ${MY_EMAIL} --rsa-key-size ${MY_KEY_SIZE} -d ${MY_FQDN}
+
 			patch /etc/letsencrypt/options-ssl-apache.conf ${PATCH_DIR}/etc.letsencrypt.options-ssl-apache.conf.patch
+
+			case ${DIST_ID} in
+			Debian)
+				case ${DIST_RELEASE} in
+				8.*)
+					sed --in-place "s/^SSLOpenSSLConfCmd ECDHParameters/# SSLOpenSSLConfCmd ECDHParameters/" /etc/letsencrypt/options-ssl-apache.conf
+					sed --in-place "s/^SSLOpenSSLConfCmd Curves/# SSLOpenSSLConfCmd Curves/" /etc/letsencrypt/options-ssl-apache.conf
+					sed --in-place "s/^SSLSessionTickets/# SSLSessionTickets/" /etc/letsencrypt/options-ssl-apache.conf
+					;;
+				*)
+					;;
+				esac
+				;;
+			*)
+				;;
+			esac
+
+			echo "# This is an example of the kind of things you can do in a configuration file." >/etc/letsencrypt/cli.ini
+			echo "# All flags used by the client can be configured here. Run Let's Encrypt with" >>/etc/letsencrypt/cli.ini
+			echo "# "--help" to learn more about the available options." >>/etc/letsencrypt/cli.ini
+			echo "" >>/etc/letsencrypt/cli.ini
+			echo "# Use a 4096 bit RSA key instead of 2048" >>/etc/letsencrypt/cli.ini
+			echo "rsa-key-size = ${MY_KEY_SIZE}" >>/etc/letsencrypt/cli.ini
+			echo "" >>/etc/letsencrypt/cli.ini
+			echo "# Uncomment and update to register with the specified e-mail address" >>/etc/letsencrypt/cli.ini
+			echo "email = ${MY_EMAIL}" >>/etc/letsencrypt/cli.ini
+			echo "" >>/etc/letsencrypt/cli.ini
+			echo "# Uncomment and update to generate certificates for the specified" >>/etc/letsencrypt/cli.ini
+			echo "# domains." >>/etc/letsencrypt/cli.ini
+			echo "# domains = example.com, www.example.com" >>/etc/letsencrypt/cli.ini
+			echo "" >>/etc/letsencrypt/cli.ini
+			echo "# Uncomment to use a text interface instead of ncurses" >>/etc/letsencrypt/cli.ini
+			echo "# text = True" >>/etc/letsencrypt/cli.ini
+			echo "" >>/etc/letsencrypt/cli.ini
+			echo "# Uncomment to use the standalone authenticator on port 443" >>/etc/letsencrypt/cli.ini
+			echo "# authenticator = standalone" >>/etc/letsencrypt/cli.ini
+			echo "# standalone-supported-challenges = tls-sni-01" >>/etc/letsencrypt/cli.ini
+			echo "" >>/etc/letsencrypt/cli.ini
+			echo "# Uncomment to use the webroot authenticator. Replace webroot-path with the" >>/etc/letsencrypt/cli.ini
+			echo "# path to the public_html / webroot folder being served by your web server." >>/etc/letsencrypt/cli.ini
+			echo "# authenticator = webroot" >>/etc/letsencrypt/cli.ini
+			echo "# webroot-path = /usr/share/nginx/html" >>/etc/letsencrypt/cli.ini
+			echo "" >>/etc/letsencrypt/cli.ini
+			echo "# Because we are using logrotate for greater flexibility, disable the" >>/etc/letsencrypt/cli.ini
+			echo "# internal certbot logrotation." >>/etc/letsencrypt/cli.ini
+
+			case ${DIST_ID} in
+			Debian)
+				case ${DIST_RELEASE} in
+				8.*)
+					echo "# max-log-backups = 0" >>/etc/letsencrypt/cli.ini
+					;;
+				*)
+					echo "max-log-backups = 0" >>/etc/letsencrypt/cli.ini
+					;;
+				esac
+				;;
+			*)
+				echo "max-log-backups = 0" >>/etc/letsencrypt/cli.ini
+				;;
+			esac
 		fi
-
-		case ${DIST_ID} in
-		Debian)
-			sed --in-place "s/^SSLOpenSSLConfCmd ECDHParameters/# SSLOpenSSLConfCmd ECDHParameters/" /etc/letsencrypt/options-ssl-apache.conf
-			sed --in-place "s/^SSLOpenSSLConfCmd Curves/# SSLOpenSSLConfCmd Curves/" /etc/letsencrypt/options-ssl-apache.conf
-			sed --in-place "s/^SSLSessionTickets/# SSLSessionTickets/" /etc/letsencrypt/options-ssl-apache.conf
-			;;
-		*)
-			sed --in-place "s/# SSLOpenSSLConfCmd ECDHParameters/SSLOpenSSLConfCmd ECDHParameters/" /etc/letsencrypt/options-ssl-apache.conf
-			sed --in-place "s/# SSLOpenSSLConfCmd Curves/SSLOpenSSLConfCmd Curves/" /etc/letsencrypt/options-ssl-apache.conf
-			sed --in-place "s/# SSLSessionTickets/SSLSessionTickets/" /etc/letsencrypt/options-ssl-apache.conf
-			;;
-		esac
-
-		echo "# This is an example of the kind of things you can do in a configuration file." >/etc/letsencrypt/cli.ini
-		echo "# All flags used by the client can be configured here. Run Let's Encrypt with" >>/etc/letsencrypt/cli.ini
-		echo "# "--help" to learn more about the available options." >>/etc/letsencrypt/cli.ini
-		echo "" >>/etc/letsencrypt/cli.ini
-		echo "# Use a 4096 bit RSA key instead of 2048" >>/etc/letsencrypt/cli.ini
-		echo "rsa-key-size = ${MY_KEY_SIZE}" >>/etc/letsencrypt/cli.ini
-		echo "" >>/etc/letsencrypt/cli.ini
-		echo "# Uncomment and update to register with the specified e-mail address" >>/etc/letsencrypt/cli.ini
-		echo "email = ${MY_EMAIL}" >>/etc/letsencrypt/cli.ini
-		echo "" >>/etc/letsencrypt/cli.ini
-		echo "# Uncomment and update to generate certificates for the specified" >>/etc/letsencrypt/cli.ini
-		echo "# domains." >>/etc/letsencrypt/cli.ini
-		echo "# domains = example.com, www.example.com" >>/etc/letsencrypt/cli.ini
-		echo "" >>/etc/letsencrypt/cli.ini
-		echo "# Uncomment to use a text interface instead of ncurses" >>/etc/letsencrypt/cli.ini
-		echo "# text = True" >>/etc/letsencrypt/cli.ini
-		echo "" >>/etc/letsencrypt/cli.ini
-		echo "# Uncomment to use the standalone authenticator on port 443" >>/etc/letsencrypt/cli.ini
-		echo "# authenticator = standalone" >>/etc/letsencrypt/cli.ini
-		echo "# standalone-supported-challenges = tls-sni-01" >>/etc/letsencrypt/cli.ini
-		echo "" >>/etc/letsencrypt/cli.ini
-		echo "# Uncomment to use the webroot authenticator. Replace webroot-path with the" >>/etc/letsencrypt/cli.ini
-		echo "# path to the public_html / webroot folder being served by your web server." >>/etc/letsencrypt/cli.ini
-		echo "# authenticator = webroot" >>/etc/letsencrypt/cli.ini
-		echo "# webroot-path = /usr/share/nginx/html" >>/etc/letsencrypt/cli.ini
-		echo "" >>/etc/letsencrypt/cli.ini
-		echo "# Because we are using logrotate for greater flexibility, disable the" >>/etc/letsencrypt/cli.ini
-		echo "# internal certbot logrotation." >>/etc/letsencrypt/cli.ini
-		echo "max-log-backups = 0" >>/etc/letsencrypt/cli.ini
 
 		patch /etc/apache2/conf-available/security.conf ${PATCH_DIR}/etc.apache2.conf-available.security.conf.patch
 		patch /etc/apache2/conf-available/apache2-doc.conf ${PATCH_DIR}/etc.apache2.conf-available.apache2-doc.conf.patch

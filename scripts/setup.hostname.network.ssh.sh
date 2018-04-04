@@ -71,7 +71,22 @@ setup_hostname_network_ssh () {
 
 		echo "${MY_FQDN}" >/etc/mailname
 
-		/bin/cp ${DATA_DIR}/root/.toprc ~/
+		case ${DIST_ID} in
+		Debian)
+			case ${DIST_RELEASE} in
+			8.*)
+				/bin/cp ${DATA_DIR}/root/.toprc.debian8 ~/.toprc
+				;;
+			*)
+				/bin/cp ${DATA_DIR}/root/.toprc ~/
+				;;
+			esac
+			;;
+		*)
+			/bin/cp ${DATA_DIR}/root/.toprc ~/
+			;;
+		esac
+
 		echo "alias rm='rm -i'" >~/.bash_aliases
 		echo "alias cp='cp -i'" >>~/.bash_aliases
 		echo "alias mv='mv -i'" >>~/.bash_aliases
@@ -265,6 +280,20 @@ setup_hostname_network_ssh () {
 			/bin/cp ${CONFIG_DIR}/ssh/* ~/.ssh/
 			chmod 600 ~/.ssh/*
 			test -f ~/.ssh/*.pub && chmod 644 ~/.ssh/*.pub
+
+			case ${DIST_ID} in
+			Debian)
+				case ${DIST_RELEASE} in
+				8.*)
+					ssh-keygen -t ed25519 -f /etc/ssh/ssh_host_ed25519_key -N ''
+					;;
+				*)
+					;;
+				esac
+				;;
+			*)
+				;;
+			esac
 
 			patch /etc/ssh/sshd_config ${PATCH_DIR}/etc.ssh.sshd_config.patch
 

@@ -64,9 +64,25 @@ if [[ "${CURRENT_FQDN}" != "localhost.localdomain" && "${CURRENT_FQDN}" != "${MY
 else
 
 	if [ "$(grep "\.bash_aliases" ~/.bashrc)" == "" ] ; then
-		echo "if [ -f ~/.bash_aliases ]; then" >>~/.bashrc
-		echo "    . ~/.bash_aliases" >>~/.bashrc
-		echo "fi" >>~/.bashrc
+		case ${DIST_ID} in
+		Debian)
+			case ${DIST_RELEASE} in
+			8.*)
+				/bin/cp ${DATA_DIR}/root/.bashrc.debian8 ~/.bashrc
+				;;
+			*)
+				echo "if [ -f ~/.bash_aliases ]; then" >>~/.bashrc
+				echo "    . ~/.bash_aliases" >>~/.bashrc
+				echo "fi" >>~/.bashrc
+				;;
+			esac
+			;;
+		*)
+			echo "if [ -f ~/.bash_aliases ]; then" >>~/.bashrc
+			echo "    . ~/.bash_aliases" >>~/.bashrc
+			echo "fi" >>~/.bashrc
+			;;
+		esac
 	fi
 
 	test -z "$(grep "${MYSELF}" ~/.bashrc)" && echo "${MYSELF}" >>~/.bashrc

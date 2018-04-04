@@ -41,6 +41,9 @@ setup_apache () {
 			apt-get dist-upgrade -y
 			;;
 		*)
+			apt-get remove libapache2-mod-python -y
+			a2dismod php5
+			systemctl restart apache2
 			;;
 		esac
 

@@ -1,0 +1,20 @@
+--- sshd_config.orig	2018-04-06 14:13:18.052246033 +0000
++++ sshd_config	2018-04-06 14:37:56.800878022 +0000
+@@ -27,6 +27,8 @@
+ #LogLevel INFO
+ 
+ # Authentication:
++# Password based logins are disabled - only public key based logins are allowed.
++AuthenticationMethods publickey
+ 
+ #LoginGraceTime 2m
+ #PermitRootLogin prohibit-password
+@@ -34,7 +36,7 @@
+ #MaxAuthTries 6
+ #MaxSessions 10
+ 
+-#PubkeyAuthentication yes
++PubkeyAuthentication yes
+ 
+ # Expect .ssh/authorized_keys2 to be disregarded by default in future.
+ #AuthorizedKeysFile	.ssh/authorized_keys .ssh/authorized_keys2

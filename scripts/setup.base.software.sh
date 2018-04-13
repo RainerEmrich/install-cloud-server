@@ -52,13 +52,14 @@ setup_base_software () {
 
 		case ${DIST_ID} in
 		Ubuntu)
-			apt-get install update-notifier-common -y
+			apt-get install ntp ntp-doc update-notifier-common -y
 			/usr/lib/update-notifier/update-motd-updates-available --force
 			;;
 		Debian)
 			case ${DIST_RELEASE} in
+			8.* | \
 			9.*)
-				apt-get install unattended-upgrades apt-listchanges dirmngr -y
+				apt-get install ntp ntp-doc unattended-upgrades apt-listchanges dirmngr -y
 				dpkg-reconfigure -plow unattended-upgrades
 				;;
 			*)

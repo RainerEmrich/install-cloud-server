@@ -3,7 +3,7 @@
 # Set up php7.0, php7.1 and php7.2 base and phpmyadmin using the ppas from Ondřej Surý
 # and Michal Čihař (nijel).
 #
-# Copyright 2017,2018 Rainer Emrich, <rainer@emrich-ebersheim.de>
+# Copyright (C) 2017-2018 Rainer Emrich, <rainer@emrich-ebersheim.de>
 #
 # This file is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -54,7 +54,8 @@ setup_phpmyadmin () {
 			;;
 		Debian)
 			case ${DIST_RELEASE} in
-			8.*)
+			8.* | \
+			9.*)
 				wget -O /etc/apt/trusted.gpg.d/php.gpg https://packages.sury.org/php/apt.gpg
 				echo "deb https://packages.sury.org/php/ $(lsb_release -sc) main" > /etc/apt/sources.list.d/php.list
 				;;
@@ -72,6 +73,7 @@ setup_phpmyadmin () {
 		for PACKAGE in $(dpkg -l | grep php7.0 | awk '{print $2}') ; do PACKAGES70="${PACKAGES70} ${PACKAGE}"; done
 		PACKAGES71=$(echo ${PACKAGES70} | sed 's/7.0/7.1/g')
 		PACKAGES72=$(echo ${PACKAGES71} | sed 's/7.1/7.2/g')
+		PACKAGES72=$(echo ${PACKAGES72} | sed 's/php7.2-mcrypt//')
 		apt-get install ${PACKAGES70} ${PACKAGES71} ${PACKAGES72} -y
 
 		apt-get dist-upgrade -y
@@ -108,6 +110,10 @@ setup_phpmyadmin () {
 			8.*)
 				patch /etc/phpmyadmin/apache.conf ${PATCH_DIR}/etc.phpmyadmin.apache.conf.patch
 				patch /etc/phpmyadmin/config.inc.php ${PATCH_DIR}/etc.phpmyadmin.config.inc.php.debian8.patch
+				;;
+			9.*)
+				patch /etc/phpmyadmin/apache.conf ${PATCH_DIR}/etc.phpmyadmin.apache.conf.patch
+				patch /etc/phpmyadmin/config.inc.php ${PATCH_DIR}/etc.phpmyadmin.config.inc.php.debian9.patch
 				;;
 			*)
 				;;

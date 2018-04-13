@@ -2,7 +2,7 @@
 #
 # Set up hostname, private network, sshd config and ssh keys.
 #
-# Copyright 2017,2018 Rainer Emrich, <rainer@emrich-ebersheim.de>
+# Copyright (C) 2017-2018 Rainer Emrich, <rainer@emrich-ebersheim.de>
 #
 # This file is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -74,7 +74,8 @@ setup_hostname_network_ssh () {
 		case ${DIST_ID} in
 		Debian)
 			case ${DIST_RELEASE} in
-			8.*)
+			8.* | \
+			9.*)
 				/bin/cp ${DATA_DIR}/root/.toprc.debian8 ~/.toprc
 				;;
 			*)
@@ -158,7 +159,15 @@ setup_hostname_network_ssh () {
 				case ${DIST_ID} in
 				Debian)
 					case ${DIST_RELEASE} in
-					8.*)
+					8.* | \
+					9.*)
+						echo "# The private network interface" >/etc/network/interfaces.d/${MY_PRIVATE_NETWORK_DEVICE}.cfg
+						echo "auto ${MY_PRIVATE_NETWORK_DEVICE}" >>/etc/network/interfaces.d/${MY_PRIVATE_NETWORK_DEVICE}.cfg
+						echo "iface ${MY_PRIVATE_NETWORK_DEVICE} inet static" >>/etc/network/interfaces.d/${MY_PRIVATE_NETWORK_DEVICE}.cfg
+						echo "address ${MY_PRIVATE_NETWORK_IP}" >>/etc/network/interfaces.d/${MY_PRIVATE_NETWORK_DEVICE}.cfg
+						echo "netmask ${MY_PRIVATE_NETWORK_MASK}" >>/etc/network/interfaces.d/${MY_PRIVATE_NETWORK_DEVICE}.cfg
+						;;
+					*)
 						echo "# The private network interface" >/etc/network/interfaces.d/${MY_PRIVATE_NETWORK_DEVICE}.cfg
 						echo "auto ${MY_PRIVATE_NETWORK_DEVICE}" >>/etc/network/interfaces.d/${MY_PRIVATE_NETWORK_DEVICE}.cfg
 						echo "iface ${MY_PRIVATE_NETWORK_DEVICE} inet static" >>/etc/network/interfaces.d/${MY_PRIVATE_NETWORK_DEVICE}.cfg
@@ -286,16 +295,19 @@ setup_hostname_network_ssh () {
 				case ${DIST_RELEASE} in
 				8.*)
 					ssh-keygen -t ed25519 -f /etc/ssh/ssh_host_ed25519_key -N ''
+					patch /etc/ssh/sshd_config ${PATCH_DIR}/etc.ssh.sshd_config.patch
+					;;
+				9.*)
+					patch /etc/ssh/sshd_config ${PATCH_DIR}/etc.ssh.sshd_config.debian9.patch
 					;;
 				*)
 					;;
 				esac
 				;;
 			*)
+				patch /etc/ssh/sshd_config ${PATCH_DIR}/etc.ssh.sshd_config.patch
 				;;
 			esac
-
-			patch /etc/ssh/sshd_config ${PATCH_DIR}/etc.ssh.sshd_config.patch
 
 			touch ${STAMP_DIR}/ssh_set
 

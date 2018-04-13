@@ -2,7 +2,7 @@
 #
 # Set up postfix with ssl
 #
-# Copyright 2017,2018 Rainer Emrich, <rainer@emrich-ebersheim.de>
+# Copyright (C) 2017-2018 Rainer Emrich, <rainer@emrich-ebersheim.de>
 #
 # This file is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -51,6 +51,9 @@ setup_postfix () {
 			8.*)
 				sed --in-place "/html_directory/d" /etc/postfix/main.cf
 				echo "inet_protocols = all" >>/etc/postfix/main.cf
+				;;
+			9.*)
+				sed --in-place "/html_directory/d" /etc/postfix/main.cf
 				;;
 			*)
 				;;

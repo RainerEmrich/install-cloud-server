@@ -2,7 +2,7 @@
 #
 # Show some information about the script.
 #
-# Copyright 2017,2018 Rainer Emrich, <rainer@emrich-ebersheim.de>
+# Copyright (C) 2017-2018 Rainer Emrich, <rainer@emrich-ebersheim.de>
 #
 # This file is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -31,15 +31,20 @@ show_info () {
 	echo "# CPU: 1 vcore                                                                        #"
 	echo "# RAM: 0.5 GB                                                                         #"
 	echo "# SSD: 30 GB                                                                          #"
+	echo "#                                                                                     #"
 	echo "# OS: Ubuntu 16.04 64-bit Standard Installation                                       #"
+	echo "# OS: Debian 8 64-bit Standard Installation                                           #"
+	echo "# OS: Debian 9 64-bit Standard Installation                                           #"
 	echo "#                                                                                     #"
 	echo "# Networking devices:                                                                 #"
 	echo "# ens192: public network, ipv4 address assigned,                                      #"
 	echo "#         DNS entry configured on the ISP site,                                       #"
 	echo "#         reverse DNS entry configured in the cloud panel                             #"
-	echo "# ens224: private network, assigned to a private network, no ip address assigned      #"
+	echo "# ens224: private network, assigned to a private network                              #"
 	echo "#                                                                                     #"
 	echo "# Firewall Policy: Linux                                                              #"
+	echo "#                                                                                     #"
+	echo "# Note: On Debian 8 the network devices are eth0 and eth1.                            #"
 	echo "#                                                                                     #"
 	echo "#######################################################################################"
 	echo

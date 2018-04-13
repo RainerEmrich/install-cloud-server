@@ -2,7 +2,7 @@
 #
 # Set up apache2 using the ppa of Ondřej Surý.
 #
-# Copyright 2017,2018 Rainer Emrich, <rainer@emrich-ebersheim.de>
+# Copyright (C) 2017-2018 Rainer Emrich, <rainer@emrich-ebersheim.de>
 #
 # This file is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -40,11 +40,30 @@ setup_apache () {
 
 			apt-get dist-upgrade -y
 			;;
-		*)
-			apt-get remove libapache2-mod-python -y
-			a2dismod php5
-			systemctl restart apache2
-			;;
+		Debian)
+			echo
+			echo "#######################################################################################"
+			echo "#"
+			echo "# Configure apache2."
+			echo "#"
+			echo "#######################################################################################"
+			echo
+
+			ask_to_continue
+
+			case ${DIST_RELEASE} in
+			8.*)
+				apt-get remove libapache2-mod-python -y
+				a2dismod php5
+				systemctl restart apache2
+				;;
+			9.*)
+				apt-get remove libapache2-mod-python -y
+				systemctl restart apache2
+				;;
+			*)
+				;;
+			esac
 		esac
 
 		apt-get install apache2-doc -y

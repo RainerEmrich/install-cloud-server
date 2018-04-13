@@ -2,7 +2,7 @@
 #
 # Set up munin server monitoring.
 #
-# Copyright 2017,2018 Rainer Emrich, <rainer@emrich-ebersheim.de>
+# Copyright (C) 2017-2018 Rainer Emrich, <rainer@emrich-ebersheim.de>
 #
 # This file is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -65,6 +65,11 @@ setup_munin () {
 
 				chmod 600 /etc/munin/plugin-conf.d/munin-node
 				;;
+			9.*)
+				sed --in-place "/env.mysqluser/d" /etc/munin/plugin-conf.d/munin-node
+
+				chmod 600 /etc/munin/plugin-conf.d/munin-node
+				;;
 			*)
 				;;
 			esac
@@ -79,6 +84,7 @@ setup_munin () {
 		/bin/rm -f /etc/munin/plugins/mysql_innodb_insert_buf
 		/bin/rm -f /etc/munin/plugins/mysql_innodb_io_pend
 		/bin/rm -f /etc/munin/plugins/mysql_replication
+		/bin/rm -f /etc/munin/plugins/ntp_*.*.*.*
 
 		systemctl start munin-node
 

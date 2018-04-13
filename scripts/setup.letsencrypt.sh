@@ -2,7 +2,7 @@
 #
 # Set up letsencrypt.
 #
-# Copyright 2017,2018 Rainer Emrich, <rainer@emrich-ebersheim.de>
+# Copyright (C) 2017-2018 Rainer Emrich, <rainer@emrich-ebersheim.de>
 #
 # This file is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -90,6 +90,16 @@ setup_letsencrypt () {
 
 			case ${DIST_ID} in
 			Debian)
+				case ${DIST_RELEASE} in
+				9.*)
+					sed --in-place "s/# max-log-backups/max-log-backups/" /etc/letsencrypt/cli.ini
+					sed --in-place "s/# SSLOpenSSLConfCmd ECDHParameters/SSLOpenSSLConfCmd ECDHParameters/" /etc/letsencrypt/options-ssl-apache.conf
+					sed --in-place "s/# SSLOpenSSLConfCmd Curves/SSLOpenSSLConfCmd Curves/" /etc/letsencrypt/options-ssl-apache.conf
+					sed --in-place "s/# SSLSessionTickets/SSLSessionTickets/" /etc/letsencrypt/options-ssl-apache.conf
+					;;
+				*)
+					;;
+				esac
 				;;
 			*)
 				sed --in-place "s/# max-log-backups/max-log-backups/" /etc/letsencrypt/cli.ini
@@ -181,13 +191,44 @@ setup_letsencrypt () {
 		Ubuntu)
 			a2enmod http2
 			;;
+		Debian)
+			case ${DIST_RELEASE} in
+			8.*)
+				;;
+			9.*)
+				a2enmod http2
+				;;
+			*)
+				;;
+			esac
+			;;
 		*)
 			;;
 		esac
 		/bin/rm -f /etc/apache2/mods-enabled/info.conf
 
-		/bin/rm -rf /var/www/html
-		tar -C /var/www -xvf ${ARCHIVES_DIR}/html.tar
+		case ${DIST_ID} in
+		Ubuntu)
+			/bin/rm -rf /var/www/html
+			tar -C /var/www -xvf ${ARCHIVES_DIR}/html.tar
+			;;
+		Debian)
+			case ${DIST_RELEASE} in
+			8.*)
+				/bin/rm -rf /var/www/html
+				tar -C /var/www -xvf ${ARCHIVES_DIR}/html.debian8.tar
+				;;
+			9.*)
+				/bin/rm -rf /var/www/html
+				tar -C /var/www -xvf ${ARCHIVES_DIR}/html.debian9.tar
+				;;
+			*)
+				;;
+			esac
+			;;
+		*)
+			;;
+		esac
 
 		/bin/cp -a ${DATA_DIR}/var/www/phpinfo /var/www/
 		/bin/cp -a ${DATA_DIR}/etc/apache2/conf-available/phpinfo.conf /etc/apache2/conf-available/
@@ -202,15 +243,6 @@ setup_letsencrypt () {
 		sed --in-place "s/myhost.mydomain.tld/${MY_FQDN}/g" /etc/apache2/sites-available/${MY_SITE_CONFIG}.conf
 
 		a2ensite ${MY_SITE_CONFIG}
-
-		case ${DIST_ID} in
-		Debian)
-			sed --in-place "s/Protocols h2/# Protocols h2/" /etc/apache2/sites-available/000-default-le-ssl.conf
-			sed --in-place "s/Protocols h2/# Protocols h2/" /etc/apache2/sites-available/${MY_SITE_CONFIG}.conf
-			;;
-		*)
-			;;
-		esac
 
 		systemctl restart apache2
 

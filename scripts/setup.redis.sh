@@ -2,7 +2,7 @@
 #
 # Set up redis server.
 #
-# Copyright 2017,2018 Rainer Emrich, <rainer@emrich-ebersheim.de>
+# Copyright (C) 2017-2018 Rainer Emrich, <rainer@emrich-ebersheim.de>
 #
 # This file is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -58,8 +58,18 @@ setup_redis () {
 
 		patch /etc/redis/redis.conf ${PATCH_DIR}/etc.redis.redis.conf.patch
 
-		echo never > /sys/kernel/mm/transparent_hugepage/enabled
-		patch /etc/rc.local ${PATCH_DIR}/etc.rc.local.patch
+		echo '[Unit]' >/etc/systemd/system/disable-transparent-huge-pages.service
+		echo 'Description=Disable Transparent Huge Pages' >>/etc/systemd/system/disable-transparent-huge-pages.service
+		echo '' >>/etc/systemd/system/disable-transparent-huge-pages.service
+		echo '[Service]' >>/etc/systemd/system/disable-transparent-huge-pages.service
+		echo 'Type=oneshot' >>/etc/systemd/system/disable-transparent-huge-pages.service
+		echo 'ExecStart=/bin/sh -c "/bin/echo "never" | tee /sys/kernel/mm/transparent_hugepage/enabled"' >>/etc/systemd/system/disable-transparent-huge-pages.service
+		echo '' >>/etc/systemd/system/disable-transparent-huge-pages.service
+		echo '[Install]' >>/etc/systemd/system/disable-transparent-huge-pages.service
+		echo 'WantedBy=redis-server.service' >>/etc/systemd/system/disable-transparent-huge-pages.service
+
+		systemctl daemon-reload
+		systemctl enable disable-transparent-huge-pages.service
 
 		sysctl vm.overcommit_memory=1
 		sysctl net.core.somaxconn=1024

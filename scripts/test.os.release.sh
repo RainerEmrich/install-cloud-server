@@ -2,7 +2,7 @@
 #
 # Test the OS Release and bail out if not supported.
 #
-# Copyright 2017,2018 Rainer Emrich, <rainer@emrich-ebersheim.de>
+# Copyright (C) 2017-2018 Rainer Emrich, <rainer@emrich-ebersheim.de>
 #
 # This file is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -34,7 +34,8 @@ test_os_release () {
 		;;
 	Debian)
 		case ${DIST_RELEASE} in
-		8.*)
+		8.* | \
+		9.*)
 			SUPPORTED="1"
 			;;
 		*)
@@ -63,6 +64,7 @@ test_os_release () {
 		echo "#"
 		echo "#        Ubuntu 16.04.* xenial"
 		echo "#        Debian 8.* jessie"
+		echo "#        Debian 9.* stretch"
 		echo "#"
 		echo "#######################################################################################"
 		echo

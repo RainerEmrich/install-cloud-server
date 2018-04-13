@@ -2,7 +2,7 @@
 #
 # Set up MariaDB 10.2 from mariadb.org using the netcologne mirror.
 #
-# Copyright 2017,2018 Rainer Emrich, <rainer@emrich-ebersheim.de>
+# Copyright (C) 2017-2018 Rainer Emrich, <rainer@emrich-ebersheim.de>
 #
 # This file is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -65,6 +65,9 @@ setup_mariadb () {
 				case ${DIST_RELEASE} in
 				8.*)
 					apt-key adv --recv-keys --keyserver hkp://keyserver.ubuntu.com:80 0xCBCB082A1BB943DB
+					;;
+				9.*)
+					apt-key adv --recv-keys --keyserver hkp://keyserver.ubuntu.com:80 0xF1656F24C74CD1D8
 					;;
 				*)
 					;;
@@ -176,6 +179,15 @@ setup_mariadb () {
 				8.*)
 					apt-key adv --recv-keys --keyserver hkp://keyserver.ubuntu.com:80 0xCBCB082A1BB943DB
 					;;
+				9.*)
+					apt-key adv --recv-keys --keyserver hkp://keyserver.ubuntu.com:80 0xF1656F24C74CD1D8
+					systemctl stop mysql.service
+					mysqld_safe --skip-grant-tables &
+					sleep 2
+					mysql -u root --execute="use mysql; update user set plugin='mysql_native_password'; flush privileges;"
+					kill -KILL $(pgrep mysql)
+					/bin/rm /etc/mysql/my.cnf /etc/alternatives/my.cnf
+					;;
 				*)
 					;;
 				esac
@@ -202,6 +214,22 @@ setup_mariadb () {
 			fi
 
 			systemctl daemon-reload
+
+			case ${DIST_ID} in
+			Debian)
+				case ${DIST_RELEASE} in
+				9.*)
+					read -sp "Please enter the password for the mysql root user: " MY_PASSWD
+					echo
+					sed --in-place "s/password =/password = ${MY_PASSWD}/g" /etc/mysql/debian.cnf
+					;;
+				*)
+					;;
+				esac
+				;;
+			*)
+				;;
+			esac
 
 			systemctl restart mysql
 

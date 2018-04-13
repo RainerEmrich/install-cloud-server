@@ -4,7 +4,7 @@
 # Installs and sets up all required packages for nextcloud.
 # Finally installs nextcloud.
 #
-# Copyright 2017,2018 Rainer Emrich, <rainer@emrich-ebersheim.de>
+# Copyright (C) 2017-2018 Rainer Emrich, <rainer@emrich-ebersheim.de>
 #
 # This file is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -67,7 +67,8 @@ else
 		case ${DIST_ID} in
 		Debian)
 			case ${DIST_RELEASE} in
-			8.*)
+			8.* | \
+			9.*)
 				/bin/cp ${DATA_DIR}/root/.bashrc.debian8 ~/.bashrc
 				;;
 			*)

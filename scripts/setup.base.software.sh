@@ -2,7 +2,7 @@
 #
 # Set up the base software
 #
-# Copyright 2017,2018 Rainer Emrich, <rainer@emrich-ebersheim.de>
+# Copyright (C) 2017-2018 Rainer Emrich, <rainer@emrich-ebersheim.de>
 #
 # This file is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -54,6 +54,16 @@ setup_base_software () {
 		Ubuntu)
 			apt-get install update-notifier-common -y
 			/usr/lib/update-notifier/update-motd-updates-available --force
+			;;
+		Debian)
+			case ${DIST_RELEASE} in
+			9.*)
+				apt-get install unattended-upgrades apt-listchanges dirmngr -y
+				dpkg-reconfigure -plow unattended-upgrades
+				;;
+			*)
+				;;
+			esac
 			;;
 		*)
 			;;

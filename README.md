@@ -201,6 +201,4 @@ The script collection is based on my two article series about 1&amp;1 cloud serv
 
 ## Status
 
-Last tested with Ubuntu 16.04 on 13th of April 2018.
-Last tested with Debian 8 on 13th of April 2018.
-Last tested with Debian 9 on 13th of April 2018.
+Last tested with Ubuntu 16.04, Debian 8 and Debian 9 on 13th of April 2018.

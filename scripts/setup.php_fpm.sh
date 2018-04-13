@@ -2,7 +2,7 @@
 #
 # Set up php-fpm to have the chance to use different php versions.
 #
-# Copyright 2017,2018 Rainer Emrich, <rainer@emrich-ebersheim.de>
+# Copyright (C) 2017-2018 Rainer Emrich, <rainer@emrich-ebersheim.de>
 #
 # This file is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -61,20 +61,6 @@ setup_php_fpm () {
 		systemctl restart php7.0-fpm
 		systemctl restart php7.1-fpm
 		systemctl restart php7.2-fpm
-
-		case ${DIST_ID} in
-		Debian)
-			case ${DIST_RELEASE} in
-			8.*)
-				a2dismod php5
-				;;
-			*)
-				;;
-			esac
-			;;
-		*)
-			;;
-		esac
 
 		a2dismod php7.0 php7.1 php7.2 mpm_prefork
 		a2enmod proxy_fcgi setenvif mpm_event

@@ -125,9 +125,15 @@ if [ "${LOOL_INSTALLED}" != "1" ] ; then
 	mkdir -p ${LOOL_PREFIX}
 	tar -C ${LOOL_PREFIX} -xf ${PKG_DIR}/${LOOL_VERSION}.tar.xz
 	/sbin/setcap cap_fowner,cap_mknod,cap_sys_chroot=ep ${LOOL_PREFIX}/bin/loolforkit
-	/sbin/setcap cap_sys_admin=ep ${LOOL_PREFIX}/bin/loolmount
+	if [ -f ${LOOL_PREFIX}/bin/loolmount ] ; then
+		/sbin/setcap cap_sys_admin=ep ${LOOL_PREFIX}/bin/loolmount
+	fi
 
-	LOOL_DISTRO="$(ls -1 ${LOOL_PREFIX}/etc)"
+	if [ -d ${LOOL_PREFIX}/etc/loolwsd ] ; then
+		LOOL_DISTRO="loolwsd"
+	else
+		LOOL_DISTRO="libreoffice-online"
+	fi
 	OFFICE_PATH="$(find ${LOOL_PREFIX}/lib -maxdepth 1 -type d -name "*office*")"
 	${LOOL_PREFIX}/bin/loolwsd-systemplate-setup ${LOOL_PREFIX}/var/systemplate ${OFFICE_PATH}
 
@@ -332,9 +338,15 @@ elif [ "${LOOL_VERSION}" != "${LOOL_LAST}" ] ; then
 	mkdir -p ${LOOL_PREFIX}
 	tar -C ${LOOL_PREFIX} -xf ${PKG_DIR}/${LOOL_VERSION}.tar.xz
 	/sbin/setcap cap_fowner,cap_mknod,cap_sys_chroot=ep ${LOOL_PREFIX}/bin/loolforkit
-	/sbin/setcap cap_sys_admin=ep ${LOOL_PREFIX}/bin/loolmount
+	if [ -f ${LOOL_PREFIX}/bin/loolmount ] ; then
+		/sbin/setcap cap_sys_admin=ep ${LOOL_PREFIX}/bin/loolmount
+	fi
 
-	LOOL_DISTRO="$(ls -1 ${LOOL_PREFIX}/etc)"
+	if [ -d ${LOOL_PREFIX}/etc/loolwsd ] ; then
+		LOOL_DISTRO="loolwsd"
+	else
+		LOOL_DISTRO="libreoffice-online"
+	fi
 	BACKUP_LOOL_DISTRO="$(ls -1 ${BACKUP_PATH}/etc)"
 	OFFICE_PATH="$(find ${LOOL_PREFIX}/lib -maxdepth 1 -type d -name "*office*")"
 	BACKUP_OFFICE_PATH="${LOOL_PREFIX}/lib/$(basename $(find ${BACKUP_PATH}/lib -maxdepth 1 -type d -name "*office*"))"

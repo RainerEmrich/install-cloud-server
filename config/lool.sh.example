@@ -26,7 +26,7 @@ LOOL_ADMIN_PASSWD='looladminuserpassword'
 
 #
 # Define the name of the lool package.
-LOOL_VERSION="lool-poco-1.8.1-core-cp-5.3-43-online-3.1-final"
+LOOL_VERSION="lool-poco-1.9.0-core-cp-6.0-25-online-cp-4.0.1-1"
 
 #
 # Define the installation prefix for libreoffice online.

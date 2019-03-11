@@ -48,11 +48,11 @@ MY_REDIS_DB_NUMBER="0"
 
 #
 # Define nextcloud version
-MY_NEXTCLOUD_VERSION="12.0.3"
+MY_NEXTCLOUD_VERSION="15.0.5"
 
 #
 # Define nextcloud apps to enable
-MY_NEXTCLOUD_APPS="admin_notifications announcementcenter apporder audioplayer bruteforcesettings checksum circles contacts calendar deck files_accesscontrol files_automatedtagging files_downloadactivity files_markdown files_reader files_retention gpxpod gpxedit groupfolders issuetemplate keeweb mail metadata notes previewgenerator quota_warning ransomware_protection richdocuments spreed tasks"
+MY_NEXTCLOUD_APPS="announcementcenter apporder audioplayer bruteforcesettings checksum circles contacts calendar data_request deck drop_account external files_accesscontrol files_automatedtagging files_downloadactivity files_markdown files_retention gpxedit gpxpod groupfolders mail metadata notes polls previewgenerator quota_warning ransomware_protection richdocuments spreed tasks"
 
 #
 # Don't edit below!

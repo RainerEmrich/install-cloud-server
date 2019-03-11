@@ -2,7 +2,7 @@
 #
 # Set up redis server.
 #
-# Copyright (C) 2017-2018 Rainer Emrich, <rainer@emrich-ebersheim.de>
+# Copyright (C) 2017-2019 Rainer Emrich, <rainer@emrich-ebersheim.de>
 #
 # This file is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -56,7 +56,21 @@ setup_redis () {
 
 		systemctl stop redis
 
-		patch /etc/redis/redis.conf ${PATCH_DIR}/etc.redis.redis.conf.patch
+		case ${DIST_ID} in
+		Debian)
+			patch /etc/redis/redis.conf ${PATCH_DIR}/etc.redis.redis.conf.patch
+			;;
+		Ubuntu)
+			case ${DIST_RELEASE} in
+			16.04)
+				patch /etc/redis/redis.conf ${PATCH_DIR}/etc.redis.redis.conf.patch
+				;;
+			18.04)
+				patch /etc/redis/redis.conf ${PATCH_DIR}/etc.redis.redis.conf.ubuntu.18.04.patch
+				;;
+			esac
+			;;
+		esac
 
 		echo '[Unit]' >/etc/systemd/system/disable-transparent-huge-pages.service
 		echo 'Description=Disable Transparent Huge Pages' >>/etc/systemd/system/disable-transparent-huge-pages.service

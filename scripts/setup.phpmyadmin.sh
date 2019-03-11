@@ -1,9 +1,9 @@
 #!/bin/bash
 #
-# Set up php7.0, php7.1 and php7.2 base and phpmyadmin using the ppas from Ondřej Surý
-# and Michal Čihař (nijel).
+# Set up php7.0, php7.1 and php7.2 base using the ppa from Ondřej Surý.
+# Set up phpmyadmin.
 #
-# Copyright (C) 2017-2018 Rainer Emrich, <rainer@emrich-ebersheim.de>
+# Copyright (C) 2017-2019 Rainer Emrich, <rainer@emrich-ebersheim.de>
 #
 # This file is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -27,8 +27,8 @@ setup_phpmyadmin () {
 		echo
 		echo "#######################################################################################"
 		echo "#"
-		echo "# Install phpmyadmin using the ppa from Michal Čihař (nijel)."
-		echo "# Requires the php7.0, php7.1 and php7.2 base from the ppa of Ondřej Surý."
+		echo "# Install the php7.0, php7.1 and php7.2 base from the ppa of Ondřej Surý."
+		echo "# Install phpmyadmin."
 		echo "#"
 		echo "# Two scripts phpmyadmin-on.sh and phpmyadmin-off.sh for activating or deactivating"
 		echo "# the phpmyadmin page are installed in ~/bin/."
@@ -51,6 +51,26 @@ setup_phpmyadmin () {
 		case ${DIST_ID} in
 		Ubuntu)
 			apt-add-repository ppa:ondrej/php -y
+
+			apt-get update
+
+			case ${DIST_RELEASE} in
+			16.04 | \
+			18.04)
+				PACKAGES70=""
+				for PACKAGE in $(dpkg -l | grep php7.0 | awk '{print $2}') ; do PACKAGES70="${PACKAGES70} ${PACKAGE}"; done
+				PACKAGES71=$(echo ${PACKAGES70} | sed 's/7.0/7.1/g')
+				PACKAGES72=$(echo ${PACKAGES71} | sed 's/7.1/7.2/g')
+				PACKAGES72=$(echo ${PACKAGES72} | sed 's/php7.2-mcrypt//')
+				apt-get install ${PACKAGES70} ${PACKAGES71} ${PACKAGES72} -y
+
+				apt-get dist-upgrade -y
+
+				apt-get install php7.0 php7.0-bz2 php7.0-curl php7.0-gd php7.0-mbstring php7.0-mcrypt php7.0-xml php7.0-zip php7.0-mysql \
+						php7.1 php7.1-bz2 php7.1-curl php7.1-gd php7.1-mbstring php7.1-mcrypt php7.1-xml php7.1-zip php7.1-mysql \
+						php7.2 php7.2-bz2 php7.2-curl php7.2-gd php7.2-mbstring php7.2-xml php7.2-zip php7.2-mysql -y
+				;;
+			esac
 			;;
 		Debian)
 			case ${DIST_RELEASE} in
@@ -58,38 +78,26 @@ setup_phpmyadmin () {
 			9.*)
 				wget -O /etc/apt/trusted.gpg.d/php.gpg https://packages.sury.org/php/apt.gpg
 				echo "deb https://packages.sury.org/php/ $(lsb_release -sc) main" > /etc/apt/sources.list.d/php.list
-				;;
-			*)
+
+				apt-get update
+
+				PACKAGES70=""
+				for PACKAGE in $(dpkg -l | grep php7.0 | awk '{print $2}') ; do PACKAGES70="${PACKAGES70} ${PACKAGE}"; done
+				PACKAGES71=$(echo ${PACKAGES70} | sed 's/7.0/7.1/g')
+				PACKAGES72=$(echo ${PACKAGES71} | sed 's/7.1/7.2/g')
+				PACKAGES72=$(echo ${PACKAGES72} | sed 's/php7.2-mcrypt//')
+				apt-get install ${PACKAGES70} ${PACKAGES71} ${PACKAGES72} -y
+
+				apt-get dist-upgrade -y
+
+				apt-get install php7.0 php7.0-bz2 php7.0-curl php7.0-gd php7.0-mbstring php7.0-mcrypt php7.0-xml php7.0-zip php7.0-mysql \
+						php7.1 php7.1-bz2 php7.1-curl php7.1-gd php7.1-mbstring php7.1-mcrypt php7.1-xml php7.1-zip php7.1-mysql \
+						php7.2 php7.2-bz2 php7.2-curl php7.2-gd php7.2-mbstring php7.2-xml php7.2-zip php7.2-mysql -y
 				;;
 			esac
 			;;
-		*)
-			;;
 		esac
 
-		apt-get update
-
-		PACKAGES70=""
-		for PACKAGE in $(dpkg -l | grep php7.0 | awk '{print $2}') ; do PACKAGES70="${PACKAGES70} ${PACKAGE}"; done
-		PACKAGES71=$(echo ${PACKAGES70} | sed 's/7.0/7.1/g')
-		PACKAGES72=$(echo ${PACKAGES71} | sed 's/7.1/7.2/g')
-		PACKAGES72=$(echo ${PACKAGES72} | sed 's/php7.2-mcrypt//')
-		apt-get install ${PACKAGES70} ${PACKAGES71} ${PACKAGES72} -y
-
-		apt-get dist-upgrade -y
-
-		apt-get install php7.0 php7.0-bz2 php7.0-curl php7.0-gd php7.0-mbstring php7.0-mcrypt php7.0-xml php7.0-zip php7.0-mysql \
-				php7.1 php7.1-bz2 php7.1-curl php7.1-gd php7.1-mbstring php7.1-mcrypt php7.1-xml php7.1-zip php7.1-mysql \
-				php7.2 php7.2-bz2 php7.2-curl php7.2-gd php7.2-mbstring php7.2-xml php7.2-zip php7.2-mysql -y
-
-		case ${DIST_ID} in
-		Ubuntu)
-			apt-add-repository ppa:nijel/phpmyadmin -y
-			;;
-		*)
-			;;
-		esac
-	
 		apt-get update
 		apt-get install phpmyadmin -y
 

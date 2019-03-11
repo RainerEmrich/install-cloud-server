@@ -2,7 +2,7 @@
 #
 # Show some information about the script.
 #
-# Copyright (C) 2017-2018 Rainer Emrich, <rainer@emrich-ebersheim.de>
+# Copyright (C) 2017-2019 Rainer Emrich, <rainer@emrich-ebersheim.de>
 #
 # This file is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -33,6 +33,7 @@ show_info () {
 	echo "# SSD: 30 GB                                                                          #"
 	echo "#                                                                                     #"
 	echo "# OS: Ubuntu 16.04 64-bit Standard Installation                                       #"
+	echo "# OS: Ubuntu 18.04 64-bit Standard Installation                                       #"
 	echo "# OS: Debian 8 64-bit Standard Installation                                           #"
 	echo "# OS: Debian 9 64-bit Standard Installation                                           #"
 	echo "#                                                                                     #"

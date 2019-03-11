@@ -2,7 +2,7 @@
 #
 # This script installs libreoffice online.
 #
-# Copyright (C) 2017-2018 Rainer Emrich, <rainer@emrich-ebersheim.de>
+# Copyright (C) 2017-2019 Rainer Emrich, <rainer@emrich-ebersheim.de>
 #
 # This file is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -234,8 +234,7 @@ if [ "${LOOL_INSTALLED}" != "1" ] ; then
 	echo "#######################################################################################"
 	echo
 
-	/bin/cp -a ${DATA_DIR}/etc/apache2/sites-available/998-myoffice-mydomain-tld.conf /etc/apache2/sites-available/
-	/bin/cp -a /etc/apache2/sites-available/998-myoffice-mydomain-tld.conf /etc/apache2/sites-available/${LOOL_SITE_CONFIG}.conf
+	/bin/cp -a ${DATA_DIR}/etc/apache2/sites-available/998-myoffice-mydomain-tld.conf /etc/apache2/sites-available/${LOOL_SITE_CONFIG}.conf
 
 	sed --in-place "s/ServerAdmin webmaster@localhost/ServerAdmin ${LOOL_SA}/" /etc/apache2/sites-available/${LOOL_SITE_CONFIG}.conf
 	sed --in-place "s/myhost.mydomain.tld/${LOOL_DOMAIN}/g" /etc/apache2/sites-available/${LOOL_SITE_CONFIG}.conf
@@ -262,11 +261,18 @@ if [ "${LOOL_INSTALLED}" != "1" ] ; then
 	echo "#######################################################################################"
 	echo
 
-	a2ensite ${LOOL_SITE_CONFIG}
+	a2dissite ${LOOL_SITE_CONFIG}
+	systemctl reload apache2
 	/bin/rm /etc/apache2/sites-available/${LOOL_SITE_CONFIG}*
 
-	/bin/cp -a ${DATA_DIR}/etc/apache2/sites-available/999-myoffice-mydomain-tld-le-ssl.conf /etc/apache2/sites-available/
-	/bin/cp -a /etc/apache2/sites-available/999-myoffice-mydomain-tld-le-ssl.conf /etc/apache2/sites-available/${LOOL_SITE_CONFIG}.conf
+	if [ -f ${LOOL_PREFIX}/etc/apache2/conf-available/loolwsd.conf ] ; then
+		sed --in-place "s/http:/https:/g"  ${LOOL_PREFIX}/etc/apache2/conf-available/loolwsd.conf
+		sed --in-place "s/ws:/wss:/g"  ${LOOL_PREFIX}/etc/apache2/conf-available/loolwsd.conf
+
+		/bin/cp -a ${DATA_DIR}/etc/apache2/sites-available/997-myoffice-mydomain-tld-le-ssl.conf /etc/apache2/sites-available/${LOOL_SITE_CONFIG}.conf
+	else
+		/bin/cp -a ${DATA_DIR}/etc/apache2/sites-available/999-myoffice-mydomain-tld-le-ssl.conf /etc/apache2/sites-available/${LOOL_SITE_CONFIG}.conf
+	fi
 
 	sed --in-place "s/ServerAdmin webmaster@localhost/ServerAdmin ${LOOL_SA}/" /etc/apache2/sites-available/${LOOL_SITE_CONFIG}.conf
 	sed --in-place "s/myhost.mydomain.tld/${LOOL_DOMAIN}/g" /etc/apache2/sites-available/${LOOL_SITE_CONFIG}.conf
@@ -347,7 +353,11 @@ elif [ "${LOOL_VERSION}" != "${LOOL_LAST}" ] ; then
 	else
 		LOOL_DISTRO="libreoffice-online"
 	fi
-	BACKUP_LOOL_DISTRO="$(ls -1 ${BACKUP_PATH}/etc)"
+	if [ -d ${BACKUP_PATH}/etc/loolwsd ] ; then
+		BACKUP_LOOL_DISTRO="loolwsd"
+	else
+		BACKUP_LOOL_DISTRO="libreoffice-online"
+	fi
 	OFFICE_PATH="$(find ${LOOL_PREFIX}/lib -maxdepth 1 -type d -name "*office*")"
 	BACKUP_OFFICE_PATH="${LOOL_PREFIX}/lib/$(basename $(find ${BACKUP_PATH}/lib -maxdepth 1 -type d -name "*office*"))"
 	${LOOL_PREFIX}/bin/loolwsd-systemplate-setup ${LOOL_PREFIX}/var/systemplate ${OFFICE_PATH}
@@ -404,6 +414,37 @@ elif [ "${LOOL_VERSION}" != "${LOOL_LAST}" ] ; then
 	sed --in-place "s#type=\"uint\">0</limit_num_open_files>#type=\"uint\">${LO_MAX_FILE_NUM}</limit_num_open_files>#" ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/loolwsd.xml
 
 	systemctl start loolwsd
+
+	echo
+	echo "#######################################################################################"
+	echo "#"
+	echo "# INFO: Update apache2 site configuration for libreoffice online."
+	echo "#"
+	echo "#######################################################################################"
+	echo
+
+	/bin/rm /etc/apache2/sites-available/${LOOL_SITE_CONFIG}*
+
+	if [ -f ${LOOL_PREFIX}/etc/apache2/conf-available/loolwsd.conf ] ; then
+		sed --in-place "s/http:/https:/g"  ${LOOL_PREFIX}/etc/apache2/conf-available/loolwsd.conf
+		sed --in-place "s/ws:/wss:/g"  ${LOOL_PREFIX}/etc/apache2/conf-available/loolwsd.conf
+
+		/bin/cp -a ${DATA_DIR}/etc/apache2/sites-available/997-myoffice-mydomain-tld-le-ssl.conf /etc/apache2/sites-available/${LOOL_SITE_CONFIG}.conf
+	else
+		/bin/cp -a ${DATA_DIR}/etc/apache2/sites-available/999-myoffice-mydomain-tld-le-ssl.conf /etc/apache2/sites-available/${LOOL_SITE_CONFIG}.conf
+	fi
+
+	sed --in-place "s/ServerAdmin webmaster@localhost/ServerAdmin ${LOOL_SA}/" /etc/apache2/sites-available/${LOOL_SITE_CONFIG}.conf
+	sed --in-place "s/myhost.mydomain.tld/${LOOL_DOMAIN}/g" /etc/apache2/sites-available/${LOOL_SITE_CONFIG}.conf
+
+	case ${DIST_ID} in
+	Debian)
+		sed --in-place "s/Protocols h2/# Protocols h2/" /etc/apache2/sites-available/${LOOL_SITE_CONFIG}.conf
+		;;
+	*)
+		;;
+	esac
+
 	a2ensite ${LOOL_SITE_CONFIG}
 	systemctl reload apache2
 

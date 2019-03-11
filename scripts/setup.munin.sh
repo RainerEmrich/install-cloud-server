@@ -2,7 +2,7 @@
 #
 # Set up munin server monitoring.
 #
-# Copyright (C) 2017-2018 Rainer Emrich, <rainer@emrich-ebersheim.de>
+# Copyright (C) 2017-2019 Rainer Emrich, <rainer@emrich-ebersheim.de>
 #
 # This file is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -74,7 +74,14 @@ setup_munin () {
 				;;
 			esac
 			;;
-		*)
+		Ubuntu)
+			case ${DIST_RELEASE} in
+			18.04)
+				wget https://github.com/munin-monitoring/contrib/raw/master/plugins/chrony/chrony
+				/bin/mv chrony /usr/share/munin/plugins/
+				chmod 755 /usr/share/munin/plugins/chrony
+				;;
+			esac
 			;;
 		esac
 

@@ -2,7 +2,7 @@
 #
 # Set up postfix with ssl
 #
-# Copyright (C) 2017-2018 Rainer Emrich, <rainer@emrich-ebersheim.de>
+# Copyright (C) 2017-2019 Rainer Emrich, <rainer@emrich-ebersheim.de>
 #
 # This file is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -26,7 +26,7 @@ setup_postfix () {
 		echo
 		echo "#######################################################################################"
 		echo "#"
-		echo "# Set a e-mail redirection for the root user."
+		echo "# Set an e-mail redirection for the root user."
 		echo "# Change postfix configuration to use tls and a smtp relay."
 		echo "# See configuration in file"
 		echo "# ${CONFIG_DIR}/postfix.sh"

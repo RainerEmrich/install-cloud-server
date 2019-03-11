@@ -2,7 +2,7 @@
 #
 # Set up hostname, private network, sshd config and ssh keys.
 #
-# Copyright (C) 2017-2018 Rainer Emrich, <rainer@emrich-ebersheim.de>
+# Copyright (C) 2017-2019 Rainer Emrich, <rainer@emrich-ebersheim.de>
 #
 # This file is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -304,8 +304,15 @@ setup_hostname_network_ssh () {
 					;;
 				esac
 				;;
-			*)
-				patch /etc/ssh/sshd_config ${PATCH_DIR}/etc.ssh.sshd_config.patch
+			Ubuntu)
+				case ${DIST_RELEASE} in
+				16.04)
+					patch /etc/ssh/sshd_config ${PATCH_DIR}/etc.ssh.sshd_config.patch
+					;;
+				18.04)
+					patch /etc/ssh/sshd_config ${PATCH_DIR}/etc.ssh.sshd_config.debian9.patch
+					;;
+				esac
 				;;
 			esac
 

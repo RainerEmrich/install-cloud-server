@@ -2,7 +2,7 @@
 #
 # Set up the base software
 #
-# Copyright (C) 2017-2018 Rainer Emrich, <rainer@emrich-ebersheim.de>
+# Copyright (C) 2017-2019 Rainer Emrich, <rainer@emrich-ebersheim.de>
 #
 # This file is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -52,8 +52,16 @@ setup_base_software () {
 
 		case ${DIST_ID} in
 		Ubuntu)
-			apt-get install ntp ntp-doc update-notifier-common -y
-			/usr/lib/update-notifier/update-motd-updates-available --force
+			case ${DIST_RELEASE} in
+			16.04)
+				apt-get install ntp ntp-doc update-notifier-common -y
+				/usr/lib/update-notifier/update-motd-updates-available --force
+				;;
+			18.04)
+				apt-get install chrony unattended-upgrades apt-listchanges update-notifier-common -y
+				dpkg-reconfigure -plow unattended-upgrades
+				;;
+			esac
 			;;
 		Debian)
 			case ${DIST_RELEASE} in

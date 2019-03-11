@@ -1,0 +1,21 @@
+--- redis.conf.orig	2018-04-02 19:37:12.000000000 +0000
++++ redis.conf	2018-06-08 15:46:39.283496732 +0000
+@@ -89,7 +89,8 @@
+ 
+ # Accept connections on the specified port, default is 6379 (IANA #815344).
+ # If port 0 is specified Redis will not listen on a TCP socket.
+-port 6379
++# port 6379
++port 0
+ 
+ # TCP listen() backlog.
+ #
+@@ -108,6 +109,8 @@
+ #
+ # unixsocket /var/run/redis/redis.sock
+ # unixsocketperm 700
++unixsocket /var/run/redis/redis-server.sock
++unixsocketperm 770
+ 
+ # Close the connection after a client is idle for N seconds (0 to disable)
+ timeout 0

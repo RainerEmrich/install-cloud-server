@@ -2,7 +2,7 @@
 #
 # Set up MariaDB 10.2 from mariadb.org using the netcologne mirror.
 #
-# Copyright (C) 2017-2018 Rainer Emrich, <rainer@emrich-ebersheim.de>
+# Copyright (C) 2017-2019 Rainer Emrich, <rainer@emrich-ebersheim.de>
 #
 # This file is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -54,7 +54,8 @@ setup_mariadb () {
 			case ${DIST_ID} in
 			Ubuntu)
 				case ${DIST_RELEASE} in
-				16.04)
+				16.04 | \
+				18.04)
 					apt-key adv --recv-keys --keyserver hkp://keyserver.ubuntu.com:80 0xF1656F24C74CD1D8
 					;;
 				*)
@@ -167,7 +168,8 @@ setup_mariadb () {
 			case ${DIST_ID} in
 			Ubuntu)
 				case ${DIST_RELEASE} in
-				16.04)
+				16.04 | \
+				18.04)
 					apt-key adv --recv-keys --keyserver hkp://keyserver.ubuntu.com:80 0xF1656F24C74CD1D8
 					;;
 				*)

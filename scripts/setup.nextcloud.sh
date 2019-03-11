@@ -2,7 +2,7 @@
 #
 # Set up nextcloud.
 #
-# Copyright (C) 2017-2018 Rainer Emrich, <rainer@emrich-ebersheim.de>
+# Copyright (C) 2017-2019 Rainer Emrich, <rainer@emrich-ebersheim.de>
 #
 # This file is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -211,6 +211,15 @@ setup_nextcloud () {
 
 		sed --in-place "s#    0 => 'localhost',#    0 => '${MY_NEXTCLOUD_DOMAIN}',#" ${MY_NEXTCLOUD_DR}/config/config.php.tmp
 		sed --in-place "s#  'overwrite.cli.url' => 'http://localhost',#  'overwrite.cli.url' => 'https://${MY_NEXTCLOUD_DOMAIN}',#" ${MY_NEXTCLOUD_DR}/config/config.php.tmp
+		case ${DIST_ID} in
+		Ubuntu)
+			case ${DIST_RELEASE} in
+			18.04)
+				sed --in-place "s/redis.sock/redis-server.sock/" ${MY_NEXTCLOUD_DR}/config/config.php.tmp
+				;;
+			esac
+			;;
+		esac
 
 		chown www-data:www-data ${MY_NEXTCLOUD_DR}/config/config.php.tmp
 		chmod 640 ${MY_NEXTCLOUD_DR}/config/config.php.tmp

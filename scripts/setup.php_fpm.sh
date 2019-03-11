@@ -2,7 +2,7 @@
 #
 # Set up php-fpm to have the chance to use different php versions.
 #
-# Copyright (C) 2017-2018 Rainer Emrich, <rainer@emrich-ebersheim.de>
+# Copyright (C) 2017-2019 Rainer Emrich, <rainer@emrich-ebersheim.de>
 #
 # This file is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -69,7 +69,7 @@ setup_php_fpm () {
 		patch /etc/apache2/conf-available/php7.1-fpm.conf ${PATCH_DIR}/etc.apache2.conf-available.php7.1-fpm.conf.patch
 		patch /etc/apache2/conf-available/php7.2-fpm.conf ${PATCH_DIR}/etc.apache2.conf-available.php7.2-fpm.conf.patch
 
-		sed --in-place 's/#Include \/etc\/apache2\/conf-available\/php7.2-fpm/Include \/etc\/apache2\/conf-available\/php7.2-fpm/' /etc/apache2/sites-available/${MY_SITE_CONFIG}.conf
+		sed --in-place 's/#Include \/etc\/apache2\/conf-available\/php7.2-fpm/Include \/etc\/apache2\/conf-available\/php7.1-fpm/' /etc/apache2/sites-available/${MY_SITE_CONFIG}.conf
 
 		systemctl restart apache2
 

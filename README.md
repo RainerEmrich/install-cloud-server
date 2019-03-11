@@ -1,6 +1,6 @@
 # install-cloud-server
 
-Script collection to setup a cloud server with Ubuntu 16.04, Debian 8 or Debian 9.
+Script collection to setup a cloud server with Ubuntu 16.04, Ubuntu 18.04, Debian 8 or Debian 9.
 Installs and sets up all required packages for nextcloud.
 Finally installs nextcloud.
 
@@ -9,7 +9,7 @@ Optionally installs additional nextcloud apps.
 
 ## Requirements
 
-The scripts collection is tested for an 1&amp;1 cloud server, Ubuntu 16.04,
+The scripts collection is tested for an 1&amp;1 cloud server, Ubuntu 16.04 and Ubuntu 18.04,
 64-bit, standard installation, Debian 8 and Debian 9, 64-bit, standard installation.
 
 1. For the scripts to work, you have to setup such a server as descripted in my blog at https://blog.emrich-ebersheim.de/2016/09/05/11-cloud-server-unter-ubuntu-16-04-1-lts-teil-1-server-erstellen/ (in german). For testing purposes a Cloud Server S incl. one public IP is sufficient.
@@ -39,7 +39,7 @@ office.mydomain.tld and cloud.mydomain.tld.
 * Setup munin
 * Setup phpmyadmin
 * Setup php7.0-fpm, php7.1-fpm and php7.2-fpm
-* Install nextcloud prerequisites (including the necessary php 7.0, php7.1 and php 7.2 modules)
+* Install nextcloud prerequisites (including the necessary php 7.0, phpi 7.1 and phpi 7.2 modules)
 * Install nextcloud using php 7.2
 * Install libreoffice online [optional, seperate script]
 * Install additional nextcloud apps [optional, seperate script]

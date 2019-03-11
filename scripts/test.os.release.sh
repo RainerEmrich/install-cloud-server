@@ -2,7 +2,7 @@
 #
 # Test the OS Release and bail out if not supported.
 #
-# Copyright (C) 2017-2018 Rainer Emrich, <rainer@emrich-ebersheim.de>
+# Copyright (C) 2017-2019 Rainer Emrich, <rainer@emrich-ebersheim.de>
 #
 # This file is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -24,7 +24,8 @@ test_os_release () {
 	case ${DIST_ID} in
 	Ubuntu)
 		case ${DIST_RELEASE} in
-		16.04)
+		16.04 | \
+		18.04)
 			SUPPORTED="1"
 			;;
 		*)
@@ -63,6 +64,7 @@ test_os_release () {
 		echo "#        At the moment the following systems are supported."
 		echo "#"
 		echo "#        Ubuntu 16.04.* xenial"
+		echo "#        Ubuntu 18.04.* bionic"
 		echo "#        Debian 8.* jessie"
 		echo "#        Debian 9.* stretch"
 		echo "#"

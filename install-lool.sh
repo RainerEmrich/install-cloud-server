@@ -210,6 +210,18 @@ if [ "${LOOL_INSTALLED}" != "1" ] ; then
 	echo "#######################################################################################"
 	echo
 
+	case ${DIST_ID} in
+	Ubuntu)
+		case ${DIST_RELEASE} in
+		18.04)
+			echo "# loolwsd default configuration" >/etc/ld.so.conf.d/loolwsd.conf
+			echo "${LOOL_PREFIX}/lib" >>/etc/ld.so.conf.d/loolwsd.conf
+			ldconfig
+			;;
+		esac
+		;;
+	esac
+
 	echo "[Unit]" >/lib/systemd/system/loolwsd.service
 	echo "Description=Collabora Online Office Service" >>/lib/systemd/system/loolwsd.service
 	echo "After=network.target" >>/lib/systemd/system/loolwsd.service
@@ -412,6 +424,18 @@ elif [ "${LOOL_VERSION}" != "${LOOL_LAST}" ] ; then
 	sed --in-place "s#type=\"uint\">8000</limit_stack_mem_kb>#type=\"uint\">${LO_MAX_STACK_SIZE}</limit_stack_mem_kb>#" ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/loolwsd.xml
 	sed --in-place "s#type=\"uint\">0</limit_file_size_mb>#type=\"uint\">${LO_MAX_FILE_SIZE}</limit_file_size_mb>#" ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/loolwsd.xml
 	sed --in-place "s#type=\"uint\">0</limit_num_open_files>#type=\"uint\">${LO_MAX_FILE_NUM}</limit_num_open_files>#" ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/loolwsd.xml
+
+	case ${DIST_ID} in
+	Ubuntu)
+		case ${DIST_RELEASE} in
+		18.04)
+			echo "# loolwsd default configuration" >/etc/ld.so.conf.d/loolwsd.conf
+			echo "${LOOL_PREFIX}/lib" >>/etc/ld.so.conf.d/loolwsd.conf
+			ldconfig
+			;;
+		esac
+		;;
+	esac
 
 	systemctl start loolwsd
 

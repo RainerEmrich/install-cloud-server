@@ -56,6 +56,9 @@ setup_base_software () {
 			16.04)
 				apt-get install ntp ntp-doc update-notifier-common -y
 				/usr/lib/update-notifier/update-motd-updates-available --force
+				add-apt-repository ppa:ubuntu-toolchain-r/test -y
+				apt-get update
+				apt-get dist-upgrade -y
 				;;
 			18.04)
 				apt-get install chrony unattended-upgrades apt-listchanges update-notifier-common -y

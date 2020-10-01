@@ -57,6 +57,7 @@ echo
 
 ask_to_continue
 
+ONLINE_VERSION=$(echo $LOOL_VERSION | sed "s/.*online-//" | cut -d . -f1-3)
 
 if [ ! -f ${PKG_DIR}/${LOOL_VERSION}.tar.xz ] ; then
 	echo
@@ -136,6 +137,12 @@ if [ "${LOOL_INSTALLED}" != "1" ] ; then
 	fi
 	OFFICE_PATH="$(find ${LOOL_PREFIX}/lib -maxdepth 1 -type d -name "*office*")"
 	${LOOL_PREFIX}/bin/loolwsd-systemplate-setup ${LOOL_PREFIX}/var/systemplate ${OFFICE_PATH}
+	case ${ONLINE_VERSION} in
+	cp-6.4.0*)
+		/bin/rm -f ${LOOL_PREFIX}/var/systemplate/etc/resolv.conf
+		/bin/ln -s /etc/resolv.conf ${LOOL_PREFIX}/var/systemplate/etc/
+		;;
+	esac
 
 	mkdir -p ${LOOL_PREFIX}/var/tmp
 	mkdir -p ${LOOL_PREFIX}/var/log/loolwsd
@@ -193,14 +200,17 @@ if [ "${LOOL_INSTALLED}" != "1" ] ; then
 	openssl req -out ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/cert.csr -key ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/key.pem -new -sha256 -nodes -subj "/C=DE/OU=${LOOL_DOMAIN}/CN=${LOOL_DOMAIN}/emailAddress=${LOOL_SA}"
 	openssl x509 -req -days 3650 -in ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/cert.csr -signkey ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/key.pem -out ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/cert.pem
 	openssl x509 -req -days 3650 -in ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/cert.csr -signkey ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/key.pem -out ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/ca-chain.cert.pem
+	ssh-keygen -t rsa -N "" -m PEM -f "${LOOL_PREFIX}/etc/${LOOL_DISTRO}/proof_key"
 
 	chown root:lool ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/cert.csr
 	chown root:lool ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/cert.pem
 	chown root:lool ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/ca-chain.cert.pem
+	chown root:lool ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/proof_key
 
 	chmod 644 ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/cert.csr
 	chmod 644 ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/cert.pem
 	chmod 644 ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/ca-chain.cert.pem
+	chmod 640 ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/proof_key
 
 	echo
 	echo "#######################################################################################"
@@ -373,6 +383,12 @@ elif [ "${LOOL_VERSION}" != "${LOOL_LAST}" ] ; then
 	OFFICE_PATH="$(find ${LOOL_PREFIX}/lib -maxdepth 1 -type d -name "*office*")"
 	BACKUP_OFFICE_PATH="${LOOL_PREFIX}/lib/$(basename $(find ${BACKUP_PATH}/lib -maxdepth 1 -type d -name "*office*"))"
 	${LOOL_PREFIX}/bin/loolwsd-systemplate-setup ${LOOL_PREFIX}/var/systemplate ${OFFICE_PATH}
+	case ${ONLINE_VERSION} in
+	cp-6.4.0*)
+		/bin/rm -f ${LOOL_PREFIX}/var/systemplate/etc/resolv.conf
+		/bin/ln -s /etc/resolv.conf ${LOOL_PREFIX}/var/systemplate/etc/
+		;;
+	esac
 
 	mkdir -p ${LOOL_PREFIX}/var/tmp
 	mkdir -p ${LOOL_PREFIX}/var/log/loolwsd
@@ -386,6 +402,13 @@ elif [ "${LOOL_VERSION}" != "${LOOL_LAST}" ] ; then
 
 	/bin/rm -f ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/*.pem
 	/bin/cp -af ${BACKUP_PATH}/etc/${BACKUP_LOOL_DISTRO}/*.pem ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/
+	if [ -f ${BACKUP_PATH}/etc/${BACKUP_LOOL_DISTRO}/proof_key ] ; then
+		/bin/cp -af ${BACKUP_PATH}/etc/${BACKUP_LOOL_DISTRO}/proof_key* ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/
+	else
+		ssh-keygen -t rsa -N "" -m PEM -f "${LOOL_PREFIX}/etc/${LOOL_DISTRO}/proof_key"
+		chown root:lool ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/proof_key
+		chmod 640 ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/proof_key
+	fi
 	/bin/cp ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/loolwsd.xml ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/loolwsd.xml.dist
 
 	csplit ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/loolwsd.xml '/            <host desc="Regex pattern of hostname to allow or deny." allow="true">10/'

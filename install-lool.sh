@@ -365,7 +365,7 @@ elif [ "${LOOL_VERSION}" != "${LOOL_LAST}" ] ; then
 
 	mkdir -p ${LOOL_PREFIX}
 	tar -C ${LOOL_PREFIX} -xf ${PKG_DIR}/${LOOL_VERSION}.tar.xz
-	/sbin/setcap cap_fowner,cap_mknod,cap_sys_chroot=ep ${LOOL_PREFIX}/bin/loolforkit
+	/sbin/setcap cap_fowner,cap_chown,cap_mknod,cap_sys_chroot=ep ${LOOL_PREFIX}/bin/loolforkit
 	if [ -f ${LOOL_PREFIX}/bin/loolmount ] ; then
 		/sbin/setcap cap_sys_admin=ep ${LOOL_PREFIX}/bin/loolmount
 	fi

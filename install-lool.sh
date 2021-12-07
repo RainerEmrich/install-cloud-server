@@ -107,17 +107,6 @@ if [ "${LOOL_INSTALLED}" != "1" ] ; then
 	echo
 	echo "#######################################################################################"
 	echo "#"
-	echo "# INFO: Add user and group lool."
-	echo "#"
-	echo "#######################################################################################"
-	echo
-
-	groupadd -f lool
-	useradd --gid lool --groups sudo --home-dir /opt/lool --no-create-home --shell /usr/sbin/nologin lool
-
-	echo
-	echo "#######################################################################################"
-	echo "#"
 	echo "# INFO: Installing lool."
 	echo "#"
 	echo "#######################################################################################"
@@ -125,18 +114,49 @@ if [ "${LOOL_INSTALLED}" != "1" ] ; then
 
 	mkdir -p ${LOOL_PREFIX}
 	tar -C ${LOOL_PREFIX} -xf ${PKG_DIR}/${LOOL_VERSION}.tar.xz
-	/sbin/setcap cap_fowner,cap_chown,cap_mknod,cap_sys_chroot=ep ${LOOL_PREFIX}/bin/loolforkit
-	if [ -f ${LOOL_PREFIX}/bin/loolmount ] ; then
-		/sbin/setcap cap_sys_admin=ep ${LOOL_PREFIX}/bin/loolmount
-	fi
 
 	if [ -d ${LOOL_PREFIX}/etc/loolwsd ] ; then
 		LOOL_DISTRO="loolwsd"
+		LOOL_NAME="loolwsd"
+		LOOL_USER="lool"
+	elif [ -d ${LOOL_PREFIX}/etc/coolwsd ] ; then
+		LOOL_DISTRO="coolwsd"
+		LOOL_NAME="coolwsd"
+		LOOL_USER="cool"
 	else
 		LOOL_DISTRO="libreoffice-online"
+		LOOL_NAME="loolwsd"
+		LOOL_USER="lool"
 	fi
+
+	echo
+	echo "#######################################################################################"
+	echo "#"
+	echo "# INFO: Add user and group lool/cool."
+	echo "#"
+	echo "#######################################################################################"
+	echo
+
+	groupadd -f ${LOOL_USER}
+	useradd --gid ${LOOL_USER} --groups sudo --home-dir /opt/lool --no-create-home --shell /usr/sbin/nologin ${LOOL_USER}
+
+	if [ -f ${LOOL_PREFIX}/bin/coolforkit ] ; then
+		/sbin/setcap cap_fowner,cap_chown,cap_mknod,cap_sys_chroot=ep ${LOOL_PREFIX}/bin/coolforkit
+	elif [ -f ${LOOL_PREFIX}/bin/loolforkit ] ; then
+		/sbin/setcap cap_fowner,cap_chown,cap_mknod,cap_sys_chroot=ep ${LOOL_PREFIX}/bin/loolforkit
+	fi
+	if [ -f ${LOOL_PREFIX}/bin/coolmount ] ; then
+		/sbin/setcap cap_sys_admin=ep ${LOOL_PREFIX}/bin/coolmount
+	elif [ -f ${LOOL_PREFIX}/bin/loolmount ] ; then
+		/sbin/setcap cap_sys_admin=ep ${LOOL_PREFIX}/bin/loolmount
+	fi
+
 	OFFICE_PATH="$(find ${LOOL_PREFIX}/lib -maxdepth 1 -type d -name "*office*")"
-	${LOOL_PREFIX}/bin/loolwsd-systemplate-setup ${LOOL_PREFIX}/var/systemplate ${OFFICE_PATH}
+	if [ -f ${LOOL_PREFIX}/bin/coolwsd-systemplate-setup ] ; then
+		${LOOL_PREFIX}/bin/coolwsd-systemplate-setup ${LOOL_PREFIX}/var/systemplate ${OFFICE_PATH}
+	elif [ -f ${LOOL_PREFIX}/bin/loolwsd-systemplate-setup ] ; then
+		${LOOL_PREFIX}/bin/loolwsd-systemplate-setup ${LOOL_PREFIX}/var/systemplate ${OFFICE_PATH}
+	fi
 	case ${ONLINE_VERSION} in
 	cp-6.4.0*)
 		/bin/rm -f ${LOOL_PREFIX}/var/systemplate/etc/resolv.conf
@@ -145,18 +165,18 @@ if [ "${LOOL_INSTALLED}" != "1" ] ; then
 	esac
 
 	mkdir -p ${LOOL_PREFIX}/var/tmp
-	mkdir -p ${LOOL_PREFIX}/var/log/loolwsd
+	mkdir -p ${LOOL_PREFIX}/var/log/${LOOL_NAME}
 	mkdir -p ${LOOL_PREFIX}/var/jails
 	mkdir -p ${LOOL_PREFIX}/var/cache/${LOOL_DISTRO}
 
-	chown lool:lool ${LOOL_PREFIX}/var/tmp
-	chown lool:lool ${LOOL_PREFIX}/var/log/loolwsd
-	chown lool:lool ${LOOL_PREFIX}/var/jails
-	chown lool:lool ${LOOL_PREFIX}/var/cache/${LOOL_DISTRO}
+	chown ${LOOL_USER}:${LOOL_USER} ${LOOL_PREFIX}/var/tmp
+	chown ${LOOL_USER}:${LOOL_USER} ${LOOL_PREFIX}/var/log/${LOOL_NAME}
+	chown ${LOOL_USER}:${LOOL_USER} ${LOOL_PREFIX}/var/jails
+	chown ${LOOL_USER}:${LOOL_USER} ${LOOL_PREFIX}/var/cache/${LOOL_DISTRO}
 
-	/bin/cp ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/loolwsd.xml ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/loolwsd.xml.dist
+	/bin/cp ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/${LOOL_NAME}.xml ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/${LOOL_NAME}.xml.dist
 
-	csplit ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/loolwsd.xml '/            <host desc="Regex pattern of hostname to allow or deny." allow="true">10/'
+	csplit ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/${LOOL_NAME}.xml '/            <host desc="Regex pattern of hostname to allow or deny." allow="true">10/'
 
 	MY_NEXTCLOUD_DOMAIN_QUOTED="$(echo ${MY_NEXTCLOUD_DOMAIN} | sed 's/\./\\\./g')"
 	MY_GLOBAL_IP_QUOTED="$(dig +short ${MY_NEXTCLOUD_DOMAIN} | sed 's/\./\\\./g')"
@@ -169,32 +189,33 @@ if [ "${LOOL_INSTALLED}" != "1" ] ; then
 		echo '            <host desc="Regex pattern of hostname to allow or deny." allow="true">'$my_lool_client_domain_quoted'</host>' >>xx00
 	done
 
-	cat xx00 xx01 >${LOOL_PREFIX}/etc/${LOOL_DISTRO}/loolwsd.xml
+	cat xx00 xx01 >${LOOL_PREFIX}/etc/${LOOL_DISTRO}/${LOOL_NAME}.xml
 	/bin/rm xx00 xx01
 
-	chown root:lool ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/*
+	chown root:${LOOL_USER} ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/*
 	chmod o-r ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/*
 
-	sed --in-place "s#\"systemplate\"></sys_template_path>#\"systemplate\">../var/systemplate</sys_template_path>#" ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/loolwsd.xml
-	sed --in-place "s#\"></lo_template_path>#\">${OFFICE_PATH}</lo_template_path>#" ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/loolwsd.xml
-	sed --in-place "s#\"jails\"></child_root_path>#\"jails\">../var/jails</child_root_path>#" ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/loolwsd.xml
-	sed --in-place "s#default=\"loleaflet/../\"></file_server_root_path>#default=\"loleaflet/../\">../var/www/loleaflet/../</file_server_root_path>#" ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/loolwsd.xml
-	sed --in-place "s#<file enable=\"false\">#<file enable=\"true\">#" ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/loolwsd.xml
-	sed --in-place "s#\"true\">/tmp/looltrace.gz</path>#\"true\">${LOOL_PREFIX}/var/tmp/looltrace.gz</path>#" ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/loolwsd.xml
-	sed --in-place "s#/etc/loolwsd/cert.pem#${LOOL_PREFIX}/etc/${LOOL_DISTRO}/cert.pem#" ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/loolwsd.xml
-	sed --in-place "s#/etc/loolwsd/key.pem#${LOOL_PREFIX}/etc/${LOOL_DISTRO}/key.pem#" ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/loolwsd.xml
-	sed --in-place "s#/etc/loolwsd/ca-chain.cert.pem#${LOOL_PREFIX}/etc/${LOOL_DISTRO}/ca-chain.cert.pem#" ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/loolwsd.xml
-	sed --in-place "s#>0</max_file_size>#>${LO_DOC_SIZE}</max_file_size>#" ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/loolwsd.xml
-	sed --in-place "s#></username>#>${LOOL_ADMIN_NAME}</username>#" ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/loolwsd.xml
-	sed --in-place "s#></password>#>${LOOL_ADMIN_PASSWD}</password>#" ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/loolwsd.xml
-	sed --in-place "s#type=\"uint\">0</limit_virt_mem_kb>#type=\"uint\">${LO_MAX_VIRT_SIZE}</limit_virt_mem_kb>#" ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/loolwsd.xml
-	sed --in-place "s#type=\"uint\">0</limit_data_mem_kb>#type=\"uint\">${LO_MAX_DATA_SEG_SIZE}</limit_data_mem_kb>#" ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/loolwsd.xml
-	sed --in-place "s#type=\"uint\">8000</limit_stack_mem_kb>#type=\"uint\">${LO_MAX_STACK_SIZE}</limit_stack_mem_kb>#" ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/loolwsd.xml
-	sed --in-place "s#type=\"uint\">0</limit_file_size_mb>#type=\"uint\">${LO_MAX_FILE_SIZE}</limit_file_size_mb>#" ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/loolwsd.xml
-	sed --in-place "s#type=\"uint\">0</limit_num_open_files>#type=\"uint\">${LO_MAX_FILE_NUM}</limit_num_open_files>#" ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/loolwsd.xml
+	sed --in-place "s#\"systemplate\"></sys_template_path>#\"systemplate\">../var/systemplate</sys_template_path>#" ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/${LOOL_NAME}.xml
+	sed --in-place "s#\"></lo_template_path>#\">${OFFICE_PATH}</lo_template_path>#" ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/${LOOL_NAME}.xml
+	sed --in-place "s#\"jails\"></child_root_path>#\"jails\">../var/jails</child_root_path>#" ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/${LOOL_NAME}.xml
+	sed --in-place "s#default=\"loleaflet/../\"></file_server_root_path>#default=\"loleaflet/../\">../var/www/loleaflet/../</file_server_root_path>#" ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/${LOOL_NAME}.xml
+	sed --in-place "s#default=\"browser/../\"></file_server_root_path>#default=\"browser/../\">../var/www/browser/../</file_server_root_path>#" ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/${LOOL_NAME}.xml
+	sed --in-place "s#<file enable=\"false\">#<file enable=\"true\">#" ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/${LOOL_NAME}.xml
+	sed --in-place "s#\"true\">/tmp/looltrace.gz</path>#\"true\">${LOOL_PREFIX}/var/tmp/looltrace.gz</path>#" ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/${LOOL_NAME}.xml
+	sed --in-place "s#/etc/${LOOL_NAME}/cert.pem#${LOOL_PREFIX}/etc/${LOOL_DISTRO}/cert.pem#" ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/${LOOL_NAME}.xml
+	sed --in-place "s#/etc/${LOOL_NAME}/key.pem#${LOOL_PREFIX}/etc/${LOOL_DISTRO}/key.pem#" ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/${LOOL_NAME}.xml
+	sed --in-place "s#/etc/${LOOL_NAME}/ca-chain.cert.pem#${LOOL_PREFIX}/etc/${LOOL_DISTRO}/ca-chain.cert.pem#" ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/${LOOL_NAME}.xml
+	sed --in-place "s#>0</max_file_size>#>${LO_DOC_SIZE}</max_file_size>#" ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/${LOOL_NAME}.xml
+	sed --in-place "s#></username>#>${LOOL_ADMIN_NAME}</username>#" ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/${LOOL_NAME}.xml
+	sed --in-place "s#></password>#>${LOOL_ADMIN_PASSWD}</password>#" ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/${LOOL_NAME}.xml
+	sed --in-place "s#type=\"uint\">0</limit_virt_mem_kb>#type=\"uint\">${LO_MAX_VIRT_SIZE}</limit_virt_mem_kb>#" ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/${LOOL_NAME}.xml
+	sed --in-place "s#type=\"uint\">0</limit_data_mem_kb>#type=\"uint\">${LO_MAX_DATA_SEG_SIZE}</limit_data_mem_kb>#" ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/${LOOL_NAME}.xml
+	sed --in-place "s#type=\"uint\">8000</limit_stack_mem_kb>#type=\"uint\">${LO_MAX_STACK_SIZE}</limit_stack_mem_kb>#" ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/${LOOL_NAME}.xml
+	sed --in-place "s#type=\"uint\">0</limit_file_size_mb>#type=\"uint\">${LO_MAX_FILE_SIZE}</limit_file_size_mb>#" ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/${LOOL_NAME}.xml
+	sed --in-place "s#type=\"uint\">0</limit_num_open_files>#type=\"uint\">${LO_MAX_FILE_NUM}</limit_num_open_files>#" ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/${LOOL_NAME}.xml
 
 	openssl genrsa -out ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/key.pem 4096
-	chown root:lool ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/key.pem
+	chown root:${LOOL_USER} ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/key.pem
 	chmod 640 ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/key.pem
 
 	openssl req -out ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/cert.csr -key ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/key.pem -new -sha256 -nodes -subj "/C=DE/OU=${LOOL_DOMAIN}/CN=${LOOL_DOMAIN}/emailAddress=${LOOL_SA}"
@@ -202,10 +223,10 @@ if [ "${LOOL_INSTALLED}" != "1" ] ; then
 	openssl x509 -req -days 3650 -in ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/cert.csr -signkey ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/key.pem -out ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/ca-chain.cert.pem
 	ssh-keygen -t rsa -N "" -m PEM -f "${LOOL_PREFIX}/etc/${LOOL_DISTRO}/proof_key"
 
-	chown root:lool ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/cert.csr
-	chown root:lool ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/cert.pem
-	chown root:lool ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/ca-chain.cert.pem
-	chown root:lool ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/proof_key
+	chown root:${LOOL_USER} ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/cert.csr
+	chown root:${LOOL_USER} ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/cert.pem
+	chown root:${LOOL_USER} ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/ca-chain.cert.pem
+	chown root:${LOOL_USER} ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/proof_key
 
 	chmod 644 ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/cert.csr
 	chmod 644 ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/cert.pem
@@ -238,8 +259,8 @@ if [ "${LOOL_INSTALLED}" != "1" ] ; then
 	echo "" >>/lib/systemd/system/loolwsd.service
 	echo "[Service]" >>/lib/systemd/system/loolwsd.service
 	echo "Type=simple" >>/lib/systemd/system/loolwsd.service
-	echo "User=lool" >>/lib/systemd/system/loolwsd.service
-	echo "ExecStart=${LOOL_PREFIX}/bin/loolwsd" >>/lib/systemd/system/loolwsd.service
+	echo "User=${LOOL_USER}" >>/lib/systemd/system/loolwsd.service
+	echo "ExecStart=${LOOL_PREFIX}/bin/${LOOL_NAME}" >>/lib/systemd/system/loolwsd.service
 	echo "" >>/lib/systemd/system/loolwsd.service
 	echo "[Install]" >>/lib/systemd/system/loolwsd.service
 	echo "WantedBy=multi-user.target" >>/lib/systemd/system/loolwsd.service
@@ -287,9 +308,9 @@ if [ "${LOOL_INSTALLED}" != "1" ] ; then
 	systemctl reload apache2
 	/bin/rm /etc/apache2/sites-available/${LOOL_SITE_CONFIG}*
 
-	if [ -f ${LOOL_PREFIX}/etc/apache2/conf-available/loolwsd.conf ] ; then
-		sed --in-place "s/http:/https:/g"  ${LOOL_PREFIX}/etc/apache2/conf-available/loolwsd.conf
-		sed --in-place "s/ws:/wss:/g"  ${LOOL_PREFIX}/etc/apache2/conf-available/loolwsd.conf
+	if [ -f ${LOOL_PREFIX}/etc/apache2/conf-available/${LOOL_NAME}.conf ] ; then
+		sed --in-place "s/http:/https:/g"  ${LOOL_PREFIX}/etc/apache2/conf-available/${LOOL_NAME}.conf
+		sed --in-place "s/ws:/wss:/g"  ${LOOL_PREFIX}/etc/apache2/conf-available/${LOOL_NAME}.conf
 
 		/bin/cp -a ${DATA_DIR}/etc/apache2/sites-available/997-myoffice-mydomain-tld-le-ssl.conf /etc/apache2/sites-available/${LOOL_SITE_CONFIG}.conf
 	else
@@ -298,6 +319,7 @@ if [ "${LOOL_INSTALLED}" != "1" ] ; then
 
 	sed --in-place "s/ServerAdmin webmaster@localhost/ServerAdmin ${LOOL_SA}/" /etc/apache2/sites-available/${LOOL_SITE_CONFIG}.conf
 	sed --in-place "s/myhost.mydomain.tld/${LOOL_DOMAIN}/g" /etc/apache2/sites-available/${LOOL_SITE_CONFIG}.conf
+	sed --in-place "s#Include /opt/lool/etc/apache2/conf-available/.*#Include /opt/lool/etc/apache2/conf-available/${LOOL_NAME}.conf#" /etc/apache2/sites-available/${LOOL_SITE_CONFIG}.conf
 
 	case ${DIST_ID} in
 	Debian)
@@ -365,24 +387,60 @@ elif [ "${LOOL_VERSION}" != "${LOOL_LAST}" ] ; then
 
 	mkdir -p ${LOOL_PREFIX}
 	tar -C ${LOOL_PREFIX} -xf ${PKG_DIR}/${LOOL_VERSION}.tar.xz
-	/sbin/setcap cap_fowner,cap_chown,cap_mknod,cap_sys_chroot=ep ${LOOL_PREFIX}/bin/loolforkit
-	if [ -f ${LOOL_PREFIX}/bin/loolmount ] ; then
-		/sbin/setcap cap_sys_admin=ep ${LOOL_PREFIX}/bin/loolmount
-	fi
 
 	if [ -d ${LOOL_PREFIX}/etc/loolwsd ] ; then
 		LOOL_DISTRO="loolwsd"
+		LOOL_NAME="loolwsd"
+		LOOL_USER="lool"
+	elif [ -d ${LOOL_PREFIX}/etc/coolwsd ] ; then
+		LOOL_DISTRO="coolwsd"
+		LOOL_NAME="coolwsd"
+		LOOL_USER="cool"
 	else
 		LOOL_DISTRO="libreoffice-online"
+		LOOL_NAME="loolwsd"
+		LOOL_USER="lool"
 	fi
 	if [ -d ${BACKUP_PATH}/etc/loolwsd ] ; then
 		BACKUP_LOOL_DISTRO="loolwsd"
+	elif [ -d ${BACKUP_PATH}/etc/coolwsd ] ; then
+		BACKUP_LOOL_DISTRO="coolwsd"
 	else
 		BACKUP_LOOL_DISTRO="libreoffice-online"
 	fi
+
+	if getent passwd lool > /dev/null 2>&1; then
+		LOOL_OLD_USER="lool"
+	else
+		LOOL_OLD_USER="cool"
+	fi
+
+	if [ "${LOOL_USER}" != "${LOOL_OLD_USER}" ] ; then
+		usermod -l ${LOOL_USER} ${LOOL_OLD_USER}
+		groupmod -n ${LOOL_USER} ${LOOL_OLD_USER}
+		sed --in-place "s#User=.*#User=${LOOL_USER}#" /lib/systemd/system/loolwsd.service
+		sed --in-place "s#ExecStart=.*#ExecStart=/opt/lool/bin/${LOOL_NAME}#" /lib/systemd/system/loolwsd.service
+		systemctl daemon-reload
+	fi
+
+	if [ -f ${LOOL_PREFIX}/bin/coolforkit ] ; then
+		/sbin/setcap cap_fowner,cap_chown,cap_mknod,cap_sys_chroot=ep ${LOOL_PREFIX}/bin/coolforkit
+	elif [ -f ${LOOL_PREFIX}/bin/loolforkit ] ; then
+		/sbin/setcap cap_fowner,cap_chown,cap_mknod,cap_sys_chroot=ep ${LOOL_PREFIX}/bin/loolforkit
+	fi
+	if [ -f ${LOOL_PREFIX}/bin/coolmount ] ; then
+		/sbin/setcap cap_sys_admin=ep ${LOOL_PREFIX}/bin/coolmount
+	elif [ -f ${LOOL_PREFIX}/bin/loolmount ] ; then
+		/sbin/setcap cap_sys_admin=ep ${LOOL_PREFIX}/bin/loolmount
+	fi
+
 	OFFICE_PATH="$(find ${LOOL_PREFIX}/lib -maxdepth 1 -type d -name "*office*")"
 	BACKUP_OFFICE_PATH="${LOOL_PREFIX}/lib/$(basename $(find ${BACKUP_PATH}/lib -maxdepth 1 -type d -name "*office*"))"
-	${LOOL_PREFIX}/bin/loolwsd-systemplate-setup ${LOOL_PREFIX}/var/systemplate ${OFFICE_PATH}
+	if [ -f ${LOOL_PREFIX}/bin/coolwsd-systemplate-setup ] ; then
+		${LOOL_PREFIX}/bin/coolwsd-systemplate-setup ${LOOL_PREFIX}/var/systemplate ${OFFICE_PATH}
+	elif [ -f ${LOOL_PREFIX}/bin/loolwsd-systemplate-setup ] ; then
+		${LOOL_PREFIX}/bin/loolwsd-systemplate-setup ${LOOL_PREFIX}/var/systemplate ${OFFICE_PATH}
+	fi
 	case ${ONLINE_VERSION} in
 	cp-6.4.0*)
 		/bin/rm -f ${LOOL_PREFIX}/var/systemplate/etc/resolv.conf
@@ -391,14 +449,14 @@ elif [ "${LOOL_VERSION}" != "${LOOL_LAST}" ] ; then
 	esac
 
 	mkdir -p ${LOOL_PREFIX}/var/tmp
-	mkdir -p ${LOOL_PREFIX}/var/log/loolwsd
+	mkdir -p ${LOOL_PREFIX}/var/log/${LOOL_NAME}
 	mkdir -p ${LOOL_PREFIX}/var/jails
 	mkdir -p ${LOOL_PREFIX}/var/cache/${LOOL_DISTRO}
 
-	chown lool:lool ${LOOL_PREFIX}/var/tmp
-	chown lool:lool ${LOOL_PREFIX}/var/log/loolwsd
-	chown lool:lool ${LOOL_PREFIX}/var/jails
-	chown lool:lool ${LOOL_PREFIX}/var/cache/${LOOL_DISTRO}
+	chown ${LOOL_USER}:${LOOL_USER} ${LOOL_PREFIX}/var/tmp
+	chown ${LOOL_USER}:${LOOL_USER} ${LOOL_PREFIX}/var/log/${LOOL_NAME}
+	chown ${LOOL_USER}:${LOOL_USER} ${LOOL_PREFIX}/var/jails
+	chown ${LOOL_USER}:${LOOL_USER} ${LOOL_PREFIX}/var/cache/${LOOL_DISTRO}
 
 	/bin/rm -f ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/*.pem
 	/bin/cp -af ${BACKUP_PATH}/etc/${BACKUP_LOOL_DISTRO}/*.pem ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/
@@ -406,12 +464,12 @@ elif [ "${LOOL_VERSION}" != "${LOOL_LAST}" ] ; then
 		/bin/cp -af ${BACKUP_PATH}/etc/${BACKUP_LOOL_DISTRO}/proof_key* ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/
 	else
 		ssh-keygen -t rsa -N "" -m PEM -f "${LOOL_PREFIX}/etc/${LOOL_DISTRO}/proof_key"
-		chown root:lool ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/proof_key
+		chown root:${LOOL_USER} ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/proof_key
 		chmod 640 ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/proof_key
 	fi
-	/bin/cp ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/loolwsd.xml ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/loolwsd.xml.dist
+	/bin/cp ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/${LOOL_NAME}.xml ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/${LOOL_NAME}.xml.dist
 
-	csplit ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/loolwsd.xml '/            <host desc="Regex pattern of hostname to allow or deny." allow="true">10/'
+	csplit ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/${LOOL_NAME}.xml '/            <host desc="Regex pattern of hostname to allow or deny." allow="true">10/'
 
 	MY_NEXTCLOUD_DOMAIN_QUOTED="$(echo ${MY_NEXTCLOUD_DOMAIN} | sed 's/\./\\\./g')"
 	MY_GLOBAL_IP_QUOTED="$(dig +short ${MY_NEXTCLOUD_DOMAIN} | sed 's/\./\\\./g')"
@@ -424,29 +482,30 @@ elif [ "${LOOL_VERSION}" != "${LOOL_LAST}" ] ; then
 		echo '            <host desc="Regex pattern of hostname to allow or deny." allow="true">'$my_lool_client_domain_quoted'</host>' >>xx00
 	done
 
-	cat xx00 xx01 >${LOOL_PREFIX}/etc/${LOOL_DISTRO}/loolwsd.xml
+	cat xx00 xx01 >${LOOL_PREFIX}/etc/${LOOL_DISTRO}/${LOOL_NAME}.xml
 	/bin/rm xx00 xx01
 
-	chown root:lool ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/*
+	chown root:${LOOL_USER} ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/*
 	chmod o-r ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/*
 
-	sed --in-place "s#\"systemplate\"></sys_template_path>#\"systemplate\">../var/systemplate</sys_template_path>#" ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/loolwsd.xml
-	sed --in-place "s#\"></lo_template_path>#\">${OFFICE_PATH}</lo_template_path>#" ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/loolwsd.xml
-	sed --in-place "s#\"jails\"></child_root_path>#\"jails\">../var/jails</child_root_path>#" ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/loolwsd.xml
-	sed --in-place "s#default=\"loleaflet/../\"></file_server_root_path>#default=\"loleaflet/../\">../var/www/loleaflet/../</file_server_root_path>#" ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/loolwsd.xml
-	sed --in-place "s#<file enable=\"false\">#<file enable=\"true\">#" ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/loolwsd.xml
-	sed --in-place "s#\"true\">/tmp/looltrace.gz</path>#\"true\">${LOOL_PREFIX}/var/tmp/looltrace.gz</path>#" ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/loolwsd.xml
-	sed --in-place "s#/etc/loolwsd/cert.pem#${LOOL_PREFIX}/etc/${LOOL_DISTRO}/cert.pem#" ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/loolwsd.xml
-	sed --in-place "s#/etc/loolwsd/key.pem#${LOOL_PREFIX}/etc/${LOOL_DISTRO}/key.pem#" ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/loolwsd.xml
-	sed --in-place "s#/etc/loolwsd/ca-chain.cert.pem#${LOOL_PREFIX}/etc/${LOOL_DISTRO}/ca-chain.cert.pem#" ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/loolwsd.xml
-	sed --in-place "s#>0</max_file_size>#>${LO_DOC_SIZE}</max_file_size>#" ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/loolwsd.xml
-	sed --in-place "s#></username>#>${LOOL_ADMIN_NAME}</username>#" ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/loolwsd.xml
-	sed --in-place "s#></password>#>${LOOL_ADMIN_PASSWD}</password>#" ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/loolwsd.xml
-	sed --in-place "s#type=\"uint\">0</limit_virt_mem_kb>#type=\"uint\">${LO_MAX_VIRT_SIZE}</limit_virt_mem_kb>#" ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/loolwsd.xml
-	sed --in-place "s#type=\"uint\">0</limit_data_mem_kb>#type=\"uint\">${LO_MAX_DATA_SEG_SIZE}</limit_data_mem_kb>#" ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/loolwsd.xml
-	sed --in-place "s#type=\"uint\">8000</limit_stack_mem_kb>#type=\"uint\">${LO_MAX_STACK_SIZE}</limit_stack_mem_kb>#" ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/loolwsd.xml
-	sed --in-place "s#type=\"uint\">0</limit_file_size_mb>#type=\"uint\">${LO_MAX_FILE_SIZE}</limit_file_size_mb>#" ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/loolwsd.xml
-	sed --in-place "s#type=\"uint\">0</limit_num_open_files>#type=\"uint\">${LO_MAX_FILE_NUM}</limit_num_open_files>#" ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/loolwsd.xml
+	sed --in-place "s#\"systemplate\"></sys_template_path>#\"systemplate\">../var/systemplate</sys_template_path>#" ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/${LOOL_NAME}.xml
+	sed --in-place "s#\"></lo_template_path>#\">${OFFICE_PATH}</lo_template_path>#" ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/${LOOL_NAME}.xml
+	sed --in-place "s#\"jails\"></child_root_path>#\"jails\">../var/jails</child_root_path>#" ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/${LOOL_NAME}.xml
+	sed --in-place "s#default=\"loleaflet/../\"></file_server_root_path>#default=\"loleaflet/../\">../var/www/loleaflet/../</file_server_root_path>#" ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/${LOOL_NAME}.xml
+	sed --in-place "s#default=\"browser/../\"></file_server_root_path>#default=\"browser/../\">../var/www/browser/../</file_server_root_path>#" ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/${LOOL_NAME}.xml
+	sed --in-place "s#<file enable=\"false\">#<file enable=\"true\">#" ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/${LOOL_NAME}.xml
+	sed --in-place "s#\"true\">/tmp/looltrace.gz</path>#\"true\">${LOOL_PREFIX}/var/tmp/looltrace.gz</path>#" ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/${LOOL_NAME}.xml
+	sed --in-place "s#/etc/${LOOL_NAME}/cert.pem#${LOOL_PREFIX}/etc/${LOOL_DISTRO}/cert.pem#" ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/${LOOL_NAME}.xml
+	sed --in-place "s#/etc/${LOOL_NAME}/key.pem#${LOOL_PREFIX}/etc/${LOOL_DISTRO}/key.pem#" ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/${LOOL_NAME}.xml
+	sed --in-place "s#/etc/${LOOL_NAME}/ca-chain.cert.pem#${LOOL_PREFIX}/etc/${LOOL_DISTRO}/ca-chain.cert.pem#" ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/${LOOL_NAME}.xml
+	sed --in-place "s#>0</max_file_size>#>${LO_DOC_SIZE}</max_file_size>#" ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/${LOOL_NAME}.xml
+	sed --in-place "s#></username>#>${LOOL_ADMIN_NAME}</username>#" ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/${LOOL_NAME}.xml
+	sed --in-place "s#></password>#>${LOOL_ADMIN_PASSWD}</password>#" ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/${LOOL_NAME}.xml
+	sed --in-place "s#type=\"uint\">0</limit_virt_mem_kb>#type=\"uint\">${LO_MAX_VIRT_SIZE}</limit_virt_mem_kb>#" ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/${LOOL_NAME}.xml
+	sed --in-place "s#type=\"uint\">0</limit_data_mem_kb>#type=\"uint\">${LO_MAX_DATA_SEG_SIZE}</limit_data_mem_kb>#" ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/${LOOL_NAME}.xml
+	sed --in-place "s#type=\"uint\">8000</limit_stack_mem_kb>#type=\"uint\">${LO_MAX_STACK_SIZE}</limit_stack_mem_kb>#" ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/${LOOL_NAME}.xml
+	sed --in-place "s#type=\"uint\">0</limit_file_size_mb>#type=\"uint\">${LO_MAX_FILE_SIZE}</limit_file_size_mb>#" ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/${LOOL_NAME}.xml
+	sed --in-place "s#type=\"uint\">0</limit_num_open_files>#type=\"uint\">${LO_MAX_FILE_NUM}</limit_num_open_files>#" ${LOOL_PREFIX}/etc/${LOOL_DISTRO}/${LOOL_NAME}.xml
 
 	case ${DIST_ID} in
 	Ubuntu)
@@ -472,9 +531,9 @@ elif [ "${LOOL_VERSION}" != "${LOOL_LAST}" ] ; then
 
 	/bin/rm /etc/apache2/sites-available/${LOOL_SITE_CONFIG}*
 
-	if [ -f ${LOOL_PREFIX}/etc/apache2/conf-available/loolwsd.conf ] ; then
-		sed --in-place "s/http:/https:/g"  ${LOOL_PREFIX}/etc/apache2/conf-available/loolwsd.conf
-		sed --in-place "s/ws:/wss:/g"  ${LOOL_PREFIX}/etc/apache2/conf-available/loolwsd.conf
+	if [ -f ${LOOL_PREFIX}/etc/apache2/conf-available/${LOOL_NAME}.conf ] ; then
+		sed --in-place "s/http:/https:/g"  ${LOOL_PREFIX}/etc/apache2/conf-available/${LOOL_NAME}.conf
+		sed --in-place "s/ws:/wss:/g"  ${LOOL_PREFIX}/etc/apache2/conf-available/${LOOL_NAME}.conf
 
 		/bin/cp -a ${DATA_DIR}/etc/apache2/sites-available/997-myoffice-mydomain-tld-le-ssl.conf /etc/apache2/sites-available/${LOOL_SITE_CONFIG}.conf
 	else
@@ -483,6 +542,7 @@ elif [ "${LOOL_VERSION}" != "${LOOL_LAST}" ] ; then
 
 	sed --in-place "s/ServerAdmin webmaster@localhost/ServerAdmin ${LOOL_SA}/" /etc/apache2/sites-available/${LOOL_SITE_CONFIG}.conf
 	sed --in-place "s/myhost.mydomain.tld/${LOOL_DOMAIN}/g" /etc/apache2/sites-available/${LOOL_SITE_CONFIG}.conf
+	sed --in-place "s#Include /opt/lool/etc/apache2/conf-available/.*#Include /opt/lool/etc/apache2/conf-available/${LOOL_NAME}.conf#" /etc/apache2/sites-available/${LOOL_SITE_CONFIG}.conf
 
 	case ${DIST_ID} in
 	Debian)
